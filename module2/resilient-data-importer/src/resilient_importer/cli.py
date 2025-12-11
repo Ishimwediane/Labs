@@ -1,21 +1,7 @@
 import csv
 import os
 from resilient_importer.exceptions import EmptyFileError, InvalidCSVError
-
-
-
-def read_csv_file(filename):
-    """Read a CSV file and returns a list of dictionaries."""
-    if not os.path.exists(filename):
-        raise FileNotFoundError(f"File '{filename}' not found.")
-    with open(filename, newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        row=list(reader)
-        
-        if not row:
-            raise EmptyFileError(f"File '{filename}' is empty.")
-        return row
-        
+from resilient_importer.csv_parser import parse_csv_to_users
 
 
 def main():
@@ -23,8 +9,9 @@ def main():
     filename=input("Enter CSV file name: ")
     
     try:
-        data=read_csv_file(filename)
-        print(data)
+        users=parse_csv_to_users(filename)
+        for u in users:
+            print(u)
     except FileNotFoundError as e:
         print(f"Error: {e}")
     except EmptyFileError as e:

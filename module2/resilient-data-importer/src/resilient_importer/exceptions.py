@@ -6,7 +6,7 @@ class InvalidCSVError(ImportError):
     """Raised when the input data is invalid."""
     pass
 
-class FileMissingError(ImporterError):
+class FileMissingError(ImportError):
     """Raised when a required column is missing from the input data."""
     pass
 
