@@ -68,4 +68,146 @@ Errors are caught at the CLI layer and displayed to user.
 All errors are logged with appropriate severity.
 
 
-![alt text](image.png)
+## Layered diagram
+```mermaid
+graph TB
+    %% Presentation Layer
+    subgraph "Presentation Layer"
+        CLI[CLI Interface / main.py]
+    end
+
+    %% Business Logic Layer
+    subgraph "Business Logic Layer"
+        Parser[CSVParser / parser.py]
+        Validator[UserValidator / validator.py]
+    end
+
+    %% Data Access Layer
+    subgraph "Data Access Layer"
+        Repository[UserRepository / storage.py]
+    end
+
+    %% Domain Layer
+    subgraph "Domain Layer"
+        UserModel[User Model / models.py]
+        Exceptions[Exceptions / exceptions.py]
+    end
+
+    %% Data Storage
+    subgraph "Data Storage"
+        JSONDB[(JSON Database)]
+    end
+
+    %% Cross-Cutting
+    Logger[Logger / logging system]
+
+    %% Arrows: Presentation → Business → Data → Storage
+    CLI --> Parser
+    CLI --> Validator
+
+    Parser --> Validator
+    Parser --> Exceptions
+    Validator --> Exceptions
+
+    Validator --> Repository
+    Repository --> JSONDB
+    Repository --> Exceptions
+
+    %% Domain Layer
+    Parser --> UserModel
+    Validator --> UserModel
+    Repository --> UserModel
+
+    %% Cross-Cutting
+    CLI --> Logger
+    Parser --> Logger
+    Validator --> Logger
+    Repository --> Logger
+
+    %% Styling
+    style CLI fill:#e1f5ff
+    style Parser fill:#fff3e0
+    style Validator fill:#fff3e0
+    style Repository fill:#e8f5e9
+    style UserModel fill:#f3e5f5
+    style Exceptions fill:#ffebee
+    style Logger fill:#fffde7
+    style JSONDB fill:#fce4ec
+
+```
+
+## Data flow diagram
+```mermaid
+graph TB
+    %% External Actor / Input
+    subgraph "External Actor / Input"
+        User[User]
+        CSVFile[CSV File]
+    end
+
+    %% Presentation Layer
+    subgraph "Presentation Layer"
+        CLI[CLI Interface / main.py]
+    end
+
+    %% Business Logic Layer
+    subgraph "Business Logic Layer"
+        Parser[CSVParser / parser.py]
+        Validator[UserValidator / validator.py]
+    end
+
+    %% Data Access Layer
+    subgraph "Data Access Layer"
+        Repository[UserRepository / storage.py]
+    end
+
+    %% Domain Layer
+    subgraph "Domain Layer"
+        UserModel[User Model / models.py]
+        Exceptions[Exceptions / exceptions.py]
+    end
+
+    %% Data Storage
+    subgraph "Data Storage"
+        JSONDB[(JSON Database)]
+    end
+
+    %% Cross-Cutting
+    Logger[Logger / logging system]
+
+    %% Main Data Flow
+    User -->|runs CLI| CLI
+    CLI -->|reads| CSVFile
+    CLI --> Parser
+    Parser --> Validator
+    Validator --> Repository
+    Repository --> JSONDB
+
+    %% Domain interactions
+    Parser --> UserModel
+    Validator --> UserModel
+    Repository --> UserModel
+
+    %% Exception Handling
+    Parser --> Exceptions
+    Validator --> Exceptions
+    Repository --> Exceptions
+
+    %% Logging
+    CLI --> Logger
+    Parser --> Logger
+    Validator --> Logger
+    Repository --> Logger
+
+    %% Styling
+    style User fill:#e0f7fa
+    style CSVFile fill:#fffde7
+    style CLI fill:#e1f5ff
+    style Parser fill:#fff3e0
+    style Validator fill:#fff3e0
+    style Repository fill:#e8f5e9
+    style UserModel fill:#f3e5f5
+    style Exceptions fill:#ffebee
+    style Logger fill:#fffde7
+    style JSONDB fill:#fce4ec
+```
