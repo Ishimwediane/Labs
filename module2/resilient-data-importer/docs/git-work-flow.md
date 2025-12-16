@@ -1,88 +1,47 @@
 # Git Workflow Guide
 
-## Initial Setup
-```bash
-# Initialize Git
-git init
+This guide explains the Git workflow for the **Resilient Data Importer** project, including branch naming conventions, feature development, and pull request strategy.
 
-# Create develop branch
-git checkout -b develop
+---
 
-# First commit
-git add .
-git commit -m "chore: Initial project setup"
-```
+## Branch Structure
+
+| Branch Name        | Purpose                                          |
+|-------------------|--------------------------------------------------|
+| `developer`        | Main development branch, always stable          |
+| `feature/cli`      | CLI functionality                               |
+| `feature/docs`     | Documentation updates                            |
+| `feature/model`    | User model and data structures                   |
+| `feature/parser`   | CSV parsing logic                               |
+| `feature/storage`  | JSON storage / repository logic                  |
+| `feature/tests`    | Unit and integration test additions              |
+| `feature/validator`| User validation logic                             |
+
+> **Note**: Feature branches are created from `developer`. All work must go through pull requests (PRs) for review.
+
+---
 
 ## Branch Naming Convention
-feature/feature-name    # New features
-bugfix/bug-name        # Bug fixes
-hotfix/urgent-fix      # Critical fixes
-docs/documentation     # Documentation only
-test/test-name         # Test additions
-## Feature Development Workflow
 
-### 1. Start Feature
+- **Feature branches:** `feature/<feature-name>`  
+  Example: `feature/parser`, `feature/storage`  
+- **Bugfix branches:** `bugfix/<bug-name>`  
+  Example: `bugfix/csv-header-error`  
+- **Hotfix branches:** `hotfix/<issue>`  
+  Example: `hotfix/corrupted-json-fix`  
+- **Documentation branches:** `feature/docs`  
+
+---
+
+## Workflow Steps
+
+### 1. Start Feature Development
 ```bash
-# Create feature branch from develop
-git checkout develop
-git checkout -b feature/csv-parser
+# Switch to developer branch
+git checkout developer
 
-# Work on feature...
-```
+# Pull latest changes
+git pull origin developer
 
-### 2. Commit Changes
-```bash
-# Stage changes
-git add src/parser.py
-
-# Commit with proper message
-git commit -m "feat(parser): Add CSV parsing logic"
-```
-
-### 3. Push Feature
-```bash
-# Push to remote
-git push -u origin feature/csv-parser
-```
-
-### 4. Create Pull Request
-- Go to GitHub
-- Click "New Pull Request"
-- Base: develop ← Compare: feature/csv-parser
-- Fill out PR template
-- Request review (self-review for lab)
-
-### 5. Merge Feature
-```bash
-# After approval, merge on GitHub
-# Then update local develop
-git checkout develop
-git pull origin develop
-
-# Delete feature branch
-git branch -d feature/csv-parser
-git push origin --delete feature/csv-parser
-```
-
-## Commit Message Standards
-
-### Format
-<type>(<scope>): <subject>
-<body>
-<footer>
-````
-Types
-
-feat: New feature
-fix: Bug fix
-docs: Documentation
-style: Formatting
-refactor: Code restructuring
-test: Adding tests
-chore: Maintenance
-
-Examples
-bashgit commit -m "feat(parser): Add CSV parsing with error handling"
-git commit -m "test(validator): Add email validation tests"
-git commit -m "docs(readme): Add installation instructions"
-git commit -m "fix(storage): Handle corrupted JSON files"
+# Create new feature branch
+git checkout -b feature/parser
