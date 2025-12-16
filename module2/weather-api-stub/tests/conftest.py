@@ -1,18 +1,13 @@
-# tests/conftest.py
-
 import pytest
-from src.weather.service import WeatherService
-from src.weather.provider import MockWeatherProvider
+from src.service import WeatherService
+from src.provider.mock import MockWeatherProvider
 
 
 @pytest.fixture
-def mock_provider():
-    """Fixture for initializing a MockWeatherProvider."""
+def provider():
     return MockWeatherProvider()
 
 
 @pytest.fixture
-def weather_service(mock_provider):
-    """Fixture for initializing WeatherService with MockWeatherProvider."""
-    service = WeatherService(mock_provider)
-    return service
+def weather_service(provider):
+    return WeatherService(provider)
