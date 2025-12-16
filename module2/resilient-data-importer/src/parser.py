@@ -1,41 +1,44 @@
 import csv
+import logging
 from .models.user import User
 from .exceptions import FileFormatError
 
+logger = logging.getLogger(__name__)
+
 
 class CSVParser:
-    """Parses a CSV file of users."""
-
     def __init__(self, file_path: str):
         self.file_path = file_path
 
     def parse(self) -> list[User]:
-        """
-        Parses the CSV file and returns a list of User objects.
-        """
-        users = []
+        users: list[User] = []
+
         try:
-            with open(self.file_path, "r", newline="") as f:
-                reader = csv.reader(f)
+            with open(self.file_path, newline="", encoding="utf-8") as file:
+                reader = csv.reader(file)
+
                 try:
                     header = next(reader)
                 except StopIteration:
-                    # Handle empty file
+                    logger.warning("CSV file is empty")
                     return []
 
                 if header != ["user_id", "name", "email"]:
-                    raise FileFormatError("CSV file has incorrect headers.")
+                    raise FileFormatError("Invalid CSV headers")
 
-                for row in reader:
+                for row_num, row in enumerate(reader, start=2):
                     try:
-                        user_id = int(row[0])
-                        name = row[1]
-                        email = row[2]
-                        users.append(User(user_id=user_id, name=name, email=email))
+                        user = User(
+                            user_id=int(row[0]),
+                            name=row[1].strip(),
+                            email=row[2].strip(),
+                        )
+                        users.append(user)
                     except (ValueError, IndexError):
-                        # Skip malformed rows
-                        continue
+                        logger.warning("Skipping malformed row %d: %s", row_num, row)
+
         except FileNotFoundError:
             raise FileNotFoundError(f"File not found: {self.file_path}")
 
+        logger.info("Parsed %d users", len(users))
         return users

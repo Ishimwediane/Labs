@@ -1,5 +1,6 @@
 import pytest
 import json
+import os
 from src.models.user import User
 from src.storage import UserRepository
 from src.exceptions import DuplicateUserError, DatabaseError
@@ -7,7 +8,6 @@ from src.exceptions import DuplicateUserError, DatabaseError
 
 @pytest.fixture
 def empty_database(tmp_path):
-    """Create empty JSON database."""
     db_file = tmp_path / "database.json"
     db_file.write_text("{}")
     return str(db_file)
@@ -15,7 +15,6 @@ def empty_database(tmp_path):
 
 @pytest.fixture
 def filled_database(tmp_path):
-    """Create a database with one user."""
     db_file = tmp_path / "database.json"
     users = {"1": {"name": "John Doe", "email": "john.doe@example.com"}}
     db_file.write_text(json.dumps(users))
@@ -23,7 +22,6 @@ def filled_database(tmp_path):
 
 
 def test_add_user_success(empty_database):
-    """Add new user successfully"""
     repo = UserRepository(db_path=empty_database)
     user = User(user_id=1, name="John Doe", email="john.doe@example.com")
     repo.add_user(user)
@@ -36,7 +34,6 @@ def test_add_user_success(empty_database):
 
 
 def test_add_duplicate_user(filled_database):
-    """Reject duplicate user_id"""
     repo = UserRepository(db_path=filled_database)
     user = User(user_id=1, name="Jane Smith", email="jane.smith@example.com")
     with pytest.raises(DuplicateUserError):
@@ -44,19 +41,35 @@ def test_add_duplicate_user(filled_database):
 
 
 def test_user_exists(filled_database):
-    """Check if user ID exists."""
     repo = UserRepository(db_path=filled_database)
     assert repo.user_exists(1) is True
     assert repo.user_exists(2) is False
 
 
-def test_database_error_on_read_only_db(filled_database):
-    """Test for database error on read-only file."""
-    import os
+def test_database_error_on_read_only_db(tmp_path):
+    db_file = tmp_path / "readonly.json"
+    db_file.write_text("{}")
+    os.chmod(db_file, 0o444)  # read-only
 
-    os.chmod(filled_database, 0o444)  # read-only
-    repo = UserRepository(db_path=filled_database)
-    user = User(user_id=2, name="Jane Smith", email="jane.smith@example.com")
+    repo = UserRepository(db_path=str(db_file))
+    user = User(user_id=1, name="Jane Smith", email="jane.smith@example.com")
+
     with pytest.raises(DatabaseError):
         repo.add_user(user)
-    os.chmod(filled_database, 0o666)  # make it writable again
+
+    os.chmod(db_file, 0o666)  # restore write permissions
+
+
+def test_load_database_file_not_found(tmp_path):
+    missing_file = tmp_path / "missing.json"
+    repo = UserRepository(db_path=str(missing_file))
+    # It should create empty users dict without exception
+    assert repo.users == {}
+
+
+def test_load_database_json_decode_error(tmp_path):
+    bad_file = tmp_path / "bad.json"
+    bad_file.write_text("{ invalid json }")
+    repo = UserRepository(db_path=str(bad_file))
+    # Should fallback to empty dict
+    assert repo.users == {}

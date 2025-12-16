@@ -1,155 +1,37 @@
-# Testing Strategy
+# Requirements Analysis
 
-## Test Coverage Goals
+## Project Information
+- **Project Name**: Resilient Data Importer CLI
+- **Date**: 12-12-2025
+- **Author**: ISHIMWE Diane
+- **Module 2**: Lab 1
 
-| Module        | Coverage Target | Priority |
-|---------------|----------------|----------|
-| models.py     | 100%           | High     |
-| exceptions.py | 100%           | High     |
-| validator.py  | 100%           | High     |
-| parser.py     | 95%            | High     |
-| storage.py    | 95%            | High     |
-| main.py       | 90%            | Medium   |
+## Functional Requirements
+1. **CSV Import**: Read CSV with `user_id`, `name`, `email`. Return list of `User`.
+2. **Data Validation**: Validate email, positive `user_id`, non-empty name.
+3. **Duplicate Prevention**: Prevent duplicate `user_id`. Log warnings.
+4. **Error Handling**: Handle missing/malformed CSV, corrupted JSON. Log all errors.
+5. **CLI Interface**: Accept `--file` and `--help`. Exit with proper codes.
 
-## Test Types
+## Non-Functional Requirements
+- Code quality: PEP 8, type hints, no lint errors.
+- Testing: >90% coverage.
+- Documentation: Full docstrings and README.
+- Version Control: Git Flow, clean commits.
+- Performance: 1,000 records < 2 sec, memory < 100MB for 10,000 records.
 
-### Unit Tests
-Test individual functions/methods in isolation.
+## Out of Scope
+- Web interface
+- Databases (MySQL, PostgreSQL)
+- Authentication
+- Real-time updates
 
-### Integration Tests
-Test multiple components working together.
+## Dependencies
+- Python 3.11+
+- pytest, black, mypy, ruff, coverage
 
-### End-to-End Tests
-Test entire workflow from CLI to database.
+## Success Metrics
+- Functional requirements met.
+- Coverage >90%.
+- Quality checks pass.
 
-## Test Cases
-
-### CSVParser Tests
-
-#### test_parse_valid_csv
-**Description**: Parse valid CSV successfully
-**Input**: CSV with 3 valid users
-**Expected**: List of 3 User objects
-**Type**: Unit test
-
-#### test_parse_missing_file
-**Description**: Handle missing file gracefully
-**Input**: Non-existent file path
-**Expected**: FileNotFoundError raised
-**Type**: Unit test
-
-#### test_parse_empty_file
-**Description**: Handle empty CSV
-**Input**: Empty CSV file
-**Expected**: Empty list returned
-**Type**: Unit test
-
-#### test_parse_malformed_csv
-**Description**: Handle malformed CSV
-**Input**: CSV with missing columns
-**Expected**: FileFormatError raised
-**Type**: Unit test
-
-### UserValidator Tests
-
-#### test_validate_valid_email
-**Description**: Accept valid email
-**Input**: "user@example.com"
-**Expected**: True
-**Type**: Unit test
-
-#### test_validate_invalid_email
-**Description**: Reject invalid email
-**Input**: "notanemail"
-**Expected**: False
-**Type**: Unit test
-
-#### test_validate_empty_name
-**Description**: Reject empty name
-**Input**: User with name=""
-**Expected**: ValidationError raised
-**Type**: Unit test
-
-### UserRepository Tests
-
-#### test_add_user_success
-**Description**: Add new user successfully
-**Input**: Valid User object
-**Expected**: User saved to database
-**Type**: Unit test (mocked)
-
-#### test_add_duplicate_user
-**Description**: Reject duplicate user_id
-**Input**: User with existing ID
-**Expected**: DuplicateUserError raised
-**Type**: Unit test (mocked)
-
-### Integration Tests
-
-#### test_end_to_end_import
-**Description**: Complete import process
-**Input**: CSV file with mixed valid/invalid data
-**Expected**: Valid users imported, invalid skipped
-**Type**: Integration test
-
-## Mocking Strategy
-
-### What to Mock
-- File system operations (open, read, write)
-- JSON database operations
-- Logging outputs
-
-### What NOT to Mock
-- Data validation logic
-- User model creation
-- Exception handling
-
-## Test Fixtures
-
-### valid_csv
-```python
-@pytest.fixture
-def valid_csv(tmp_path):
-    """Create temporary valid CSV file."""
-    csv_file = tmp_path / "users.csv"
-    csv_file.write_text(
-        "user_id,name,email\n"
-        "1,John Doe,john@example.com\n"
-        "2,Jane Smith,jane@example.com\n"
-    )
-    return csv_file
-```
-
-### empty_database
-```python
-@pytest.fixture
-def empty_database(tmp_path):
-    """Create empty JSON database."""
-    db_file = tmp_path / "database.json"
-    db_file.write_text("{}")
-    return db_file
-```
-
-## Running Tests
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=src --cov-report=html
-
-# Run specific test file
-pytest tests/test_parser.py
-
-# Run with verbose output
-pytest -v
-
-# Run and stop at first failure
-pytest -x
-```
-
-## Success Criteria
-- [ ] All tests pass
-- [ ] Coverage >90%
-- [ ] No warnings
-- [ ] Fast execution (<10 seconds)

@@ -1,0 +1,5 @@
+2025-12-16 07:43:26,990 [INFO] src.parser: Parsed 4 users
+2025-12-16 07:43:26,991 [WARNING] __main__: Duplicate user skipped
+2025-12-16 07:43:26,992 [WARNING] __main__: Duplicate user skipped
+2025-12-16 07:43:26,992 [WARNING] __main__: Validation error: User name cannot be empty.
+2025-12-16 07:43:26,992 [WARNING] __main__: Duplicate user skipped
