@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+
+# Virtual Environment
+venv/
+.env/
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Logs
+*.log
+logs/
+
+# SQLite / DB files
+*.db
+*.sqlite
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# Mac / Linux
+.DS_Store
+*.swp
+
+# Testcontainers temporary files
+testcontainers/
