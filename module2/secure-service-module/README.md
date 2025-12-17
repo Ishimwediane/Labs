@@ -22,10 +22,10 @@ lab3-auth-service/
 ├── src/auth/              # Core module
 ├── tests/                 # Test cases
 ├── docs/                  # Documentation
-│   ├── ARCHITECTURE.md
-│   ├── MODULES.md
-│   ├── TESTING.md
-│   └── USAGE.md
+│   ├── architecture.md
+│   ├── modules.md
+│   ├── testing.md
+│   └── usage.md
 ├── requirements.txt
 ├── .gitignore
 ├── .pre-commit-config.yaml
@@ -38,10 +38,10 @@ lab3-auth-service/
 
 Detailed documentation is available in the `docs/` folder:
 
-- **[ARCHITECTURE](docs/ARCHITECTURE.md)** – Class diagrams, dependency graph, architecture principles
-- **[MODULES](docs/MODULES.md)** – Description of modules, classes, and methods
-- **[TESTING](docs/TESTING.md)** – Testing strategy, TDD workflow, example tests
-- **[USAGE](docs/USAGE.md)** – Usage examples, exception handling, optional logging
+- **[ARCHITECTURE](docs/architecture.md)** – Class diagrams, dependency graph, architecture principles
+- **[MODULES](docs/modules.md)** – Description of modules, classes, and methods
+- **[TESTING](docs/testing.md)** – Testing strategy, TDD workflow, example tests
+- **[USAGE](docs/usage.md)** – Usage examples, exception handling, optional logging
 
 ---
 
@@ -86,7 +86,7 @@ success = service.verify_user("diane", "SecurePass123")
 print("Login success:", success)
 ```
 
-For detailed examples and exception handling, see **[USAGE.md](docs/USAGE.md)**.
+For detailed examples and exception handling, see **[USAGE.md](docs/usage.md)**.
 
 ---
 
@@ -98,7 +98,7 @@ Run all tests and check coverage:
 pytest --cov=src/auth tests/
 ```
 
-See **[TESTING.md](docs/TESTING.md)** for full strategy and sample tests.
+See **[TESTING.md](docs/testing.md)** for full strategy and sample tests.
 
 ---
 
