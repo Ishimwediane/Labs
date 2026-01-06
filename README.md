@@ -220,7 +220,7 @@ Each lab includes detailed documentation:
 ## 👤 Author
 
 **Your Name**
-- Email: your.email@example.com
+- Email: ishimwediane400@gmail.com
 - GitHub: [@Ishimwediane](https://github.com/Ishimwediane)
 
 ---
