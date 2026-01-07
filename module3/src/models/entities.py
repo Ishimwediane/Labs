@@ -2,23 +2,18 @@ from dataclasses import dataclass, field
 from typing import List
 from collections import namedtuple
 
+from src.models.enums import GradeCategory
+
 
 TopPerformer = namedtuple("TopPerformer", ["name", "average_score"])
 
-from enum import Enum
-
-class GradeCategory(Enum):
-    EXCELLENT = "Excellent"
-    GOOD = "Good"
-    AVERAGE = "Average"
-    PASS = "Pass"
-    FAIL = "Fail"
 
 @dataclass(frozen=True)
 class Grade:
     """Represents a grade value and its category."""
     score: float
     category: GradeCategory
+
 
 @dataclass(frozen=True)
 class Course:
