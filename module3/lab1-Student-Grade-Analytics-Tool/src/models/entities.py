@@ -1,9 +1,8 @@
+from collections import namedtuple
 from dataclasses import dataclass, field
 from typing import List
-from collections import namedtuple
 
 from src.models.enums import GradeCategory
-
 
 TopPerformer = namedtuple("TopPerformer", ["name", "average_score"])
 
@@ -19,7 +18,7 @@ class Grade:
 class Course:
     """Represents a course achievement."""
     course_name: str
-    grade: Grade 
+    grade: Grade
 
 @dataclass
 class Student:

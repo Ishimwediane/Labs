@@ -1,0 +1,18 @@
+repos:
+ 
+  # -------------------------
+  # Ruff (fast linter)
+  # -------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.15
+    hooks:
+      - id: ruff
+        args: [--fix]
+
+  # -------------------------
+  # MyPy (type checker)
+  # -------------------------
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
