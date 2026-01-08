@@ -1,5 +1,4 @@
 import bcrypt
-
 from src.auth.interfaces import PasswordHasher
 
 

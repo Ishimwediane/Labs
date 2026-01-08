@@ -1,4 +1,5 @@
 import os
+
 from src.models.user import User
 from src.models.user_manager import UserManager
 

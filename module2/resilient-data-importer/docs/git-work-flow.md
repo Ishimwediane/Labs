@@ -23,13 +23,13 @@ This guide explains the Git workflow for the **Resilient Data Importer** project
 
 ## Branch Naming Convention
 
-- **Feature branches:** `feature/<feature-name>`  
-  Example: `feature/parser`, `feature/storage`  
-- **Bugfix branches:** `bugfix/<bug-name>`  
-  Example: `bugfix/csv-header-error`  
-- **Hotfix branches:** `hotfix/<issue>`  
-  Example: `hotfix/corrupted-json-fix`  
-- **Documentation branches:** `feature/docs`  
+- **Feature branches:** `feature/<feature-name>`
+  Example: `feature/parser`, `feature/storage`
+- **Bugfix branches:** `bugfix/<bug-name>`
+  Example: `bugfix/csv-header-error`
+- **Hotfix branches:** `hotfix/<issue>`
+  Example: `hotfix/corrupted-json-fix`
+- **Documentation branches:** `feature/docs`
 
 ---
 

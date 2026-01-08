@@ -182,7 +182,7 @@ Academic Status: First Class
 Initially, the `__init__` constructor was directly assigning values to private attributes:
 ```python
 def __init__(self, name, student_id, gender, email, ...):
-    self._name = name          
+    self._name = name
     self._student_id = student_id
     self._gender = gender
     self._email = email

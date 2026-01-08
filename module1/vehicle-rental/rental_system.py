@@ -1,10 +1,10 @@
 class RentalSystem:
     def __init__(self):
         self.vehicles=[]
-    
+
     def add_vehicle(self,vehicle):
         self.vehicles.append(vehicle)
-    
+
     def show_available(self):
         print("Available Vehicles:")
         for vehicle in self.vehicles:
@@ -15,12 +15,12 @@ class RentalSystem:
         for vehicle in self.vehicles:
             if vehicle.is_rented:
                 print(vehicle)
-                
+
     def show_all(self):
         print("All Vehicles:")
         for vehicle in self.vehicles:
             print(vehicle)
-                
+
     def rent_vehicle(self,vehicle_id,days):
         for vehicle in self.vehicles:
             if vehicle.vehicle_id==vehicle_id:
@@ -30,7 +30,7 @@ class RentalSystem:
                     print(f"{vehicle_id}is already rented")
                 return
         print(f"{vehicle_id}not found")
-    
+
     def return_vehicle(self,vehicle_id):
         for vehicle in self.vehicles:
             if vehicle.vehicle_id==vehicle_id:
@@ -40,7 +40,7 @@ class RentalSystem:
                     print(f"{vehicle_id}is not rented")
                 return
         print(f"{vehicle_id}not found")
-        
+
     def calculate_cost(self, vehicle_id, days):
         for v in self.vehicles:
             if v.vehicle_id == vehicle_id:
@@ -51,7 +51,7 @@ class RentalSystem:
                 print(f"Cost for {vehicle_id} for {days} days: ${cost}")
                 return
         print(f"Vehicle {vehicle_id} not found.")
-    
-            
-               
-        
+
+
+
+

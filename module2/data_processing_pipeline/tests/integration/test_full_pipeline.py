@@ -1,9 +1,8 @@
-import pytest
-from testcontainers.postgres import PostgresContainer
 import psycopg2
-
-from src.pipeline.stages import TextCleaner, SentimentAnalyzer, DatabaseStorer
+import pytest
 from src.pipeline.pipeline import DataPipeline
+from src.pipeline.stages import DatabaseStorer, SentimentAnalyzer, TextCleaner
+from testcontainers.postgres import PostgresContainer
 
 
 @pytest.fixture(scope="module")

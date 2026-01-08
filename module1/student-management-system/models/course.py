@@ -1,14 +1,13 @@
-from abc import ABC, abstractmethod
+
+from .enums import FieldOfStudy, Level
 from .student import Student
-from .enrollment import Enrollment
-from .enums import Level, FieldOfStudy
 
 
 class Course:
     def __init__(self, title, course_id, allowed_fields, allowed_levels = None):
-         
+
         self.enrollments = []
-      
+
         self._title = None
         self._course_id = course_id
         self.allowed_levels = allowed_levels if allowed_levels is not None else [Level.UNDERGRADUATE, Level.GRADUATE]
@@ -16,7 +15,7 @@ class Course:
 
         self.title=title
 
-    # Title property 
+    # Title property
     @property
     def title(self):
         return self._title
@@ -29,7 +28,7 @@ class Course:
             raise ValueError("Course title can only contain letters and spaces")
         self._title = value
 
-    # Course 
+    # Course
     @property
     def course_id(self):
         return self._course_id
@@ -41,14 +40,14 @@ class Course:
 
     @allowed_levels.setter
     def allowed_levels(self, value):
-        
+
         if not isinstance(value, list):
             raise ValueError("allowed_levels must be a list")
         if not all(isinstance(v, Level) for v in value):
             raise ValueError("All items in allowed_levels must be Level enum instances")
         self._allowed_levels = value
 
-    #  Allowed Fields property 
+    #  Allowed Fields property
     @property
     def allowed_fields(self):
         return self._allowed_fields
@@ -63,7 +62,7 @@ class Course:
         self._allowed_fields = value
 
 
-    # Remove a student 
+    # Remove a student
     def remove_student(self, student: Student):
         for en in self.enrollments:
             if en.student == student:
@@ -74,7 +73,7 @@ class Course:
                 return
         print(f"{student.name} not enrolled in {self.title}")
 
-    # Set a grade 
+    # Set a grade
     def set_grade(self, student: Student, grade):
         enrollment = next((en for en in self.enrollments if en.student == student), None)
         if not enrollment:
@@ -90,7 +89,7 @@ class Course:
 
 
 
-    # Update course attributes 
+    # Update course attributes
     def update_course(self, **kwargs):
         for key, value in kwargs.items():
             attr = f"_{key}"

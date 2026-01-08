@@ -1,5 +1,6 @@
 from .employee import Employee
 
+
 class ContractEmployee(Employee):
     """Contract employee paid per hour."""
 
@@ -17,5 +18,5 @@ class ContractEmployee(Employee):
         print(f"Hours Worked: {self.hours_worked} | Rate: ${self.hourly_rate:.2f}")
         print(f"Gross salary : RWF{self.salary():.2f} | Bonus: RWF{self.bonus:.2f} ")
         print(f"Tax: RWF{self.tax:.2f} | Net salary: RWF{self.net_salary:.2f} ")
-        print("-" * 50) 
-       
+        print("-" * 50)
+

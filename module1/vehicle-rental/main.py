@@ -1,12 +1,13 @@
-from vehicle.car import Car
-from vehicle.bike import Bike
-from vehicle.truck import Truck
 from rental_system import RentalSystem
+from vehicle.bike import Bike
+from vehicle.car import Car
+from vehicle.truck import Truck
+
 
 def main():
     system = RentalSystem()
 
-    
+
 
     while True:
         print("\n--- Vehicle Rental System ---")
@@ -47,14 +48,14 @@ def main():
             base_price = float(input("Enter Base Rate per day: "))
 
             if vtype == "1":
-                
+
                 vehicle = Car(vid, brand, base_price)
             elif vtype == "2":
-                
-                
+
+
                 vehicle = Bike(vid, brand, base_price)
             elif vtype == "3":
-                
+
                 vehicle = Truck(vid, brand, base_price)
             else:
                 print("Invalid vehicle type.")

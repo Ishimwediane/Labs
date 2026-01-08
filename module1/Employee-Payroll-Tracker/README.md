@@ -1,6 +1,6 @@
 # Employee Payroll Tracker
 
-A **console-based Python application** for managing employees, payroll, and salary operations.  
+A **console-based Python application** for managing employees, payroll, and salary operations.
 Supports **Full-Time, Contract, and Intern employees**, calculates salaries automatically, generates payslips, provides summary reports, and calculates taxes and net salary. Employee IDs are assigned automatically and employees are stored in a **dictionary** for fast lookup.
 
 ---
@@ -252,7 +252,7 @@ Total Net Salary: RWF 830,000.00
 
 ##  Contact
 
-**Questions or suggestions?**  
+**Questions or suggestions?**
  ishimwediane400@gmail.com
 
 ---
@@ -271,4 +271,4 @@ Total Net Salary: RWF 830,000.00
 
 
 
- 
+

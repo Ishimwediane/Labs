@@ -1,6 +1,6 @@
 def test_end_to_end_registration_and_login():
-    from src.auth.implementation.memory_repo import InMemoryUserRepository
     from src.auth.implementation.bcrypt_hasher import BcryptPasswordHasher
+    from src.auth.implementation.memory_repo import InMemoryUserRepository
     from src.auth.service import UserService
 
     repo = InMemoryUserRepository()

@@ -1,7 +1,6 @@
 import pytest
-
-from src.pipeline.stages import SentimentAnalyzer
 from src.pipeline.exceptions import AnalysisError
+from src.pipeline.stages import SentimentAnalyzer
 
 
 def test_sentiment_analyzer_positive_text():

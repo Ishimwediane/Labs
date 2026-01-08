@@ -1,5 +1,6 @@
 from .student import Student
 
+
 class Enrollment:
     """
     Represents the enrollment of a student in a course, along with their grade.
@@ -13,7 +14,7 @@ class Enrollment:
     @property
     def student(self):
         return self._student
-    
+
     #course
     @property
     def course(self):
@@ -25,7 +26,7 @@ class Enrollment:
         return self._grade
 
     @grade.setter
-    def grade(self, value):   
+    def grade(self, value):
         if not (0 <= value <= 100):
             raise ValueError("Grade must be between 0 and 100")
         self._grade = value

@@ -1,9 +1,9 @@
-from library.author import Author
-from library.resources import Book
-from library.utils import get_available_copies, get_borrowed_count, search_books, filter_books
 from library import file_io
+from library.author import Author
 from library.enum import Categories, TypeOfBook
-from library.borrow import Borrow
+from library.resources import Book
+from library.utils import (filter_books, get_available_copies,
+                           get_borrowed_count, search_books)
 
 
 def add_book(books, authors):
@@ -17,31 +17,31 @@ def add_book(books, authors):
         author = Author(author_name, nationality, birth_year)
         authors.append(author)
         file_io.save_authors(authors)
-        
+
     isbn = input("ISBN: ")
     if any(b.isbn == isbn for b in books):
        print("ISBN already exists! Book not added.")
        return
-   
+
     year = input("Publication year: ")
-    
+
     copies = int(input("Number of copies: "))
     print("\nAvailable categories:")
     for cat in Categories:
         print(cat.value)
-           
+
     category = input("Enter Category: ").strip().title()
     if not category:
         category = Categories.GENERAL
-   
+
     print("\navailable book types:")
     for cat in TypeOfBook:
         print(cat.value)
-        
+
     book_type = input("Book type: ").strip().title()
     if not book_type:
         book_type = TypeOfBook.HARDCOVER
-    
+
     book = Book(title, author, isbn, year, category,book_type,copies)
     books.append(book)
     file_io.save_books(books)
@@ -80,18 +80,18 @@ def filter_books_cli(books, borrows):
             print(cat.value)
         value_input = input("Enter category: ").strip().title()
         value = Categories(value_input)
-    
+
     elif criteria == "type":
         print("\nAvailable Book Types:")
         for t in TypeOfBook:
             print(t.value)
         value_input = input("Enter type: ").strip().title()
         value = TypeOfBook(value_input)
-    
+
     elif criteria in ["available", "borrowed"]:
         # no extra input needed
         value = criteria
-    
+
     else:
         print("Invalid filter criteria.")
         return
@@ -124,4 +124,3 @@ def delete_book(books, borrows):
     books.remove(book)
     file_io.save_books(books)
     print(f"Book {book.title} deleted successfully.")
-

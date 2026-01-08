@@ -1,12 +1,9 @@
-import pytest
 from unittest.mock import Mock
 
-from src.auth.service import UserService
+import pytest
+from src.auth.exceptions import InvalidPasswordError, UserNotFoundError
 from src.auth.models import User
-from src.auth.exceptions import (
-    UserNotFoundError,
-    InvalidPasswordError,
-)
+from src.auth.service import UserService
 
 
 def test_password_is_hashed_on_registration():

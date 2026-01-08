@@ -1,11 +1,11 @@
 import json
+from datetime import timedelta
 from pathlib import Path
-from .resources import Book
+
 from .author import Author
 from .borrow import Borrow
-from datetime import date,timedelta
 from .enum import Categories, TypeOfBook
-
+from .resources import Book
 
 DATA_FOLDER = Path("data")
 DATA_FOLDER.mkdir(exist_ok=True)
@@ -17,13 +17,13 @@ AUTHORS_FILE = DATA_FOLDER / "authors.json"
 def save_books(books):
     with open(BOOKS_FILE, "w",encoding="utf-8") as f:
         json.dump([serialize_book(b) for b in books], f, indent=4)
-        
+
 def load_books():
     if not BOOKS_FILE.exists() or BOOKS_FILE.stat().st_size == 0:
         return []
     with open(BOOKS_FILE, "r") as f:
         return [deserialize_book(b) for b in json.load(f)]
-    
+
 def serialize_book(book):
     return {
         "title": book.title,
@@ -52,11 +52,11 @@ def deserialize_book(data):
         year=data.get("year"),
         copies=data.get("copies",1)
     )
-    
+
 def save_borrows(borrows):
     with open(BORROWS_FILE, "w",encoding="utf-8") as f:
         json.dump([serialize_borrow(b) for b in borrows], f, indent=4)
-        
+
 def load_borrows():
      if not BORROWS_FILE.exists() or BORROWS_FILE.stat().st_size == 0:
         return []
@@ -73,7 +73,7 @@ def serialize_borrow(borrow):
         "due_date": str(borrow.due_date)
 
     }
-    
+
 def deserialize_borrow(data):
    from datetime import date
    borrow_date = date.fromisoformat(data["borrow_date"]) if data.get("borrow_date") and data["borrow_date"] != "None" else date.today()
@@ -87,7 +87,7 @@ def deserialize_borrow(data):
         due_date=due_date,
         return_date=return_date
     )
-   
+
 def save_authors(authors):
     """Save authors list to authors.json"""
     with open(AUTHORS_FILE, "w", encoding="utf-8") as f:

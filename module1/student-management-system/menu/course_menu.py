@@ -1,7 +1,6 @@
-from models.student import Undergraduate, Graduate
-from models.course import Course
-from models.enums import Level, FieldOfStudy
+from models.enums import FieldOfStudy, Level
 from services.course_service import CourseService
+
 
 def add_course(courses: dict):
     title = input("Course title: ").strip()
@@ -14,14 +13,14 @@ def add_course(courses: dict):
     print(f"Available Levels: {[lvl.value for lvl in Level]}")
     level_input = input("Allowed Level: ").strip().lower()
 
-  
+
     print(f"Available Fields: {[f.value for f in FieldOfStudy]}")
     field_input = input("Allowed Field: ").strip().lower()
 
-   
-    try:  
+
+    try:
        course = CourseService.add_course(courses,title, course_id, field_input, level_input)
-      
+
     except ValueError as e:
         print(e)
         return
@@ -60,7 +59,7 @@ def list_students_in_course(courses):
         if not enrollments:
             print("No students enrolled in this course.")
             return
-        
+
         print(f"\nStudents in {course.title}:")
         for e in enrollments:
             s = e.student
@@ -69,8 +68,8 @@ def list_students_in_course(courses):
 
     except ValueError as e:
         print(e)
- 
-    
+
+
 
 def update_course(courses):
     cid = input("Course ID to update: ").strip()
@@ -103,4 +102,3 @@ def list_all_courses(courses):
     else:
         for c in courses.values():
             print(f"{c.course_id} - {c.title}")
-

@@ -1,7 +1,8 @@
 import csv
 import logging
-from .models.user import User
+
 from .exceptions import FileFormatError
+from .models.user import User
 
 logger = logging.getLogger(__name__)
 

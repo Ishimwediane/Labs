@@ -117,12 +117,11 @@ See **[TESTING.md](docs/testing.md)** for full strategy and sample tests.
 
 ## Features
 
-✅ Secure password hashing with bcrypt  
-✅ In-memory user repository (extensible to database)  
-✅ Custom exception handling  
-✅ 100% test coverage on core logic  
-✅ Type hints with mypy validation  
-✅ Code formatting with Black and ruff  
+✅ Secure password hashing with bcrypt
+✅ In-memory user repository (extensible to database)
+✅ Custom exception handling
+✅ 100% test coverage on core logic
+✅ Type hints with mypy validation
+✅ Code formatting with Black and ruff
 
 ---
-

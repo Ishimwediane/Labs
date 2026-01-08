@@ -1,7 +1,8 @@
 import logging
-from src.service import WeatherService
-from src.provider.mock import MockWeatherProvider
+
 from src.exceptions import CityNotFoundError
+from src.provider.mock import MockWeatherProvider
+from src.service import WeatherService
 
 
 def test_get_forecast_logs_request(caplog):

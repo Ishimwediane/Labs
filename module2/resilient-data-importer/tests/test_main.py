@@ -1,12 +1,9 @@
-from unittest.mock import patch, MagicMock
-from main import main
-from src.exceptions import (
-    FileFormatError,
-    DatabaseError,
-    ValidationError,
-    DuplicateUserError,
-)
 import sys
+from unittest.mock import MagicMock, patch
+
+from main import main
+from src.exceptions import (DatabaseError, DuplicateUserError, FileFormatError,
+                            ValidationError)
 
 
 # Helper to simulate command line arguments

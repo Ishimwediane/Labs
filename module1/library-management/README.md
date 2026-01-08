@@ -1,6 +1,6 @@
 # Library Management System
 
-A **console-based Python application** to manage a library's books, authors, and borrowing records.  
+A **console-based Python application** to manage a library's books, authors, and borrowing records.
 This project demonstrates **Python OOP principles**, **file I/O**, **data persistence**, and **basic library operations**.
 
 ---
@@ -118,7 +118,7 @@ python main.py
 8. Delete a book
 9. Exit
 
-Enter your choice (1-9): 
+Enter your choice (1-9):
 ```
 
 ### Operations Guide
@@ -289,10 +289,10 @@ Utils (Helper Functions)
 class Book(LibraryResource):
     def __init__(self, title, author, isbn, category, year, copies):
         # Book initialization
-    
+
     def borrow(self):
         # Decrease available copies
-    
+
     def return_book(self):
         # Increase available copies
 ```
@@ -302,7 +302,7 @@ class Book(LibraryResource):
 class Borrow:
     def __init__(self, isbn, borrower, borrow_date, due_date):
         # Borrow record initialization
-    
+
     def is_overdue(self):
         # Check if book is overdue
 ```
@@ -403,8 +403,8 @@ Manual testing checklist:
 
 ## Contact
 
-  
-**Email**: ishimwediane400@gmail.com 
+
+**Email**: ishimwediane400@gmail.com
 
 ---
 

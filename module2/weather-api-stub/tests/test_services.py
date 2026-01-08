@@ -1,7 +1,7 @@
 import pytest
-from src.service import WeatherService
-from src.provider.mock import MockWeatherProvider
 from src.exceptions import CityNotFoundError, InvalidAPIKeyError
+from src.provider.mock import MockWeatherProvider
+from src.service import WeatherService
 
 
 @pytest.fixture

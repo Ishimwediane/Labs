@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Categories(Enum):
     FICTION = "Fiction"
     NON_FICTION = "Non-Fiction"
@@ -17,10 +18,10 @@ class Categories(Enum):
     TECHNOLOGY = "Technology"
     SCIENCE = "Science"
     GENERAL = "General"
-    
+
 class TypeOfBook(Enum):
     HARDCOVER = "Hardcover"
     PAPERBACK = "Paperback"
     EBOOK = "Ebook"
     AUDIOBOOK = "Audiobook"
-    
+

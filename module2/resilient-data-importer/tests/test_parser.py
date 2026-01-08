@@ -1,7 +1,7 @@
 import pytest
+from src.exceptions import FileFormatError
 from src.models.user import User
 from src.parser import CSVParser
-from src.exceptions import FileFormatError
 
 
 # ----------------------------

@@ -1,6 +1,7 @@
 from typing import Dict, Optional
-from src.provider.base import WeatherProvider
+
 from src.models.weather import WeatherForecast
+from src.provider.base import WeatherProvider
 
 
 class MockWeatherProvider(WeatherProvider):

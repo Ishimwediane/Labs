@@ -1,10 +1,7 @@
+from models.course import Course
 from models.enrollment import Enrollment
 from models.student import Student
-from models.course import Course
 from services.student_service import StudentService
-from services.course_service import CourseService
-
-
 
 
 class EnrollmentService:
@@ -16,7 +13,7 @@ class EnrollmentService:
             raise ValueError(f"Field '{student.field_of_studies.value}' not allowed")
         if any(en.student == student for en in course.enrollments):
             raise ValueError("Student already enrolled")
-        
+
         enrollment = Enrollment(student, course)
         course.enrollments.append(enrollment)
         student._course_grades[course.course_id] = None

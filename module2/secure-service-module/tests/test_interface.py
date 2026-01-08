@@ -1,5 +1,5 @@
 # tests/test_interfaces_coverage.py
-from src.auth.interfaces import UserRepository, PasswordHasher
+from src.auth.interfaces import PasswordHasher, UserRepository
 from src.auth.models import User
 
 

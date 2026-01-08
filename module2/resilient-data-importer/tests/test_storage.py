@@ -1,9 +1,10 @@
-import pytest
 import json
 import os
+
+import pytest
+from src.exceptions import DatabaseError, DuplicateUserError
 from src.models.user import User
 from src.storage import UserRepository
-from src.exceptions import DuplicateUserError, DatabaseError
 
 
 @pytest.fixture

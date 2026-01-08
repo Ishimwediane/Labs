@@ -40,12 +40,12 @@ def test_register_user_success(mocker):
     mock_hasher = mocker.Mock()
     mock_repo.get_by_username.return_value = None
     mock_hasher.hash_password.return_value = "hashed"
-    
+
     service = UserService(mock_repo, mock_hasher)
-    
+
     # Act
     user = service.register_user("diane", "secure123")
-    
+
     # Assert
     assert user.username == "diane"
     assert user.password_hash == "hashed"

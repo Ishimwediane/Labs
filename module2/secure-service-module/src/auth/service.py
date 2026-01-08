@@ -1,11 +1,9 @@
 import logging
+
+from src.auth.exceptions import (InvalidPasswordError, UserAlreadyExistsError,
+                                 UserNotFoundError)
+from src.auth.interfaces import PasswordHasher, UserRepository
 from src.auth.models import User
-from src.auth.interfaces import UserRepository, PasswordHasher
-from src.auth.exceptions import (
-    UserAlreadyExistsError,
-    InvalidPasswordError,
-    UserNotFoundError,
-)
 
 logger = logging.getLogger(__name__)
 

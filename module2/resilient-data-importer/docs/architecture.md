@@ -11,7 +11,7 @@ Resilient Data Importer follows a layered architecture with separation of concer
 5. **Infrastructure Layer**: Logging system, file I/O.
 
 
-## Architecture Diagram 
+## Architecture Diagram
 ```mermaid
 graph TB
     subgraph "Presentation Layer"

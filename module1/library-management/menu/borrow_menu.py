@@ -1,10 +1,6 @@
-from library.author import Author
-from library.resources import Book
-from library.utils import get_available_copies, get_borrowed_count, search_books, filter_books
 from library import file_io
-from library.enum import Categories, TypeOfBook
 from library.borrow import Borrow
-
+from library.utils import (get_available_copies)
 
 
 def borrow_book(books, borrows):

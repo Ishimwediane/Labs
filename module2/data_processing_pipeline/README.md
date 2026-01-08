@@ -1,7 +1,7 @@
 # Data Processing Pipeline (Lab 4)
 
 ## Overview
-This project implements a **multi-stage data processing pipeline** that takes raw text, cleans it, analyzes its sentiment (simulated), and stores the structured result in a PostgreSQL database.  
+This project implements a **multi-stage data processing pipeline** that takes raw text, cleans it, analyzes its sentiment (simulated), and stores the structured result in a PostgreSQL database.
 
 The pipeline is designed following **SOLID principles**, with each stage as a modular, independently testable component. This ensures clean architecture, maintainability, and robust error handling.
 
@@ -394,7 +394,7 @@ Example:
 ```python
 class DataValidator:
     """Validates data meets required criteria."""
-    
+
     def process(self, data: dict) -> dict:
         # Your validation logic
         return validated_data

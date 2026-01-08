@@ -1,7 +1,6 @@
-from models.student import Undergraduate, Graduate
-from models.course import Course
-from models.enums import Level, FieldOfStudy
+from models.enums import FieldOfStudy, Level
 from services.student_service import StudentService
+
 
 def add_student(students: dict):
     name = input("Name: ").strip()
@@ -23,11 +22,11 @@ def add_student(students: dict):
     try:
         student=StudentService.add_student(students, name, student_id, gender, email, level_input, field_input)
         print(f"Student added: {student.name} ({student.student_id})")
-    
+
     except ValueError as e:
         print(e)
         return
-    
+
 
 def show_transcript(students):
     sid = input("Student ID: ").strip()
@@ -45,4 +44,3 @@ def list_all_students(students):
     else:
         for s in students.values():
             print(f"{s.student_id}: {s.name} | {s.level.value} | {s.field_of_studies.value}")
-

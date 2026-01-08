@@ -1,16 +1,12 @@
 import argparse
 import logging
 
+from src.exceptions import (DatabaseError, DuplicateUserError, FileFormatError,
+                            ValidationError)
 from src.logging_config import setup_logging
 from src.parser import CSVParser
-from src.validator import UserValidator
 from src.storage import UserRepository
-from src.exceptions import (
-    ValidationError,
-    DuplicateUserError,
-    FileFormatError,
-    DatabaseError,
-)
+from src.validator import UserValidator
 
 logger = logging.getLogger(__name__)
 

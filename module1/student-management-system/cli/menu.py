@@ -1,6 +1,10 @@
-from menu.course_menu import add_course, set_grade, list_students_in_course, update_course, remove_student_from_course, list_all_courses
-from menu.student_menu import add_student, show_transcript, list_all_students
-from menu.enrollment_menu import enroll_student, enroll_student
+from menu.course_menu import (add_course, list_all_courses,
+                              list_students_in_course,
+                              remove_student_from_course, set_grade,
+                              update_course)
+from menu.enrollment_menu import enroll_student
+from menu.student_menu import add_student, list_all_students, show_transcript
+
 
 def run_cli():
     students = {}
@@ -18,17 +22,17 @@ def run_cli():
         "9":("list all students",lambda: list_all_students(students)),
         "10":("list all courses",lambda: list_all_courses(courses)),
         "0" :("Exit",lambda: print("Exiting..."))
-        
-             
+
+
     }
-    
+
     while True:
         print("\n--- student Enrollment management system---")
         for key,(value,_) in menu_options.items():
             print(f"{key}. {value}")
-            
+
         choice=input("select an option: ").strip()
-        
+
         action=menu_options.get(choice)
         if action:
             if choice=="0":

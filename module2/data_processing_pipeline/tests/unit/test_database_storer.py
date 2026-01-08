@@ -1,8 +1,8 @@
-import pytest
 from unittest.mock import MagicMock
 
-from src.pipeline.stages import DatabaseStorer
+import pytest
 from src.pipeline.exceptions import StorageError
+from src.pipeline.stages import DatabaseStorer
 
 
 def test_database_storer_successful_insert():

@@ -1,7 +1,6 @@
 import pytest
-
-from src.pipeline.stages import TextCleaner
 from src.pipeline.exceptions import CleaningError
+from src.pipeline.stages import TextCleaner
 
 
 def test_text_cleaner_basic_cleanup():

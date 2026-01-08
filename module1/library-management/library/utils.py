@@ -1,5 +1,6 @@
-from library.resources import Book
 from library.borrow import Borrow
+from library.resources import Book
+
 
 def get_available_copies(book: Book, borrows: list[Borrow]) -> int:
     """

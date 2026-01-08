@@ -1,8 +1,8 @@
 import logging
 import re
-from typing import Dict, Any
+from typing import Any, Dict
 
-from src.pipeline.exceptions import CleaningError, AnalysisError, StorageError
+from src.pipeline.exceptions import AnalysisError, CleaningError, StorageError
 
 logger = logging.getLogger(__name__)
 

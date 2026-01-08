@@ -1,5 +1,6 @@
 from .employee import Employee
 
+
 class Intern(Employee):
     """Intern employee with fixed stipend."""
 

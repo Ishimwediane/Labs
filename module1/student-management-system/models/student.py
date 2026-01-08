@@ -1,21 +1,23 @@
-from abc import ABC, abstractmethod
-from .enums import Level, FieldOfStudy
+from abc import ABC
+
+from .enums import FieldOfStudy, Level
+
 
 class Student(ABC):
     """
     Abstract Base Class for a Student
     """
     def __init__(self, name, student_id, gender, email, field_of_studies: FieldOfStudy, level: Level = Level.UNDERGRADUATE):
-        
+
         self._name=None
         self._student_id=None
         self._gender=None
         self._email=None
         self._level=None
         self._field_of_studies=None
-        
-        
-        
+
+
+
         self.name = name
         self.student_id = student_id
         self.gender = gender
@@ -27,7 +29,7 @@ class Student(ABC):
     @property
     def name(self):
         return self._name
-    
+
     @name.setter
     def name(self, value):
         if not value.strip():
@@ -40,7 +42,7 @@ class Student(ABC):
     @property
     def gender(self):
         return self._gender
-    
+
     @gender.setter
     def gender(self, value):
         value = value.lower()
@@ -52,7 +54,7 @@ class Student(ABC):
     @property
     def email(self):
         return self._email
-    
+
     @email.setter
     def email(self, value):
         if "@" not in value or "." not in value:
@@ -63,13 +65,13 @@ class Student(ABC):
     @property
     def student_id(self):
         return self._student_id
-    
+
     @student_id.setter
     def student_id(self, value):
         if not value.strip():
             raise ValueError("Student ID cannot be empty")
         self._student_id = value
-    
+
     # Level
     @property
     def level(self):
@@ -80,7 +82,7 @@ class Student(ABC):
         if not isinstance(value, Level):
             raise ValueError("Invalid level")
         self._level = value
-    
+
     # Field of Study
     @property
     def field_of_studies(self):
@@ -92,15 +94,15 @@ class Student(ABC):
             raise ValueError("Invalid field of study")
         self._field_of_studies = value
 
-  
-  
- 
+
+
+
     def __str__(self):
         return f"{self._name} ({self._student_id}) - {self._level.value}"
-    
+
     def __repr__(self):
         return f"Student(student_id='{self._student_id}', name='{self._name}')"
-    
+
     def __eq__(self, other):
         return isinstance(other, Student) and self._student_id == other._student_id
 
@@ -117,6 +119,6 @@ class Undergraduate(Student):
 class Graduate(Student):
     def __init__(self, name, student_id, gender, email, field_of_studies):
         super().__init__(name, student_id, gender, email, field_of_studies, level=Level.GRADUATE)
-        
+
     def __str__(self):
         return f"{self.name} - Graduate in {self._field_of_studies.value}"

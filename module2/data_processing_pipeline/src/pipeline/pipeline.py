@@ -1,7 +1,7 @@
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
 
-from src.pipeline.stages import TextCleaner, SentimentAnalyzer, DatabaseStorer
+from src.pipeline.stages import DatabaseStorer, SentimentAnalyzer, TextCleaner
 
 logger = logging.getLogger(__name__)
 

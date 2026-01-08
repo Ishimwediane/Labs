@@ -1,5 +1,6 @@
 from .employee import Employee
 
+
 class FullTimeEmployee(Employee):
     """Full-time employee with monthly salary."""
 
@@ -16,4 +17,4 @@ class FullTimeEmployee(Employee):
         print(f"Gross salary : RWF{self._salary:.2f} | Bonus: RWF{self.bonus:.2f} ")
         print(f"Tax: RWF{self.tax:.2f} | Net salary: RWF{self.net_salary:.2f} ")
         print("-" * 50)
-        
+

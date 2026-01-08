@@ -1,6 +1,6 @@
 import pytest
-from src.service import WeatherService
 from src.provider.mock import MockWeatherProvider
+from src.service import WeatherService
 
 
 @pytest.fixture

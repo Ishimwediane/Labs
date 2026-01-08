@@ -47,13 +47,13 @@ A robust, production-ready Python command-line tool for importing, validating, a
    ```
 
 2. **Create and activate virtual environment**
-   
+
    **Windows:**
    ```bash
    python -m venv .venv
    .venv\Scripts\activate
    ```
-   
+
    **macOS/Linux:**
    ```bash
    python3 -m venv .venv

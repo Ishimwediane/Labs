@@ -1,8 +1,9 @@
-import pytest
 import logging
-from src.auth.service import UserService
+
+import pytest
+from src.auth.exceptions import InvalidPasswordError, UserNotFoundError
 from src.auth.models import User
-from src.auth.exceptions import UserNotFoundError, InvalidPasswordError
+from src.auth.service import UserService
 
 
 def test_login_success(mocker):

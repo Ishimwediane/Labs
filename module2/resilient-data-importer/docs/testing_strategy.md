@@ -34,4 +34,3 @@
 - Functional requirements met.
 - Coverage >90%.
 - Quality checks pass.
-

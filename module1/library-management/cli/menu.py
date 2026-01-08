@@ -1,7 +1,8 @@
 from library import file_io
-from menu.borrow_menu import borrow_book, return_book, list_borrows
-from menu.resource_menu import add_book, list_books, search_book_cli, filter_books_cli, delete_book
 from menu.author_menu import list_authors
+from menu.borrow_menu import borrow_book, list_borrows, return_book
+from menu.resource_menu import (add_book, delete_book, filter_books_cli,
+                                list_books, search_book_cli)
 
 
 def cli():

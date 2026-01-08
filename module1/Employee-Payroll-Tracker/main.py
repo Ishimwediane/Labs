@@ -1,12 +1,12 @@
-from payroll import Payroll
-from models.fulltime import FullTimeEmployee
 from models.contract import ContractEmployee
+from models.fulltime import FullTimeEmployee
 from models.intern import Intern
+from payroll import Payroll
 
 
 def main():
     payroll = Payroll()
-      
+
 
     while True:
         print("\n--- Employee Payroll Tracker ---")
@@ -17,7 +17,7 @@ def main():
         print("5. Summary Report")
         print("6. Search Employee by ID")
         print("7. Company Payroll Overview")
-    
+
         print("0. Exit")
 
         choice = input("Enter your choice: ").strip()
@@ -38,8 +38,8 @@ def main():
                 emp.generate_payslip()
             else:
                 print("Employee not found")
-                
-        elif choice == "7":  
+
+        elif choice == "7":
             print("\n--- Company Payroll Overview ---")
             payroll.total_gross_salary()
             payroll.total_tax()
@@ -61,7 +61,7 @@ def add_employee_cli(payroll):
     try:
         if emp_type == "fulltime":
             salary = float(input("Monthly Salary: "))
-            bonus = input("Bonus: ")  
+            bonus = input("Bonus: ")
             bonus = float(bonus) if bonus else 0
             payroll.add_employee(FullTimeEmployee(name, dept, pos, salary, bonus))
 

@@ -1,28 +1,29 @@
-from models.student import Undergraduate, Graduate, Student
-from models.enums import Level, FieldOfStudy
+from models.enums import FieldOfStudy, Level
+from models.student import Graduate, Student, Undergraduate
+
 
 class StudentService:
     @staticmethod
     def add_student(students: dict, name, student_id, gender, email, level_input, field_input):
         if student_id in students:
             raise ValueError("Student ID already exists")
-        
+
         try:
             level = Level(level_input)
         except ValueError:
             raise ValueError("Invalid level")
-        
+
 
         try:
             field = FieldOfStudy(field_input)
         except ValueError:
             raise ValueError("Invalid field")
-        
+
         if level == Level.UNDERGRADUATE:
-            student = Undergraduate(name, student_id, gender, email, field) 
+            student = Undergraduate(name, student_id, gender, email, field)
         else:
             student = Graduate(name, student_id, gender, email, field)
-        
+
         students[student_id] = student
         return student
 

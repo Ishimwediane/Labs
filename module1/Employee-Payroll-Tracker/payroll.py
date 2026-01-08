@@ -1,5 +1,6 @@
 from models.employee import Employee
 
+
 class Payroll:
     """Manages a list of employees and payroll operations."""
 
@@ -52,7 +53,7 @@ class Payroll:
         for emp in self.employees.values():
             print(f"{emp.employee_id} | {emp.name} | {emp.department} | {emp.position} | Total: ${emp.compute_salary():.2f}")
         print("=" * 60)
-        
+
     def total_gross_salary(self):
         """Sum of all employees' gross salary (including bonus)."""
         total = sum(emp.compute_salary() for emp in self.employees.values())

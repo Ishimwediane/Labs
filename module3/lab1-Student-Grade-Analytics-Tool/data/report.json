@@ -1,0 +1,69 @@
+{
+    "total_students": 5,
+    "grade_distribution": {
+        "A": 5,
+        "B": 3,
+        "C": 3
+    },
+    "major_grouping": {
+        "Computer Science": [
+            "Alice Johnson",
+            "David Wilson"
+        ],
+        "Mathematics": [
+            "Bob Smith"
+        ],
+        "Physics": [
+            "Charlie Brown"
+        ],
+        "Biology": [
+            "Eva Davis"
+        ]
+    },
+    "top_performers": [
+        {
+            "name": "Eva Davis",
+            "average": 95.0
+        },
+        {
+            "name": "Alice Johnson",
+            "average": 91.67
+        },
+        {
+            "name": "Charlie Brown",
+            "average": 88.0
+        },
+        {
+            "name": "Bob Smith",
+            "average": 80.0
+        },
+        {
+            "name": "David Wilson",
+            "average": 72.5
+        }
+    ],
+    "overall_average": 86.0,
+    "rolling_averages": {
+        "Alice Johnson": [
+            95.0,
+            91.5,
+            91.67
+        ],
+        "Bob Smith": [
+            78.0,
+            80.0
+        ],
+        "Charlie Brown": [
+            91.0,
+            88.0
+        ],
+        "David Wilson": [
+            70.0,
+            72.5
+        ],
+        "Eva Davis": [
+            96.0,
+            95.0
+        ]
+    }
+}

@@ -1,6 +1,7 @@
 import logging
-from src.provider.mock import MockWeatherProvider
+
 from src.exceptions import CityNotFoundError, InvalidAPIKeyError
+from src.provider.mock import MockWeatherProvider
 
 logger = logging.getLogger("weather.service")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(name)s:%(message)s")

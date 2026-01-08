@@ -1,15 +1,15 @@
 # Weather API Stub
 
-A mock Weather API service built using **Test-Driven Development (TDD)**.  
+A mock Weather API service built using **Test-Driven Development (TDD)**.
 It provides **predefined weather data** for known cities without calling a real API.
 
 ## Features
-- Returns forecasts for predefined cities (`Kigali`, `Nairobi`, `Addis Ababa`, `Dar es Salaam`)  
-- Raises `CityNotFoundError` for unknown cities  
-- Raises `InvalidAPIKeyError` for invalid API keys  
-- Structured logging with INFO and ERROR levels  
-- Strict TDD workflow with near 100% test coverage  
-- SOLID architecture with dependency inversion  
+- Returns forecasts for predefined cities (`Kigali`, `Nairobi`, `Addis Ababa`, `Dar es Salaam`)
+- Raises `CityNotFoundError` for unknown cities
+- Raises `InvalidAPIKeyError` for invalid API keys
+- Structured logging with INFO and ERROR levels
+- Strict TDD workflow with near 100% test coverage
+- SOLID architecture with dependency inversion
 
 ## Quickstart
 

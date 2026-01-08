@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Employee(ABC):
     """Base class for all employee types."""
 
@@ -37,7 +38,7 @@ class Employee(ABC):
         if value < 0:
             raise ValueError("Salary cannot be negative")
         self._salary = value
-        
+
     @property
     def bonus(self):
         return self._bonus
@@ -64,11 +65,11 @@ class Employee(ABC):
         if s > 30000:
             tax += (s - 30000) * 0.20
         return tax
-    
+
     @property
     def net_salary(self):
         return self.compute_salary() - self.tax
-    
+
 
     def update_salary(self, value):
         self.salary = value

@@ -2,8 +2,8 @@ import logging
 import sqlite3  # Example DB; replace with PostgreSQL connection if needed
 
 from src.config.logging_config import setup_logging
-from src.pipeline.stages import TextCleaner, SentimentAnalyzer, DatabaseStorer
 from src.pipeline.pipeline import DataPipeline
+from src.pipeline.stages import DatabaseStorer, SentimentAnalyzer, TextCleaner
 
 
 def main():
