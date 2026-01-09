@@ -1,10 +1,8 @@
-"""Performance benchmarking for different scraping approaches."""
-
 import asyncio
 import time
 from typing import List
 from .models import PageMetadata
-from .scrapers import scrape_sequential, scrape_threaded, scrape_async
+from .scraper import scrape_sequential, scrape_threaded, scrape_async
 from .output import print_summary
 
 

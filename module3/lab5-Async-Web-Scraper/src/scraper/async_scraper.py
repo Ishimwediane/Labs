@@ -1,5 +1,3 @@
-"""Async web scraper implementation using asyncio and aiohttp."""
-
 import asyncio
 import time
 import logging
