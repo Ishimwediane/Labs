@@ -1,8 +1,6 @@
 from db_connection import execute_query
 
-# -------------------------------
 # CUSTOMER OPERATIONS
-# -------------------------------
 
 def create_customer(name, email, address):
     """Add new customer"""
@@ -39,9 +37,7 @@ def get_customer(customer_id):
         print(f"❌ Error getting customer: {e}")
 
 
-# -------------------------------
 # PRODUCT OPERATIONS
-# -------------------------------
 
 def add_product(name, price, stock):
     """Add new product"""
@@ -78,9 +74,7 @@ def get_product(product_id):
         print(f"❌ Error getting product: {e}")
 
 
-# -------------------------------
 # ORDER OPERATIONS
-# -------------------------------
 
 def create_order(customer_id, items):
     """
@@ -88,7 +82,7 @@ def create_order(customer_id, items):
     items = [(product_id, quantity), ...]
     """
     try:
-        # 1️⃣ Check stock and calculate total
+      
         total = 0
         for product_id, quantity in items:
             result = execute_query(
@@ -102,7 +96,7 @@ def create_order(customer_id, items):
                 raise ValueError(f"Insufficient stock for product ID {product_id}")
             total += price * quantity
 
-        # 2️⃣ Create order
+       
         result = execute_query(
             "INSERT INTO orders(customer_id,total_amount,status) VALUES(%s,%s,'pending') RETURNING id;",
             (customer_id, total),
@@ -110,7 +104,7 @@ def create_order(customer_id, items):
         )
         order_id = result[0][0]
 
-        # 3️⃣ Update stock
+     
         for product_id, quantity in items:
             execute_query(
                 "UPDATE products SET stock_quantity=stock_quantity-%s WHERE id=%s;",
