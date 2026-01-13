@@ -70,7 +70,7 @@ CREATE TABLE order_items (
     product_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     unit_price DECIMAL(10, 2) NOT NULL CHECK (unit_price >= 0),
-    total DECIMAL(10, 2) NOT NULL CHECK (total >= 0),
+    subtotal DECIMAL(10, 2) NOT NULL CHECK (subtotal >= 0),
     
     
     CONSTRAINT fk_order
@@ -86,6 +86,6 @@ CREATE TABLE order_items (
         ON UPDATE CASCADE,
    
     CONSTRAINT valid_total
-        CHECK (total = quantity * unit_price)
+        CHECK (subtotal = quantity * unit_price)
 );
 
