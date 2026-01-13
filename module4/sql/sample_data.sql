@@ -2,7 +2,6 @@ INSERT INTO categories (name, description) VALUES
     ('Electronics', 'Electronic devices and accessories'),
     ('Clothing', 'Apparel and fashion items'),
     ('Books', 'Physical and digital books'),
-    ('Home & Garden', 'Home improvement and garden supplies'),
     ('Sports', 'Sports equipment and fitness gear');
 
 -- Insert Customers
@@ -35,11 +34,6 @@ INSERT INTO products (name, category_id, price, stock_quantity, metadata) VALUES
     ('Python Programming Guide', 3, 39.99, 200, '{"author": "John Doe", "pages": 450, "format": "Paperback", "isbn": "978-1234567890"}'),
     ('Database Design Fundamentals', 3, 49.99, 150, '{"author": "Jane Smith", "pages": 380, "format": "Hardcover", "isbn": "978-0987654321"}'),
     ('Web Development Mastery', 3, 44.99, 180, '{"author": "Mike Johnson", "pages": 520, "format": "Paperback", "isbn": "978-1122334455"}'),
-    
-    -- Home & Garden
-    ('LED Desk Lamp', 4, 34.99, 250, '{"brand": "BrightLight", "color": "White", "adjustable": true, "power": "12W"}'),
-    ('Garden Tool Set', 4, 79.99, 120, '{"brand": "GreenThumb", "pieces": 10, "material": "Stainless Steel"}'),
-    ('Indoor Plant Pot', 4, 24.99, 300, '{"brand": "PlantHome", "size": "Medium", "color": "Terracotta", "drainage": true}'),
     
     -- Sports
     ('Yoga Mat', 5, 29.99, 200, '{"brand": "FlexFit", "thickness": "6mm", "color": "Purple", "material": "TPE"}'),

@@ -50,4 +50,4 @@ def execute_query(query, params=None, commit=False):
     finally:
         cur.close()
         conn.close()
-        # print("Connection closed")
+        
