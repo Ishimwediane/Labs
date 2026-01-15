@@ -4,6 +4,9 @@ CREATE INDEX idx_order_items_product_id ON order_items(product_id);
 CREATE INDEX idx_products_category_id ON products(category_id);
 CREATE INDEX idx_orders_created_at ON orders(created_at);
 
+-- GIN index for JSONB metadata column (efficient for JSON queries)
+CREATE INDEX idx_products_metadata ON products USING GIN (metadata);
+
 
 ANALYZE customers;
 ANALYZE categories;

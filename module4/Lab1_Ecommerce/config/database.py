@@ -61,4 +61,5 @@ class DatabaseConfig:
             'decode_responses': DatabaseConfig.REDIS_DECODE_RESPONSES
         }
 
+
 db_config = DatabaseConfig()

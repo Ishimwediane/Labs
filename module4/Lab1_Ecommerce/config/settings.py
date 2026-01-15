@@ -14,7 +14,7 @@ class Settings:
         self.POSTGRES_PORT = os.getenv('POSTGRES_PORT', '5432')
         self.POSTGRES_DB = os.getenv('POSTGRES_DB', 'ecommerce')
         self.POSTGRES_USER = os.getenv('POSTGRES_USER', 'postgres')
-        self.POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'postgres123')
+        self.POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', '')
         
         # MongoDB settings
         self.MONGODB_URI = os.getenv('MONGODB_URI', '')

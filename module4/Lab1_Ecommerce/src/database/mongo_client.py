@@ -40,7 +40,7 @@ class MongoDBClient:
             raise
     
     def get_collection(self, collection_name: str):
-        if not self.db:
+        if self.db is None:
             raise RuntimeError("MongoDB not connected")
         
         return self.db[collection_name]

@@ -36,6 +36,7 @@ INSERT INTO products (name, category_id, price, stock_quantity, metadata) VALUES
     ('Web Development Mastery', 3, 44.99, 180, '{"author": "Mike Johnson", "pages": 520, "format": "Paperback", "isbn": "978-1122334455"}'),
     
     -- Sports
-    ('Yoga Mat', 5, 29.99, 200, '{"brand": "FlexFit", "thickness": "6mm", "color": "Purple", "material": "TPE"}'),
-    ('Dumbbell Set', 5, 149.99, 80, '{"brand": "IronGrip", "weight": "20kg", "adjustable": true, "pieces": 2}'),
-    ('Tennis Racket', 5, 119.99, 90, '{"brand": "AcePro", "weight": "300g", "grip_size": "4", "string_pattern": "16x19"}');
+    ('Yoga Mat', 4, 29.99, 200, '{"brand": "FlexFit", "thickness": "6mm", "color": "Purple", "material": "TPE"}'),
+    ('Dumbbell Set', 4, 149.99, 80, '{"brand": "IronGrip", "weight": "20kg", "adjustable": true, "pieces": 2}'),
+    ('Tennis Racket', 4, 119.99, 90, '{"brand": "AcePro", "weight": "300g", "grip_size": "4", "string_pattern": "16x19"}');
+

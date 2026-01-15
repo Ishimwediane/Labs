@@ -32,6 +32,7 @@ CREATE TABLE products (
     category_id INTEGER NOT NULL,
     price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
     stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
+    metadata JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     CONSTRAINT fk_category
