@@ -1,0 +1,11 @@
+# Database Drivers
+psycopg2-binary==2.9.9
+pymongo==4.6.1
+redis==5.0.1
+
+# Environment Management
+python-dotenv==1.0.0
+
+# Testing (optional but recommended)
+pytest==7.4.3
+pytest-cov==4.1.0
