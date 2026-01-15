@@ -1,15 +1,10 @@
-"""
-Advanced SQL demonstrations - Window functions, CTEs, JSONB
-"""
-
 from src.database.connection import get_connection
 from psycopg2.extras import RealDictCursor
 
 
 def show_window_functions():
-    """5a. WINDOW FUNCTION - Product rankings by price"""
     print("\n" + "="*80)
-    print("5a. WINDOW FUNCTION - Product Rankings")
+    print("WINDOW FUNCTION - Product Rankings")
     print("="*80 + "\n")
     
     conn = get_connection()
@@ -36,9 +31,8 @@ def show_window_functions():
 
 
 def show_cte():
-    """5b. CTE - Customer revenue analysis"""
     print("\n" + "="*80)
-    print("5b. CTE - Customer Revenue Analysis")
+    print("Customer Revenue Analysis")
     print("="*80 + "\n")
     
     conn = get_connection()
@@ -78,9 +72,8 @@ def show_cte():
 
 
 def show_jsonb():
-    """5c. JSONB - Flexible product metadata queries"""
     print("\n" + "="*80)
-    print("5c. JSONB - Flexible Product Metadata")
+    print("JSONB - Flexible Product Metadata")
     print("="*80 + "\n")
     
     conn = get_connection()

@@ -1,7 +1,3 @@
-"""
-Product repository - Database operations for products
-"""
-
 from src.database.connection import get_connection
 from psycopg2.extras import RealDictCursor
 

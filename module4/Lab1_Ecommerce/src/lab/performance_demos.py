@@ -1,14 +1,9 @@
-"""
-Performance optimization demonstration - EXPLAIN ANALYZE
-"""
-
 from src.database.connection import get_connection
 
 
 def show_explain_analyze():
-    """6. PERFORMANCE OPTIMIZATION - Query analysis"""
     print("\n" + "="*80)
-    print("6. PERFORMANCE OPTIMIZATION - EXPLAIN ANALYZE")
+    print("PERFORMANCE OPTIMIZATION - EXPLAIN ANALYZE")
     print("="*80 + "\n")
     
     conn = get_connection()

@@ -1,7 +1,3 @@
-"""
-Lab demonstrations - Using repository and service layers
-"""
-
 from src.database.connection import get_connection
 from src.repositories.product_repository import (
     create_product, get_product_by_id, update_product_price, delete_product
@@ -10,9 +6,8 @@ from src.services.order_service import process_order
 
 
 def show_connectivity():
-    """1. DATABASE CONNECTIVITY - Show psycopg2 connection works"""
     print("\n" + "="*80)
-    print("1. DATABASE CONNECTIVITY (psycopg2)")
+    print("DATABASE CONNECTIVITY (psycopg2)")
     print("="*80 + "\n")
     
     conn = get_connection()
@@ -30,9 +25,8 @@ def show_connectivity():
 
 
 def show_crud():
-    """2. CRUD OPERATIONS - Using repository pattern"""
     print("\n" + "="*80)
-    print("2. CRUD OPERATIONS (Create, Read, Update, Delete)")
+    print("CRUD OPERATIONS (Create, Read, Update, Delete)")
     print("="*80 + "\n")
     
     # CREATE - Using repository
@@ -65,15 +59,12 @@ def show_crud():
 
 
 def show_transactions():
-    """3. TRANSACTIONS - Using service layer with ACID properties"""
     print("\n" + "="*80)
-    print("3. TRANSACTIONS (ACID Properties)")
+    print("TRANSACTIONS (ACID Properties)")
     print("="*80 + "\n")
     
     try:
         print("Creating order with transaction...")
-        
-        # Process order using service (handles transaction)
         order_id = process_order(
             customer_id=1,
             product_id=1,

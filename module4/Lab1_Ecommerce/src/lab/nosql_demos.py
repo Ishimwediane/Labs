@@ -1,7 +1,3 @@
-"""
-NoSQL demonstrations - Redis and MongoDB
-"""
-
 from src.database.connection import get_connection
 from config.database import DatabaseConfig
 from psycopg2.extras import RealDictCursor
@@ -11,9 +7,8 @@ from datetime import datetime
 
 
 def show_redis_cache():
-    """4a. REDIS CACHE - Caching top products"""
     print("\n" + "="*80)
-    print("4a. REDIS CACHE - Top Products")
+    print("REDIS CACHE - Top Products")
     print("="*80 + "\n")
     
     try:
@@ -45,9 +40,8 @@ def show_redis_cache():
 
 
 def show_mongodb_sessions():
-    """4b. MONGODB - User session storage"""
     print("\n" + "="*80)
-    print("4b. MONGODB - User Sessions")
+    print("MONGODB - User Sessions")
     print("="*80 + "\n")
     
     try:
@@ -55,8 +49,6 @@ def show_mongodb_sessions():
         client = MongoClient(mongo_config['uri'], 
                            serverSelectionTimeoutMS=mongo_config['serverSelectionTimeoutMS'])
         db = client[mongo_config['database']]
-        
-        # Store session
         session_data = {
             'user_id': 1,
             'cart': [
@@ -68,8 +60,6 @@ def show_mongodb_sessions():
         
         result = db.sessions.insert_one(session_data)
         print(f"Session stored: {result.inserted_id}")
-        
-        # Retrieve session
         session = db.sessions.find_one({'user_id': 1})
         print(f"Cart items: {len(session['cart'])}")
         

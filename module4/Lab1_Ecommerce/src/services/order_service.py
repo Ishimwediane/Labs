@@ -1,16 +1,8 @@
-"""
-Order service - Business logic for order processing
-"""
-
 from src.repositories.order_repository import create_order, create_order_item, update_product_stock
 from src.database.connection import get_connection
 
-
 def process_order(customer_id, product_id, quantity, unit_price):
-    """
-    Process order with transaction (ACID)
-    Creates order, adds item, updates stock atomically
-    """
+   
     conn = get_connection()
     cursor = conn.cursor()
     

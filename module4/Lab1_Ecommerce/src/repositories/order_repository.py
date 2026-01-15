@@ -1,7 +1,3 @@
-"""
-Order repository - Database operations for orders
-"""
-
 from src.database.connection import get_connection
 
 

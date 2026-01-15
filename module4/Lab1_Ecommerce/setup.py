@@ -1,8 +1,3 @@
-"""
-Setup script - Load schema and sample data
-Run this BEFORE main.py
-"""
-
 import psycopg2
 from config.database import DatabaseConfig
 
