@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo App</title>
+</head>
+<body>
+    <h1>My Todo List</h1>
+
+    <form  method="post" >{% csrf_token %}
+        <input type="text" name="task_name">
+        <button type="submit">Add Task</button>
+    </form>
+
+
+<ul>
+    {% for todo in todolist %}
+        <li>
+            {% if todo.completed %}
+                <s>{{ todo.title }}</s>
+            {% else %}
+                {{ todo.title }}
+                <a href="{% url 'completed_todo' todo.id %}">Mark Completed</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
+
+
+
+    
