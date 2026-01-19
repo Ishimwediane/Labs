@@ -16,7 +16,7 @@ def todo_list(request):
 
         
 def completed_todo(request,todo_id):
-    todo=Todo.object.get(id=todo_id)
+    todo=Todo.objects.get(id=todo_id)
     todo.completed=True
     todo.save()
     return redirect("todo_list")

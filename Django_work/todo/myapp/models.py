@@ -5,5 +5,5 @@ class Todo(models.Model):
     title=models.CharField(max_length=200)
     completed=models.BooleanField(default=False)
 
-    def __str__(self): #when you create todo show title in string
+    def __str__(self): # when you create todo show title in string
         return self.title
