@@ -1,9 +1,8 @@
-from django.db import models
 from rest_framework import serializers
+from .models import Url
 
-
-class UrlSerializer(serializers.Serializer):
-    original_url=serializers.URLField(max_length=2000)
-    short_url=serializers.CharField(max_length=10,unique=True)
-    created_at=serializers.DateTimeField(auto_now_add=True)
-        
+class UrlSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Url
+        fields = ['original_url', 'short_url', 'created_at']
+        read_only_fields = ['short_url', 'created_at'] 
