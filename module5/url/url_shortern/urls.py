@@ -1,5 +1,6 @@
 from django.urls import path
+from .views import CreateShortUrlView
 
 urlpatterns = [
-    # This can be empty for now, or add placeholder paths
+    path("shorten/", CreateShortUrlView.as_view(), name="create-short-url"),
 ]
