@@ -24,7 +24,9 @@ class CreateShortUrlView(APIView):
         url_obj = UrlShortenerService.create_short_url(
             serializer.validated_data['original_url']
         )
-        cache.set(f'url:{url_obj.short_url}', url_obj.original_url, timeout=3600)
+        
+        cache.set(f'url:{url_obj.short_url}', url_obj.original_url, timeout=None)
+        
         return Response(UrlSerializer(url_obj).data, status=status.HTTP_201_CREATED)
 
 
@@ -35,8 +37,10 @@ class RedirectUrlView(APIView):
     )
     def get(self, request, short_code):
         original_url = cache.get(f'url:{short_code}')
+
         if not original_url:
             url_obj = get_object_or_404(Url, short_url=short_code)
             original_url = url_obj.original_url
-            cache.set(f'url:{short_code}', original_url, timeout=3600)
+            cache.set(f'url:{short_code}', original_url, timeout=None)
+        
         return redirect(original_url)
