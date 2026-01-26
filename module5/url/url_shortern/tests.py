@@ -34,6 +34,7 @@ class CreateShortUrlAPITest(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('short_url', response.data)
+        self.assertIn('short_link', response.data)
     
     def test_invalid_url(self):
         data = {'original_url': 'not-a-valid-url'}

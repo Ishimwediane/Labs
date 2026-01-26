@@ -3,13 +3,19 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404, redirect
 from django.core.cache import cache
+from drf_spectacular.utils import extend_schema
 
 from .serializer import UrlSerializer, UrlCreateSerializer
 from .services import UrlShortenerService
 from .models import Url
 
 
-class CreateShortUrlView(APIView):    
+class CreateShortUrlView(APIView):
+    @extend_schema(
+        request=UrlCreateSerializer,
+        responses={201: UrlSerializer},
+        description="Create a new shortened URL"
+    )
     def post(self, request):
         serializer = UrlCreateSerializer(data=request.data)
         if not serializer.is_valid():
@@ -22,7 +28,11 @@ class CreateShortUrlView(APIView):
         return Response(UrlSerializer(url_obj).data, status=status.HTTP_201_CREATED)
 
 
-class RedirectUrlView(APIView):    
+class RedirectUrlView(APIView):
+    @extend_schema(
+        responses={302: None, 404: None},
+        description="Redirect to the original URL"
+    )
     def get(self, request, short_code):
         original_url = cache.get(f'url:{short_code}')
         if not original_url:
