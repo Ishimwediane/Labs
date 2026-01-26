@@ -4,7 +4,7 @@ This repository contains my comprehensive solutions for Python programming labs 
 
 ## 📚 Repository Overview
 
-This repository is organized into **4 modules**, each containing multiple labs that progressively build Python development skills:
+This repository is organized into **5 modules**, each containing multiple labs that progressively build Python development skills:
 
 | Module | Focus Area | Labs | Status |
 |--------|-----------|------|--------|
@@ -12,6 +12,7 @@ This repository is organized into **4 modules**, each containing multiple labs t
 | **Module 2** | Clean Code & Testing | 4 Labs | ✅ Complete |
 | **Module 3** | Advanced Python | 2 Labs | ✅ Complete |
 | **Module 4** | Database Integration | 1 Lab | ✅ Complete |
+| **Module 5** | Django Microservices | 1 Lab | ✅ Complete |
 
 ---
 
@@ -114,6 +115,39 @@ This repository is organized into **4 modules**, each containing multiple labs t
 
 ---
 
+## 📂 Module 5: Django Microservices
+
+**Focus**: RESTful API development, microservices architecture, Docker containerization, and API documentation.
+
+### Labs
+
+| Lab | Project | Description | Key Concepts |
+|-----|---------|-------------|--------------|
+| 1 | [URL Shortener Microservice](./module5) | Django REST API for URL shortening with Redis caching | Django REST Framework, Redis, Docker, OpenAPI/Swagger, Microservices |
+
+### Key Features
+- **Django REST Framework**: 
+  - RESTful API design with proper HTTP methods
+  - Serializers for data validation
+  - ViewSets and API views
+  - Interactive Swagger UI documentation
+  
+- **Caching Layer**:
+  - Redis integration for fast URL lookups
+  - Cache-aside pattern implementation
+  
+- **Containerization**:
+  - Docker multi-stage builds
+  - Docker Compose orchestration
+  - Production-ready configuration
+  
+- **Architecture**:
+  - Service layer pattern
+  - Clean separation of concerns
+  - RESTful resource design
+
+---
+
 ## 🏗️ Complete Repository Structure
 
 ```
@@ -137,8 +171,11 @@ Labs/
 │   ├── lab5-Async-Web-Scraper/
 │   └── .pre-commit-config.yaml
 │
-└── module4/                            # Database Integration
-    └── Lab1_Ecommerce/
+├── module4/                            # Database Integration
+│   └── Lab1_Ecommerce/
+│
+└── module5/                            # Django Microservices
+    └── url/                            # URL Shortener Microservice
 ```
 
 ---
@@ -149,7 +186,8 @@ Labs/
 - **Python 3.11+** (required for all modules)
 - **PostgreSQL** (Module 4)
 - **MongoDB** (Module 4 - Atlas or local)
-- **Redis** (Module 4 - optional)
+- **Redis** (Module 4 & 5)
+- **Docker & Docker Compose** (Module 5 - recommended)
 
 ### General Setup for Any Lab
 
@@ -309,12 +347,18 @@ Following [Conventional Commits](https://www.conventionalcommits.org/):
 ### Database & Integration
 - **psycopg2** - PostgreSQL adapter (Module 2 & 4)
 - **pymongo** - MongoDB driver (Module 4)
-- **redis** - Redis client (Module 4)
+- **redis** - Redis client (Module 4 & 5)
 - **testcontainers** - Integration testing (Module 2, Lab 4)
 
 ### Async & Web
 - **asyncio** - Asynchronous programming (Module 3)
 - **aiohttp** - Async HTTP client (Module 3)
+
+### Django & REST APIs
+- **Django 5.0** - Web framework (Module 5)
+- **Django REST Framework** - RESTful API toolkit (Module 5)
+- **drf-spectacular** - OpenAPI/Swagger documentation (Module 5)
+- **gunicorn** - WSGI HTTP server (Module 5)
 
 ---
 
@@ -351,8 +395,11 @@ Each lab includes comprehensive documentation:
 ### Module 4: Database Integration
 - [x] E-Commerce Analytics Pipeline
 
+### Module 5: Django Microservices
+- [x] URL Shortener Microservice
+
 ### Overall
-- [x] All 11 labs implemented
+- [x] All 12 labs implemented
 - [x] Comprehensive documentation
 - [x] Code quality standards met
 - [x] Git repository properly structured
@@ -370,9 +417,9 @@ Each lab includes comprehensive documentation:
 
 ## 📅 Submission Information
 
-- **Academic Period**: 2025
-- **Program**: Python Development Track
-- **Repository**: Complete lab submissions across 4 modules
+- **Academic Period**: 2025-2026
+- **Program**: Python Backend and AI application Track
+- **Repository**: Complete lab submissions across 5 modules
 
 ---
 
@@ -390,6 +437,7 @@ Each lab includes comprehensive documentation:
 - Each module builds upon previous concepts, creating a progressive learning path
 - All labs are self-contained and can be run independently
 - Database labs (Module 4) require additional setup (PostgreSQL, MongoDB, Redis)
+- Django labs (Module 5) support both Docker and local development
 - Async labs (Module 3) demonstrate performance optimization techniques
 - Testing labs (Module 2) showcase professional TDD workflows
 
@@ -397,4 +445,4 @@ Each lab includes comprehensive documentation:
 
 **Thank you for reviewing my comprehensive Python lab work!** 🚀
 
-*This repository demonstrates proficiency in Python fundamentals, OOP, clean code practices, advanced concepts, testing strategies, and database integration.*
+*This repository demonstrates proficiency in Python fundamentals, OOP, clean code practices, advanced concepts, testing strategies, database integration, and Django microservices development.*
