@@ -2,7 +2,7 @@
 
 This repository contains my comprehensive solutions for Python programming labs across multiple modules, covering OOP fundamentals, clean code practices, advanced Python concepts, and database integration.
 
-## 📚 Repository Overview
+##  Repository Overview
 
 This repository is organized into **5 modules**, each containing multiple labs that progressively build Python development skills:
 
@@ -16,7 +16,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-## 📂 Module 1: Object-Oriented Programming Fundamentals
+##  Module 1: Object-Oriented Programming Fundamentals
 
 **Focus**: Core OOP principles, inheritance, polymorphism, encapsulation, and abstraction.
 
@@ -37,7 +37,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-## 📂 Module 2: Clean Code, Testing & Git
+##  Module 2: Clean Code, Testing & Git
 
 **Focus**: Clean code principles, TDD, testing strategies, and professional Git workflows.
 
@@ -58,7 +58,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-## 📂 Module 3: Advanced Python Concepts
+##  Module 3: Advanced Python Concepts
 
 **Focus**: Advanced data structures, collections, async programming, and performance optimization.
 
@@ -83,7 +83,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-## 📂 Module 4: Database Integration & Analytics
+##  Module 4: Database Integration & Analytics
 
 **Focus**: Database design, SQL optimization, NoSQL integration, and data pipeline architecture.
 
@@ -115,7 +115,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-## 📂 Module 5: Django Microservices
+##  Module 5: Django Microservices
 
 **Focus**: RESTful API development, microservices architecture, Docker containerization, and API documentation.
 
@@ -148,7 +148,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-## 🏗️ Complete Repository Structure
+##  Complete Repository Structure
 
 ```
 Labs/
@@ -180,7 +180,7 @@ Labs/
 
 ---
 
-## 🚀 Quick Start Guide
+##  Quick Start Guide
 
 ### Prerequisites
 - **Python 3.11+** (required for all modules)
@@ -224,7 +224,7 @@ Labs/
 
 ---
 
-## 🎯 Learning Objectives Demonstrated
+##  Learning Objectives Demonstrated
 
 ### Core Python Skills
 - ✅ **OOP Principles**: Classes, inheritance, polymorphism, encapsulation, abstraction
@@ -259,7 +259,7 @@ Labs/
 
 ---
 
-## 🧪 Testing Strategy
+##  Testing Strategy
 
 ### Module 2 & 4: Comprehensive Test Suites
 
@@ -283,7 +283,7 @@ pytest tests/ -v
 
 ---
 
-## 📋 Code Quality Standards
+##  Code Quality Standards
 
 All projects adhere to professional Python standards:
 
@@ -299,7 +299,7 @@ All projects adhere to professional Python standards:
 
 ---
 
-## 🌿 Git Workflow
+##  Git Workflow
 
 ### Branching Strategy
 
@@ -325,7 +325,7 @@ Following [Conventional Commits](https://www.conventionalcommits.org/):
 
 ---
 
-## 🛠️ Technologies & Libraries
+##  Technologies & Libraries
 
 ### Core Python
 - **Python 3.11+** - Modern Python features
@@ -362,7 +362,7 @@ Following [Conventional Commits](https://www.conventionalcommits.org/):
 
 ---
 
-## 📖 Documentation
+##  Documentation
 
 Each lab includes comprehensive documentation:
 
@@ -407,7 +407,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-## 👤 Author
+##  Author
 
 **Diane Ishimwe**
 - Email: ishimwediane400@gmail.com
@@ -415,7 +415,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-## 📅 Submission Information
+##  Submission Information
 
 - **Academic Period**: 2025-2026
 - **Program**: Python Backend and AI application Track
@@ -423,7 +423,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Course instructors for comprehensive lab requirements and guidance
 - Python community for excellent libraries and tools
@@ -432,7 +432,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-## 📝 Notes
+##  Notes
 
 - Each module builds upon previous concepts, creating a progressive learning path
 - All labs are self-contained and can be run independently
