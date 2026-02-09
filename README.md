@@ -2,21 +2,21 @@
 
 This repository contains my comprehensive solutions for Python programming labs across multiple modules, covering OOP fundamentals, clean code practices, advanced Python concepts, and database integration.
 
-##  Repository Overview
+## Repository Overview
 
 This repository is organized into **5 modules**, each containing multiple labs that progressively build Python development skills:
 
 | Module | Focus Area | Labs | Status |
 |--------|-----------|------|--------|
-| **Module 1** | OOP Fundamentals | 4 Labs | ✅ Complete |
-| **Module 2** | Clean Code & Testing | 4 Labs | ✅ Complete |
-| **Module 3** | Advanced Python | 2 Labs | ✅ Complete |
-| **Module 4** | Database Integration | 1 Lab | ✅ Complete |
-| **Module 5** | Django Microservices | 1 Lab | ✅ Complete |
+| **Module 1** | OOP Fundamentals | 4 Labs | Complete |
+| **Module 2** | Clean Code & Testing | 4 Labs | Complete |
+| **Module 3** | Advanced Python | 2 Labs |  Complete |
+| **Module 4** | Database Integration | 1 Lab | Complete |
+| **Module 5** | Django Microservices | 1 Lab | Complete |
 
 ---
 
-##  Module 1: Object-Oriented Programming Fundamentals
+## Module 1: Object-Oriented Programming Fundamentals
 
 **Focus**: Core OOP principles, inheritance, polymorphism, encapsulation, and abstraction.
 
@@ -37,7 +37,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-##  Module 2: Clean Code, Testing & Git
+## Module 2: Clean Code, Testing & Git
 
 **Focus**: Clean code principles, TDD, testing strategies, and professional Git workflows.
 
@@ -58,7 +58,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-##  Module 3: Advanced Python Concepts
+## Module 3: Advanced Python Concepts
 
 **Focus**: Advanced data structures, collections, async programming, and performance optimization.
 
@@ -83,7 +83,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-##  Module 4: Database Integration & Analytics
+## Module 4: Database Integration & Analytics
 
 **Focus**: Database design, SQL optimization, NoSQL integration, and data pipeline architecture.
 
@@ -115,7 +115,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-##  Module 5: Django Microservices
+## Module 5: Django Microservices
 
 **Focus**: RESTful API development, microservices architecture, Docker containerization, and API documentation.
 
@@ -148,7 +148,7 @@ This repository is organized into **5 modules**, each containing multiple labs t
 
 ---
 
-##  Complete Repository Structure
+## Complete Repository Structure
 
 ```
 Labs/
@@ -180,7 +180,7 @@ Labs/
 
 ---
 
-##  Quick Start Guide
+## Quick Start Guide
 
 ### Prerequisites
 - **Python 3.11+** (required for all modules)
@@ -224,38 +224,38 @@ Labs/
 
 ---
 
-##  Learning Objectives Demonstrated
+## Learning Objectives Demonstrated
 
 ### Core Python Skills
-- ✅ **OOP Principles**: Classes, inheritance, polymorphism, encapsulation, abstraction
-- ✅ **Clean Code**: SOLID principles, DRY, separation of concerns
-- ✅ **Type Safety**: Comprehensive type hints, static type checking with mypy
-- ✅ **Error Handling**: Custom exceptions, graceful error recovery
-- ✅ **File I/O**: CSV parsing, JSON serialization, context managers, `pathlib`
+- **OOP Principles**: Classes, inheritance, polymorphism, encapsulation, abstraction
+- **Clean Code**: SOLID principles, DRY, separation of concerns
+- **Type Safety**: Comprehensive type hints, static type checking with mypy
+- **Error Handling**: Custom exceptions, graceful error recovery
+- **File I/O**: CSV parsing, JSON serialization, context managers, `pathlib`
 
 ### Advanced Concepts
-- ✅ **Data Structures**: `Counter`, `defaultdict`, `OrderedDict`, `deque`, `dataclasses`
-- ✅ **Async Programming**: `asyncio`, `aiohttp`, concurrent execution
-- ✅ **Performance**: Benchmarking, optimization, threading vs async comparison
-- ✅ **Decorators**: Custom decorators for retry logic and logging
+- **Data Structures**: `Counter`, `defaultdict`, `OrderedDict`, `deque`, `dataclasses`
+- **Async Programming**: `asyncio`, `aiohttp`, concurrent execution
+- **Performance**: Benchmarking, optimization, threading vs async comparison
+- **Decorators**: Custom decorators for retry logic and logging
 
 ### Testing & Quality
-- ✅ **Testing**: Unit tests, integration tests, TDD workflow, >80% coverage
-- ✅ **Mocking**: Mock objects, dependency injection, test isolation
-- ✅ **Code Quality**: Black formatting, ruff linting, mypy type checking
-- ✅ **Pre-commit Hooks**: Automated quality checks
+-  **Testing**: Unit tests, integration tests, TDD workflow, >80% coverage
+-  **Mocking**: Mock objects, dependency injection, test isolation
+-  **Code Quality**: Black formatting, ruff linting, mypy type checking
+-  **Pre-commit Hooks**: Automated quality checks
 
 ### Database & Integration
-- ✅ **SQL**: Database design (3NF), CRUD operations, transactions, indexes
-- ✅ **Advanced SQL**: Window functions, CTEs, JSONB queries, query optimization
-- ✅ **NoSQL**: MongoDB document storage, Redis caching
-- ✅ **Architecture**: Repository pattern, service layer, connection pooling
+- **SQL**: Database design (3NF), CRUD operations, transactions, indexes
+- **Advanced SQL**: Window functions, CTEs, JSONB queries, query optimization
+- **NoSQL**: MongoDB document storage, Redis caching
+- **Architecture**: Repository pattern, service layer, connection pooling
 
 ### Professional Practices
-- ✅ **Git Workflow**: Feature branches, conventional commits, pull requests
-- ✅ **Documentation**: Comprehensive README files, docstrings, code comments
-- ✅ **Project Structure**: Modular design, clear separation of concerns
-- ✅ **Environment Management**: Virtual environments, dependency management
+- **Git Workflow**: Feature branches, conventional commits, pull requests
+- **Documentation**: Comprehensive README files, docstrings, code comments
+- **Project Structure**: Modular design, clear separation of concerns
+- **Environment Management**: Virtual environments, dependency management
 
 ---
 
@@ -283,23 +283,23 @@ pytest tests/ -v
 
 ---
 
-##  Code Quality Standards
+## Code Quality Standards
 
 All projects adhere to professional Python standards:
 
 | Tool | Purpose | Status |
 |------|---------|--------|
-| **Type Hints** | Full type annotations throughout | ✅ |
-| **Docstrings** | Comprehensive function/class documentation | ✅ |
-| **PEP 8** | Python style guide compliance | ✅ |
-| **Black** | Consistent code formatting | ✅ |
-| **Ruff** | Fast Python linting | ✅ |
-| **Mypy** | Static type checking | ✅ |
-| **Pre-commit** | Automated quality checks (Module 3) | ✅ |
+| **Type Hints** | Full type annotations throughout |
+| **Docstrings** | Comprehensive function/class documentation | 
+| **PEP 8** | Python style guide compliance | 
+| **Black** | Consistent code formatting | 
+| **Ruff** | Fast Python linting | 
+| **Mypy** | Static type checking | 
+| **Pre-commit** | Automated quality checks (Module 3) | 
 
 ---
 
-##  Git Workflow
+## Git Workflow
 
 ### Branching Strategy
 
@@ -325,7 +325,7 @@ Following [Conventional Commits](https://www.conventionalcommits.org/):
 
 ---
 
-##  Technologies & Libraries
+## Technologies & Libraries
 
 ### Core Python
 - **Python 3.11+** - Modern Python features
@@ -362,7 +362,7 @@ Following [Conventional Commits](https://www.conventionalcommits.org/):
 
 ---
 
-##  Documentation
+## Documentation
 
 Each lab includes comprehensive documentation:
 
@@ -374,7 +374,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-## ✅ Completion Status
+## Completion Status
 
 ### Module 1: OOP Fundamentals
 - [x] Employee Payroll Tracker
@@ -407,7 +407,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-##  Author
+## Author
 
 **Diane Ishimwe**
 - Email: ishimwediane400@gmail.com
@@ -415,7 +415,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-##  Submission Information
+## Submission Information
 
 - **Academic Period**: 2025-2026
 - **Program**: Python Backend and AI application Track
@@ -423,7 +423,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-##  Acknowledgments
+## Acknowledgments
 
 - Course instructors for comprehensive lab requirements and guidance
 - Python community for excellent libraries and tools
@@ -432,7 +432,7 @@ Each lab includes comprehensive documentation:
 
 ---
 
-##  Notes
+## Notes
 
 - Each module builds upon previous concepts, creating a progressive learning path
 - All labs are self-contained and can be run independently
@@ -443,6 +443,6 @@ Each lab includes comprehensive documentation:
 
 ---
 
-**Thank you for reviewing my comprehensive Python lab work!** 🚀
+**Thank you for reviewing my comprehensive Python lab work!** 
 
 *This repository demonstrates proficiency in Python fundamentals, OOP, clean code practices, advanced concepts, testing strategies, database integration, and Django microservices development.*
