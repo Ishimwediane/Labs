@@ -17,12 +17,7 @@ class DatabaseConfig:
     
     @staticmethod
     def get_postgres_config() -> dict:
-        """
-        Get PostgreSQL connection configuration.
-        
-        Returns:
-            Dictionary with PostgreSQL connection parameters
-        """
+
         return {
             'host': settings.POSTGRES_HOST,
             'port': settings.POSTGRES_PORT,
@@ -35,9 +30,7 @@ class DatabaseConfig:
     def get_mongodb_config() -> dict:
         """
         Get MongoDB connection configuration.
-        
-        Returns:
-            Dictionary with MongoDB connection parameters
+
         """
         return {
             'uri': settings.MONGODB_URI,
@@ -49,9 +42,7 @@ class DatabaseConfig:
     def get_redis_config() -> dict:
         """
         Get Redis connection configuration.
-        
-        Returns:
-            Dictionary with Redis connection parameters
+
         """
         return {
             'host': settings.REDIS_HOST,
