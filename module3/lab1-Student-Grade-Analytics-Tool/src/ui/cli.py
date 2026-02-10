@@ -23,9 +23,9 @@ class CLI:
         print("\nTop 3 Performers:")
         # Ensure 'top_performers' are always dictionaries for consistent access
         for i, p in enumerate(report['top_performers'][:3], 1):
-            name = p['name']
-            score = p['average_score']
-            print(f"  {i}. {name} ({score:.2f})") # Standardize to 2 decimal places
+            name = p.name
+            score = p.average_score
+            print(f"  {i}. {name} ({score:.2f})")
 
         if 'major_grouping' in report and report['major_grouping']:
             print("\nStudents by Major:")
@@ -34,8 +34,11 @@ class CLI:
 
         if 'rolling_averages' in report and report['rolling_averages']:
             print("\nRolling Averages (last 3 students):")
-            for i, avg in enumerate(report['rolling_averages'], 1):
-                print(f"  Student {i}: {avg:.2f}") # Standardize to 2 decimal places
+            # Get last 3 items from dict
+            last_3_items = list(report['rolling_averages'].items())[-3:]
+            for i, (student_name, avgs) in enumerate(last_3_items, 1):
+                latest_avg = avgs[-1] if avgs else 0.0
+                print(f"  {student_name}: {latest_avg:.2f}") 
 
     @staticmethod
     def display_success(path):

@@ -1,15 +1,14 @@
 from collections import Counter, defaultdict
 from typing import List, Dict
-from src.models.entities import Student
+from models.entities import Student
 
 class DistributionService:
     @staticmethod
     def calculate_grade_distribution(students: List[Student]) -> Dict[str, int]:
-        """Uses Counter to count grade frequency categories."""
+        """Uses Counter to count grade categories."""
         grades = []
         for student in students:
             for course in student.courses:
-                # Use the pre-calculated category from the Grade object
                 grades.append(course.grade.category.value)
         return dict(Counter(grades))
 
@@ -23,8 +22,7 @@ class DistributionService:
         
         if not grades:
             return "N/A"
-            
-        # collections.Counter.most_common(1) returns [(value, count)]
+
         return Counter(grades).most_common(1)[0][0]
 
     @staticmethod

@@ -2,9 +2,9 @@ import csv
 import json
 from pathlib import Path
 from typing import List, Dict, Union
-from src.models.entities import Student, Course, Grade
-from src.models.enums import GradeCategory
-from src.config.constants import GRADE_THRESHOLDS
+from models.entities import Student, Course, Grade
+from models.enums import GradeCategory
+from config.constants import GRADE_THRESHOLDS
 
 class StorageService:
     @staticmethod

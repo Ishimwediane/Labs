@@ -1,6 +1,6 @@
-from src.services.storage import StorageService
-from src.services.report import ReportService
-from src.ui.cli import CLI
+from services.storage import StorageService
+from services.report import ReportService
+from ui.cli import CLI
 from pathlib import Path
 
 def main():

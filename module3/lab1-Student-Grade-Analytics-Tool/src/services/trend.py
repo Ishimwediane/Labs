@@ -1,7 +1,7 @@
 from collections import deque
 from typing import List, Dict
-from src.models.entities import Student
-from src.config.constants import DEFAULT_WINDOW_SIZE
+from models.entities import Student
+from config.constants import DEFAULT_WINDOW_SIZE
 
 class TrendService:
     @staticmethod
