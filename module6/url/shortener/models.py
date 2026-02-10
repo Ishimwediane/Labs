@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from .managers import URLQuerySet
+from django.db.models import Count #  aggregation
+
 
 
 class Tag(models.Model):
@@ -23,6 +25,14 @@ class Url(models.Model):
     
     def __str__(self):
         return self.short_url
+
+    def get_clicks_by_country(self):
+        """
+        Returns a list of countries and their click counts for this URL.
+        
+        """
+        return self.clicks.values('country').annotate(total=Count('id'))
+
 
 class Click(models.Model):
     url=models.ForeignKey(Url,on_delete=models.CASCADE,related_name='clicks')
