@@ -7,7 +7,7 @@ from drf_spectacular.utils import extend_schema
 
 from .serializers import UrlSerializer, UrlCreateSerializer
 from shortener.services import UrlShortenerService
-from shortener.models import Url
+from shortener.models import Url, Click
 
 
 class CreateShortUrlView(APIView):
@@ -20,15 +20,16 @@ class CreateShortUrlView(APIView):
         serializer = UrlCreateSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        url_obj = UrlShortenerService.create_short_url(
-            serializer.validated_data['original_url']
+
+    
+        url_obj = UrlShortenerService.create_short_url(original_url=serializer.validated_data["original_url"],owner=request.user)
+
+        cache.set(f"url:{url_obj.short_url}", url_obj.original_url, timeout=None)
+
+        return Response(
+            UrlSerializer(url_obj).data,
+            status=status.HTTP_201_CREATED
         )
-        
-        
-        cache.set(f'url:{url_obj.short_url}', url_obj.original_url, timeout=None)
-        
-        return Response(UrlSerializer(url_obj).data, status=status.HTTP_201_CREATED)
 
 
 class RedirectUrlView(APIView):
@@ -37,11 +38,24 @@ class RedirectUrlView(APIView):
         description="Redirect to the original URL"
     )
     def get(self, request, short_code):
-        original_url = cache.get(f'url:{short_code}')
 
-        if not original_url:
-            url_obj = get_object_or_404(Url, short_url=short_code)
-            original_url = url_obj.original_url
-            cache.set(f'url:{short_code}', original_url, timeout=None)
+        cached_url = cache.get(f"url:{short_code}")
+
+        if cached_url:
+            return redirect(cached_url)
+
+    
+        url_obj = get_object_or_404(Url.objects.select_related("owner"),short_url=short_code,is_active=True)
+
         
-        return redirect(original_url)
+        Click.objects.create(url=url_obj,ip_address=request.META.get("REMOTE_ADDR"),user_agent=request.META.get("HTTP_USER_AGENT", ""),
+            referer=request.META.get("HTTP_REFERER")
+        )
+
+        
+        url_obj.click_count += 1
+        url_obj.save(update_fields=["click_count"])
+
+        cache.set(f"url:{short_code}", url_obj.original_url, timeout=None)
+
+        return redirect(url_obj.original_url)

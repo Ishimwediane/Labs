@@ -3,7 +3,7 @@ from core.utils import generate_short_code
 
 class UrlShortenerService:
     @staticmethod
-    def create_short_url(original_url):
+    def create_short_url(original_url,owner):
         while True:
             short_code = generate_short_code()
             if not Url.objects.filter(short_url=short_code).exists():
@@ -11,5 +11,5 @@ class UrlShortenerService:
 
         return Url.objects.create(
             original_url=original_url,
-            short_url=short_code
+            short_url=short_code,owner=owner
         )
