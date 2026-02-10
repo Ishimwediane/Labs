@@ -38,10 +38,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # New modular apps
+    # new apps
     "core",
     "shortener",
     "api",
+    "accounts"
     "rest_framework",
     "drf_spectacular",
 ]
@@ -163,3 +164,5 @@ else:
     }
 
 BASE_URL = config('BASE_URL', default='http://localhost:8000')
+
+AUTH_USER_MODEL = "accounts.User"
