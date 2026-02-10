@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "core",
     "shortener",
     "api",
-    "accounts"
+    "accounts",
     "rest_framework",
     "drf_spectacular",
 ]
