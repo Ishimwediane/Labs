@@ -1,7 +1,7 @@
-from src.lab.lab_demos import show_connectivity, show_crud, show_transactions
-from src.lab.nosql_demos import show_redis_cache, show_mongodb_sessions
-from src.lab.advanced_sql_demos import show_window_functions, show_cte, show_jsonb
-from src.lab.performance_demos import show_explain_analyze
+from lab_demos import show_connectivity, show_crud, show_transactions
+from nosql_demos import show_redis_cache, show_mongodb_sessions
+from advanced_sql_demos import show_window_functions, show_cte, show_jsonb
+from performance_demos import show_explain_analyze
 
 
 def main():

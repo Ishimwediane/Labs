@@ -79,3 +79,12 @@ def show_transactions():
         
     except Exception as e:
         print(f"\n[ERROR] Transaction rolled back: {e}")
+
+
+if __name__ == "__main__":
+    try:
+        show_connectivity()
+        show_crud()
+        show_transactions()
+    except Exception as e:
+        print(f"Error running demos: {e}")

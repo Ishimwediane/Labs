@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
-from typing import Optional
+
 
 from config.database import db_config
 from src.utils.logger import log_info, log_error, log_success

@@ -67,3 +67,11 @@ def show_mongodb_sessions():
         
     except Exception as e:
         print(f"[WARNING] MongoDB not available: {e}")
+
+
+if __name__ == "__main__":
+    try:
+        show_redis_cache()
+        show_mongodb_sessions()
+    except Exception as e:
+        print(f"Error running demos: {e}")

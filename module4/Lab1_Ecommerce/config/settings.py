@@ -28,9 +28,7 @@ class Settings:
     def validate(self):
         """
         Validate required settings are present.
-        
-        Raises:
-            ValueError: If required settings are missing
+
         """
         if not self.MONGODB_URI:
             raise ValueError(

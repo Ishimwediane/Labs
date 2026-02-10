@@ -21,3 +21,10 @@ def show_explain_analyze():
     
     conn.close()
     print("\n[SUCCESS] Query analysis completed!")
+
+
+if __name__ == "__main__":
+    try:
+        show_explain_analyze()
+    except Exception as e:
+        print(f"Error running demos: {e}")

@@ -92,3 +92,12 @@ def show_jsonb():
     
     conn.close()
     print("\n[SUCCESS] JSONB query executed!")
+
+
+if __name__ == "__main__":
+    try:
+        show_window_functions()
+        show_cte()
+        show_jsonb()
+    except Exception as e:
+        print(f"Error running demos: {e}")

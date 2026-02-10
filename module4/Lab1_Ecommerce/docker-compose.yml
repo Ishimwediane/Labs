@@ -39,8 +39,7 @@ services:
     networks:
       - ecommerce_network
 
-  # Note: MongoDB Atlas is used instead of local MongoDB container
-  # Configure MONGODB_URI in your .env file
+
 
 volumes:
   postgres_data:
