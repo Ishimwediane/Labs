@@ -19,7 +19,9 @@ class DatabaseConfig:
     def get_postgres_config() -> dict:
         """
         Get PostgreSQL connection configuration.
-
+        
+        Returns:
+            Dictionary with PostgreSQL connection parameters
         """
         return {
             'host': settings.POSTGRES_HOST,
