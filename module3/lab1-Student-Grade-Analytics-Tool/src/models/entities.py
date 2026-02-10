@@ -2,7 +2,7 @@ from collections import namedtuple
 from dataclasses import dataclass, field
 from typing import List
 
-from src.models.enums import GradeCategory
+from models.enums import GradeCategory
 
 TopPerformer = namedtuple("TopPerformer", ["name", "average_score"])
 

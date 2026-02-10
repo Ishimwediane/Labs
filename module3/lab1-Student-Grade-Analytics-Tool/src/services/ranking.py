@@ -1,5 +1,5 @@
 from typing import List, Optional
-from src.models.entities import Student, Grade, TopPerformer
+from models.entities import Student, Grade, TopPerformer
 
 class RankingService:
     def __init__(self, students: List[Student]):
@@ -21,7 +21,6 @@ class RankingService:
         return sorted(student_averages, key=lambda x: x.average_score, reverse=True)[:n]
 
     def get_highest_grade_in_course(self, course_name: str) -> Optional[Grade]:
-        """Example using Optional[Grade] as per Lab requirements."""
         best_grade = None
         for student in self.students:
             for course in student.courses:
