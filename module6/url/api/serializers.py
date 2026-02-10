@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
-from .models import Url
-
+from shortener.models import Url
+from django.conf import settings
 
 class UrlCreateSerializer(serializers.Serializer):
     original_url = serializers.URLField(max_length=2000)
@@ -22,8 +22,5 @@ class UrlSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.URLField())
     def get_short_link(self, obj):
-        from django.conf import settings
         base_url = settings.BASE_URL.rstrip('/')
         return f'{base_url}/{obj.short_url}/'
-
-

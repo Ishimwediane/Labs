@@ -13,8 +13,10 @@ services:
   db:
     image: postgres:15-alpine
     container_name: url_shortener_postgres
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: url_shortener
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
     ports:
       - "5432:5432"
     volumes:
@@ -29,12 +31,17 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    env_file:
-      - .env
+    environment:
+      - DEBUG=True
+      - DJANGO_SECRET_KEY=dev_secret_key
+      - DATABASE_URL=postgres://postgres:postgrespassword@db:5432/url_shortener
+      - CACHE_BACKEND=django_redis.cache.RedisCache
+      - REDIS_LOCATION=redis://redis:6379/1
+      - ALLOWED_HOSTS=*
+      - BASE_URL=http://localhost:8000
     depends_on:
       - db
       - redis
-
 
 volumes:
   redis_data:

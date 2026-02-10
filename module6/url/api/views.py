@@ -5,9 +5,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
 
-from .serializer import UrlSerializer, UrlCreateSerializer
-from .services import UrlShortenerService
-from .models import Url
+from .serializers import UrlSerializer, UrlCreateSerializer
+from shortener.services import UrlShortenerService
+from shortener.models import Url
 
 
 class CreateShortUrlView(APIView):
@@ -24,6 +24,7 @@ class CreateShortUrlView(APIView):
         url_obj = UrlShortenerService.create_short_url(
             serializer.validated_data['original_url']
         )
+        
         
         cache.set(f'url:{url_obj.short_url}', url_obj.original_url, timeout=None)
         

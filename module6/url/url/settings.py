@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import os
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-SECRET_KEY=os.getenv("DJANGO_SECRET_KEY")
+SECRET_KEY = config("DJANGO_SECRET_KEY", default='unsafe-secret-key-for-dev')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
 
 # Application definition
@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "url_shortern",
+    # New modular apps
+    "core",
+    "shortener",
+    "api",
     "rest_framework",
     "drf_spectacular",
 ]
@@ -80,10 +83,6 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-        "USER":"podtgres",
-        "PASSWORD":"postgres",
-        "HOST":"localhost",
-        "PORT":"5432",
     }
 }
 
@@ -142,15 +141,25 @@ SPECTACULAR_SETTINGS = {
 }
 
 # Cache Configuration - Using Redis for fast URL lookups
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+# Fallback to DummyCache if Redis is not available locally for simple testing
+CACHE_BACKEND = config('CACHE_BACKEND', default='django_redis.cache.RedisCache')
+REDIS_LOCATION = config('REDIS_LOCATION', default='redis://127.0.0.1:6379/1')
+
+if CACHE_BACKEND == 'django.core.cache.backends.dummy.DummyCache':
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
         }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': CACHE_BACKEND,
+            'LOCATION': REDIS_LOCATION,
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            }
+        }
+    }
 
-BASE_URL = 'http://localhost:8000'
-
+BASE_URL = config('BASE_URL', default='http://localhost:8000')
