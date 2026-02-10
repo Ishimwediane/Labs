@@ -1,9 +1,9 @@
 import asyncio
 import time
 from typing import List
-from .models import PageMetadata
-from .scraper import scrape_sequential, scrape_threaded, scrape_async
-from .output import print_summary
+from models import PageMetadata
+from scraper import scrape_sequential, scrape_threaded, scrape_async
+from output import print_summary
 
 
 def run_sequential_scraper(urls: List[str]) -> tuple[List[PageMetadata], float]:
@@ -43,11 +43,7 @@ def print_performance_comparison(
 ) -> None:
     """
     Print performance comparison between all three methods.
-    
-    Args:
-        seq_time: Sequential scraping time
-        thread_time: Threaded scraping time
-        async_time: Async scraping time
+
     """
     print("\n" + "="*60)
     print("PERFORMANCE COMPARISON")

@@ -1,8 +1,8 @@
 import time
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from ..models import PageMetadata
-from .sequential import fetch_url_sync
+from models import PageMetadata
+from scraper.sequential import fetch_url_sync
 
 logger = logging.getLogger(__name__)
 

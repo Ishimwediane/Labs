@@ -1,13 +1,13 @@
 """Main entry point for the Async Web Scraper."""
 
-from .benchmark import (
+from benchmark import (
     run_sequential_scraper,
     run_threaded_scraper,
     run_async_scraper,
     print_performance_comparison
 )
-from .output import save_results_to_json
-from .urls import SAMPLE_URLS
+from output import save_results_to_json
+from urls import SAMPLE_URLS
 
 
 def main():

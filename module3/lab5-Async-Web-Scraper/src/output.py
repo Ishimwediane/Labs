@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 from typing import List
-from .models import PageMetadata
+from models import PageMetadata
 
 
 def save_results_to_json(results: List[PageMetadata], filename: str) -> None:

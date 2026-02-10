@@ -1,7 +1,7 @@
 import time
 import logging
-from ..models import PageMetadata
-from ..parsers import extract_metadata_from_html
+from models import PageMetadata
+from parsers import extract_metadata_from_html
 
 logger = logging.getLogger(__name__)
 

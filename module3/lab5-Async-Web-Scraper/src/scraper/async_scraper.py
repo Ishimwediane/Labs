@@ -2,9 +2,9 @@ import asyncio
 import time
 import logging
 import aiohttp
-from ..models import PageMetadata
-from ..parsers import extract_metadata_from_html
-from ..utils import retry, log_execution
+from models import PageMetadata
+from parsers import extract_metadata_from_html
+from utils import retry, log_execution
 
 logger = logging.getLogger(__name__)
 

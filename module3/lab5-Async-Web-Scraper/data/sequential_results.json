@@ -1,0 +1,162 @@
+[
+  {
+    "url": "https://www.bbc.com/news",
+    "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and around the world",
+    "description": "Visit BBC News for the latest news, breaking news, video, audio and analysis. BBC News provides trusted World, U.S. and U.K. news as well as local and regional perspectives. Also entertainment, climate, business, science, technology and health news.",
+    "status_code": 200,
+    "fetch_time": 1.196,
+    "error": null
+  },
+  {
+    "url": "https://www.reuters.com",
+    "title": null,
+    "description": null,
+    "status_code": 401,
+    "fetch_time": 0.908,
+    "error": "HTTP 401"
+  },
+  {
+    "url": "https://www.theguardian.com",
+    "title": "Latest news, sport and opinion from the Guardian",
+    "description": "Latest international news, sport and comment from the Guardian",
+    "status_code": 200,
+    "fetch_time": 1.795,
+    "error": null
+  },
+  {
+    "url": "https://www.nytimes.com",
+    "title": "The New York Times - Breaking News, US News, World News and Videos",
+    "description": "Live news, investigations, opinion, photos and video by the journalists of The New York Times from more than 150 countries around the world. Subscribe for coverage of U.S. and international news, politics, business, technology, science, health, arts, sports and more.",
+    "status_code": 200,
+    "fetch_time": 1.924,
+    "error": null
+  },
+  {
+    "url": "https://www.washingtonpost.com",
+    "title": null,
+    "description": null,
+    "status_code": null,
+    "fetch_time": 11.458,
+    "error": "HTTPSConnectionPool(host='www.washingtonpost.com', port=443): Read timed out. (read timeout=10)"
+  },
+  {
+    "url": "https://techcrunch.com",
+    "title": "TechCrunch | Startup and Technology News",
+    "description": "TechCrunch | Reporting on the business of technology, startups, venture capital funding, and Silicon Valley",
+    "status_code": 200,
+    "fetch_time": 0.748,
+    "error": null
+  },
+  {
+    "url": "https://www.theverge.com",
+    "title": null,
+    "description": null,
+    "status_code": 420,
+    "fetch_time": 0.802,
+    "error": "HTTP 420"
+  },
+  {
+    "url": "https://arstechnica.com",
+    "title": "Ars Technica - Serving the Technologist since 1998. News, reviews, and analysis.",
+    "description": "News and reviews, covering IT, AI, science, space, health, gaming, cybersecurity, tech policy, computers, mobile devices, and operating systems.",
+    "status_code": 200,
+    "fetch_time": 2.025,
+    "error": null
+  },
+  {
+    "url": "https://www.wired.com",
+    "title": "WIRED - The Latest in Technology, Science, Culture and Business | WIRED",
+    "description": "We bring you the future as it happens. From the latest in science and technology to the big stories in business and culture, we've got you covered.",
+    "status_code": 200,
+    "fetch_time": 1.923,
+    "error": null
+  },
+  {
+    "url": "https://www.cnet.com",
+    "title": "CNET: Product reviews, advice, how-tos and the latest news",
+    "description": "Get full-length product reviews, the latest news, tech coverage, daily deals, and category deep dives from CNET experts worldwide.",
+    "status_code": 200,
+    "fetch_time": 2.482,
+    "error": null
+  },
+  {
+    "url": "https://www.wikipedia.org",
+    "title": null,
+    "description": null,
+    "status_code": 403,
+    "fetch_time": 0.994,
+    "error": "HTTP 403"
+  },
+  {
+    "url": "https://stackoverflow.com",
+    "title": null,
+    "description": null,
+    "status_code": 403,
+    "fetch_time": 0.533,
+    "error": "HTTP 403"
+  },
+  {
+    "url": "https://github.com",
+    "title": "GitHub · Change is constant. GitHub keeps you ahead. · GitHub",
+    "description": "Join the world's most widely adopted, AI-powered developer platform where millions of developers, businesses, and the largest open source community build software that advances humanity.",
+    "status_code": 200,
+    "fetch_time": 0.753,
+    "error": null
+  },
+  {
+    "url": "https://www.python.org",
+    "title": "Welcome to Python.org",
+    "description": "The official home of the Python Programming Language",
+    "status_code": 200,
+    "fetch_time": 1.206,
+    "error": null
+  },
+  {
+    "url": "https://docs.python.org",
+    "title": "3.14.3 Documentation",
+    "description": "The official Python documentation.",
+    "status_code": 200,
+    "fetch_time": 0.889,
+    "error": null
+  },
+  {
+    "url": "https://www.reddit.com",
+    "title": "Reddit - The heart of the internet",
+    "description": "Reddit is where millions of people gather for conversations about the things they care about, in over 100,000 subreddit communities.",
+    "status_code": 200,
+    "fetch_time": 1.088,
+    "error": null
+  },
+  {
+    "url": "https://medium.com",
+    "title": null,
+    "description": null,
+    "status_code": 403,
+    "fetch_time": 0.709,
+    "error": "HTTP 403"
+  },
+  {
+    "url": "https://dev.to",
+    "title": "DEV Community",
+    "description": "A space to discuss and keep up software development and manage your software career",
+    "status_code": 200,
+    "fetch_time": 1.629,
+    "error": null
+  },
+  {
+    "url": "https://www.mozilla.org",
+    "title": "Internet for people, not profit — Mozilla Global",
+    "description": "Mozilla is the not-for-profit behind the lightning fast Firefox browser. We put people over profit to give everyone more power online.",
+    "status_code": 200,
+    "fetch_time": 1.138,
+    "error": null
+  },
+  {
+    "url": "https://www.w3.org",
+    "title": "W3C",
+    "description": "The World Wide Web Consortium (W3C) develops standards and guidelines to help everyone build a web based on the principles of accessibility, internationalization, privacy and security.",
+    "status_code": 200,
+    "fetch_time": 0.773,
+    "error": null
+  }
+]

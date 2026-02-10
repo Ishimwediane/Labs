@@ -1,18 +1,12 @@
 import re
 from bs4 import BeautifulSoup
-from .models import PageMetadata
+from models import PageMetadata
 
 
 def extract_metadata_from_html(html: str, url: str) -> PageMetadata:
     """
     Extract metadata from HTML content using BeautifulSoup and regex.
-    
-    Args:
-        html: HTML content as string
-        url: URL of the page
-    
-    Returns:
-        PageMetadata object with extracted information
+
     """
     soup = BeautifulSoup(html, 'html.parser')
     
