@@ -2,8 +2,24 @@ from src.database.connection import get_connection
 from psycopg2.extras import RealDictCursor
 
 
+from src.utils.validators import validate_name, validate_price, validate_stock
+
 def create_product(name, category_id, price, stock_quantity, metadata):
     """Create a new product"""
+    
+    # Validate inputs
+    is_valid_name, message_name = validate_name(name)
+    if not is_valid_name:
+        raise ValueError(message_name)
+    
+    is_valid_price, message_price = validate_price(price)
+    if not is_valid_price:
+        raise ValueError(message_price)
+        
+    is_valid_stock, message_stock = validate_stock(stock_quantity)
+    if not is_valid_stock:
+        raise ValueError(message_stock)
+
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     

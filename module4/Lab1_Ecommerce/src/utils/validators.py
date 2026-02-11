@@ -5,7 +5,7 @@ from typing import Tuple
 
 def validate_email(email: str) -> Tuple[bool, str]:
     """
-    Validate email address format.
+    Validate email format.
 
     """
     if not email:

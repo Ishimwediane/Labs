@@ -3,9 +3,7 @@ from .settings import settings
 class DatabaseConfig:
     """Database configuration and connection parameters."""
     
-    POSTGRES_MIN_CONNECTIONS = 1
-    POSTGRES_MAX_CONNECTIONS = 10
-    
+
     MONGODB_SERVER_SELECTION_TIMEOUT = 5000  
     
     REDIS_SOCKET_TIMEOUT = 5  
@@ -19,9 +17,7 @@ class DatabaseConfig:
     def get_postgres_config() -> dict:
         """
         Get PostgreSQL connection configuration.
-        
-        Returns:
-            Dictionary with PostgreSQL connection parameters
+
         """
         return {
             'host': settings.POSTGRES_HOST,
