@@ -2,6 +2,8 @@ from src.database.connection import get_connection
 from config.database import DatabaseConfig
 from psycopg2.extras import RealDictCursor
 import redis
+import json
+from decimal import Decimal
 from pymongo import MongoClient
 from datetime import datetime
 
@@ -19,6 +21,9 @@ def show_redis_cache():
         cached = r.get('top_products')
         if cached:
             print(f"[CACHE HIT] Found cached data")
+            products = json.loads(cached)
+            for p in products:
+                print(f"  - {p['name']}: ${p['price']}")
         else:
             print("[CACHE MISS] Fetching from database...")
             
@@ -26,8 +31,15 @@ def show_redis_cache():
             from src.repositories.product_repository import get_top_products
             products = get_top_products(limit=5)
             
-            # Cache results
-            r.setex('top_products', 300, str(products))
+            # Helper to Convert Decimals to float for JSON
+            class DecimalEncoder(json.JSONEncoder):
+                def default(self, o):
+                    if isinstance(o, Decimal):
+                        return float(o)
+                    return super(DecimalEncoder, self).default(o)
+            
+            # Cache results as JSON
+            r.setex('top_products', 300, json.dumps(products, cls=DecimalEncoder))
             print(f"[CACHED] Stored top 5 products")
             
             for p in products:
