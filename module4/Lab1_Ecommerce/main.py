@@ -34,15 +34,15 @@ def main():
         # Summary
 
         print("Summary:")
-        print("[OK] Database connectivity with psycopg2")
-        print("[OK] CRUD operations with parameterized queries")
-        print("[OK] ACID transactions")
-        print("[OK] Redis caching")
-        print("[OK] MongoDB sessions")
-        print("[OK] Window functions (RANK)")
-        print("[OK] Common Table Expressions (CTEs)")
-        print("[OK] JSONB queries")
-        print("[OK] Query optimization (EXPLAIN ANALYZE)")
+        print(" Database connectivity with psycopg2")
+        print(" CRUD operations with parameterized queries")
+        print(" ACID transactions")
+        print(" Redis caching")
+        print(" MongoDB sessions")
+        print(" Window functions (RANK)")
+        print(" Common Table Expressions (CTEs)")
+        print(" JSONB queries")
+        print(" Query optimization (EXPLAIN ANALYZE)")
         
         
     except Exception as e:

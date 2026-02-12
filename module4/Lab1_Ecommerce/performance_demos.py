@@ -9,7 +9,7 @@ def show_explain_analyze():
     conn = get_connection()
     cursor = conn.cursor()
     
-    # Force Index Scans for all queries in this demo
+    #  Index Scans for queries
     print("SET enable_seqscan = off;")
     cursor.execute("SET enable_seqscan = off;")
     
@@ -23,7 +23,7 @@ def show_explain_analyze():
     for row in cursor.fetchall():
         print(f"  {row[0]}")
         
-    # 2. Price Index Demo (New)
+    # 2. Price Index Demo 
     print("\n--- 2. Price Query (Using New Index) ---")
     print("Query: SELECT * FROM products WHERE price > 100")
     cursor.execute("""
