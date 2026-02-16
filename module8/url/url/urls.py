@@ -14,4 +14,7 @@ urlpatterns = [
     
     # accounts app urls
     path('accounts/', include('accounts.urls')),
+    
+    # core app urls
+    path('core/', include('core.urls')),
 ]
