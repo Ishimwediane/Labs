@@ -1,5 +1,6 @@
 from celery import shared_task
 from .models import URL,Click
+from django.utils import timezone
 
 @shared_task
 def track_click_task(url_id,ip_address,user_agent):
