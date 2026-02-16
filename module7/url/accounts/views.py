@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from .serializers import LoginSerializer
 from rest_framework.response import Response
 from .throttles import LoginRateThrottle
+
 # Create your views here.
 class RegisterAPIView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -16,6 +17,7 @@ class LoginAPIView(APIView):
     
     permission_classes = [AllowAny]
     throttle_classes = [LoginRateThrottle]
+    serializer_class = LoginSerializer
     
 
     def post(self, request):

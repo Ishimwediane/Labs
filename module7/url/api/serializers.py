@@ -15,7 +15,7 @@ class UrlCreateSerializer(serializers.Serializer):
 
 class UrlSerializer(serializers.ModelSerializer):
     short_link = serializers.SerializerMethodField()
-    click_count = serializers.IntegerField(source='click_count', read_only=True)
+    click_count = serializers.IntegerField(read_only=True)
     detailed_stats = serializers.SerializerMethodField()
 
     class Meta:
