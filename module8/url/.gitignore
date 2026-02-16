@@ -83,3 +83,7 @@ tmp/
 # Other
 *.swp
 *~
+
+# Logs directory - ignore log files but keep directory
+logs/*.log
+

@@ -36,6 +36,35 @@ services:
       - db
       - redis
 
+  # Celery Worker - Processes async tasks (like click tracking)
+  celery_worker:
+    build: .
+    container_name: url_shortener_celery_worker
+    command: celery -A url worker --loglevel=info
+    working_dir: /app
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
+  # Celery Beat - Runs periodic tasks (like nightly cleanup)
+  celery_beat:
+    build: .
+    container_name: url_shortener_celery_beat
+    command: celery -A url beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    working_dir: /app
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
 volumes:
   redis_data:
   postgres_data:
+

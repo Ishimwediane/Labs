@@ -4,8 +4,16 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.cache import cache
 from django.db import connection
+import logging
+
+# Logger for health checks
+logger = logging.getLogger(__name__)
 
 def health_check(request):
+    """
+    Health check endpoint to verify DB and Redis connectivity.
+    Returns 200 if both are OK, 503 if either fails.
+    """
     # Check database connectivity
     try:
         with connection.cursor() as cursor:
@@ -13,6 +21,7 @@ def health_check(request):
             db_status = "ok"
     except Exception as e:
         db_status = f"error: {str(e)}"
+        logger.error("Database health check failed", extra={"error": str(e)})
 
     # Check cache connectivity
     try:
@@ -20,6 +29,7 @@ def health_check(request):
         cache_status = "ok" if cache.get("health_check") == "ok" else "error"
     except Exception as e:
         cache_status = f"error: {str(e)}"
+        logger.error("Redis health check failed", extra={"error": str(e)})
 
     return JsonResponse({
         "database": db_status,

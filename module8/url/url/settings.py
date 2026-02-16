@@ -207,3 +207,82 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
+
+# LOGGING CONFIGURATION
+# Structured JSON logging for production-ready monitoring
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'json': {
+            # JSON formatter for structured logs (easier to parse and analyze)
+            '()': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+            'format': '%(asctime)s %(name)s %(levelname)s %(message)s %(pathname)s %(lineno)d'
+        },
+        'simple': {
+            # Simple format for development/debugging
+            'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+    'handlers': {
+        'console': {
+            # Output to console (Docker logs)
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
+            'level': 'INFO',
+        },
+        'file': {
+            # Output to file for persistent logs
+            'class': 'logging.FileHandler',
+            'filename': 'logs/app.log',
+            'formatter': 'json',
+            'level': 'INFO',
+        },
+        'error_file': {
+            # Separate file for errors (500s, exceptions)
+            'class': 'logging.FileHandler',
+            'filename': 'logs/errors.log',
+            'formatter': 'json',
+            'level': 'ERROR',
+        },
+    },
+    'loggers': {
+        'django': {
+            # General Django logs
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            # Log all 500 errors and request failures
+            'handlers': ['console', 'error_file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            # Security warnings (CSRF, suspicious operations, etc.)
+            'handlers': ['console', 'error_file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'shortener': {
+            # Custom app logs (URL creation, clicks, etc.)
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'api': {
+            # API-specific logs
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'celery': {
+            # Celery task logs
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
