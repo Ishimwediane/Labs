@@ -12,9 +12,9 @@ class UrlShortenerService:
         if not owner.is_premium:
             active_urls_count = Url.objects.filter(owner=owner, is_active=True).count()
             if active_urls_count >= 10:
-                raise Exception("Free users can only create up to 10 active URLs.")
+                raise ValueError("Free users can only create up to 10 active URLs.")
             if custom_alias:
-                raise Exception("Free users cannot set a custom alias.")
+                raise ValueError("Free users cannot set a custom alias.")
         short_code=custom_alias or generate_short_code()
         while Url.objects.filter(short_url=short_code).exists():
             short_code=generate_short_code()

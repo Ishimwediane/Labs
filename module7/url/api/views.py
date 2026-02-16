@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404, redirect
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
@@ -32,6 +33,8 @@ class CreateShortUrlView(APIView):
 
 
 class RedirectUrlView(APIView):
+    permission_classes = [AllowAny]
+    
     @extend_schema(responses={302: None, 404: None})
     def get(self, request, short_code):
         cached_url = cache.get(f"url:{short_code}")
