@@ -56,17 +56,9 @@ class RedirectUrlView(APIView):
             is_active=True
         )
         
+        cache.set(f"url:{short_code}", url_obj.original_url, timeout=None)
+
         track_click_task.delay(url_obj.id, request.META.get("REMOTE_ADDR"), request.META.get("HTTP_USER_AGENT",""),request.META.get("HTTP_REFERER", ""))
-        cache.set(f"url:{short_code}", url_obj.original_url, timeout=None)
+        
 
-        Click.objects.create(
-            url=url_obj,
-            ip_address=request.META.get("REMOTE_ADDR"),
-            user_agent=request.META.get("HTTP_USER_AGENT", ""),
-            referer=request.META.get("HTTP_REFERER")
-        )
-
-        url_obj.click_count += 1
-        url_obj.save(update_fields=["click_count"])
-        cache.set(f"url:{short_code}", url_obj.original_url, timeout=None)
         return redirect(url_obj.original_url)
