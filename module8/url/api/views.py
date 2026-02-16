@@ -62,3 +62,15 @@ class RedirectUrlView(APIView):
         
 
         return redirect(url_obj.original_url)
+
+class UpdateShortUrlView(APIView):
+    @extend_schema(request=UrlCreateSerializer, responses={200: UrlSerializer})
+    def put(self, request, short_code):
+        url_obj = get_object_or_404(Url, short_url=short_code, owner=request.user)
+
+        serializer = UrlCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        update_url =serializer.save()
+        cache.delete(f"url:{update_url.short_url}")
+        return Response(UrlSerializer(update_url,context={'request': request}).data, status=status.HTTP_200_OK)
