@@ -1,228 +1,179 @@
-# URL Shortener Microservice
+# Module 6: URL Shortener with PostgreSQL & User Accounts
 
-A simple, beginner-friendly URL shortener microservice built with Django REST Framework, featuring built-in caching, Docker containerization, and interactive API documentation with Swagger UI.
+A URL shortener microservice with **PostgreSQL database** and **user account management**. Built with Django REST Framework and fully containerized with Docker.
 
-## 🚀 Features
+## Architecture
 
-- **URL Shortening**: Convert long URLs into short, shareable links
-- **Automatic Redirect**: Short URLs automatically redirect to original URLs
-- **Built-in Caching**: Fast URL lookups with Django's local memory cache
-- **REST API**: Clean RESTful API with proper HTTP status codes
-- **API Documentation**: Interactive Swagger UI for testing endpoints
-- **Docker Support**: Fully containerized with Docker Compose
-- **Admin Panel**: Django admin interface for managing URLs
-
-## 🛠️ Technology Stack
-
-- **Framework**: Django 5.0 + Django REST Framework
-- **Cache**: Redis (in-memory data store)
-- **API Documentation**: drf-spectacular (OpenAPI/Swagger)
-- **Server**: Gunicorn (production)
-- **Containerization**: Docker & Docker Compose
-- **Database**: SQLite (default, easily switchable to PostgreSQL)
-
-## 📋 Prerequisites
-
-- Python 3.11+
-- Docker & Docker Compose (for containerized setup)
-
-## 🔧 Setup Instructions
-
-### Option 1: Run with Docker (Recommended)
-
-1. **Clone the repository**
-   ```bash
-   cd c:\Users\Amalitech\Desktop\amali\Labs\Labs\module5
-   ```
-
-2. **Build and start containers**
-   ```bash
-   docker-compose up --build
-   ```
-
-3. **Access the application**
-   - API Documentation (Swagger): http://localhost:8000/api/schema/swagger-ui/
-   - Django Admin: http://localhost:8000/admin/
-   - API Endpoint: http://localhost:8000/api/shorten/
-
-### Option 2: Run Locally (Without Docker)
-
-1. **Create virtual environment**
-   ```bash
-   python -m venv venv
-   venv\Scripts\activate  # Windows
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run migrations**
-   ```bash
-   cd url
-   python manage.py migrate
-   ```
-
-4. **Create superuser** (optional, for admin access)
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-5. **Start development server**
-   ```bash
-   python manage.py runserver
-   ```
-
-6. **Access the application**
-   - Swagger UI: http://127.0.0.1:8000/api/schema/swagger-ui/
-   - Admin: http://127.0.0.1:8000/admin/
-
-## 📚 API Usage
-
-### 1. Create Short URL
-
-**Endpoint**: `POST /api/shorten/`
-
-**Request Body**:
-```json
-{
-  "original_url": "https://www.example.com"
-}
+```mermaid
+graph TB
+    Client[Client/Browser]
+    Django[Django App]
+    PostgreSQL[(PostgreSQL Database)]
+    Redis[(Redis Cache)]
+    
+    Client -->|HTTP Requests| Django
+    Django -->|Query/Store URLs| PostgreSQL
+    Django -->|Cache URLs| Redis
+    Django -->|User Auth| PostgreSQL
+    
+    subgraph "Docker Compose"
+        Django
+        PostgreSQL
+        Redis
+    end
 ```
 
-**Response** (201 Created):
-```json
-{
-  "id": 1,
-  "original_url": "https://www.example.com",
-  "short_url": "abc123",
-  "created_at": "2026-01-23T14:00:00Z"
-}
+### Database Schema
+
+```mermaid
+erDiagram
+    User ||--o{ URL : owns
+    User {
+        int id PK
+        string username
+        string email
+        string password
+        datetime date_joined
+    }
+    URL {
+        int id PK
+        string original_url
+        string short_url
+        int owner_id FK
+        datetime created_at
+    }
 ```
 
-**cURL Example**:
+## Quick Start
+
+### Run with Docker (Recommended)
+
 ```bash
-curl -X POST http://localhost:8000/api/shorten/ \
-  -H "Content-Type: application/json" \
-  -d '{"original_url": "https://www.google.com"}'
+# Navigate to module
+cd module6
+
+# Start all services
+docker-compose up -d
+
+# Run migrations
+docker exec -it url_shortener_web python manage.py migrate
+
+# Create superuser (optional)
+docker exec -it url_shortener_web python manage.py createsuperuser
+
+# Access the app
+# Swagger UI: http://localhost:8000/api/schema/swagger-ui/
+# Admin: http://localhost:8000/admin/
 ```
 
-### 2. Redirect to Original URL
+### Run Locally (Without Docker)
 
-**Endpoint**: `GET /{short_code}/`
-
-**Example**: 
-- Visit: http://localhost:8000/abc123/
-- Redirects to: https://www.example.com
-
-**Response**: 302 Found (redirect)
-
-## 🧪 Testing
-
-### Run Tests
 ```bash
+# Create virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up PostgreSQL (ensure it's running)
+# Update .env with your PostgreSQL credentials
+
+# Run migrations
 cd url
-python manage.py test url_shortern
-```
-
-### Test Coverage
-The test suite includes:
-- Model tests
-- Service layer tests
-- API endpoint tests
-- Integration tests
-
-## 📁 Project Structure
-
-```
-module5/
-├── url/                          # Django project root
-│   ├── url/                      # Project settings
-│   │   ├── settings.py          # Django settings with DRF config
-│   │   ├── urls.py              # Main URL routing + Swagger endpoints
-│   │   └── wsgi.py              # WSGI configuration
-│   ├── url_shortern/            # Main application
-│   │   ├── models.py            # Url model
-│   │   ├── serializer.py        # DRF serializers
-│   │   ├── services.py          # Business logic (URL shortening)
-│   │   ├── views.py             # API views (Create, Redirect)
-│   │   ├── urls.py              # App URL routing
-│   │   ├── admin.py             # Admin configuration
-│   │   └── tests.py             # Test suite
-│   └── manage.py                # Django management script
-├── Dockerfile                    # Multi-stage Docker build
-├── docker-compose.yml           # Docker services orchestration
-├── requirements.txt             # Python dependencies
-└── README.md                    # This file
-```
-
-## 🎯 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/shorten/` | Create a new short URL |
-| GET | `/{short_code}/` | Redirect to original URL |
-| GET | `/api/schema/` | OpenAPI schema (JSON) |
-| GET | `/api/schema/swagger-ui/` | Interactive API documentation |
-| GET | `/admin/` | Django admin panel |
-
-## 🐛 Troubleshooting
-
-### Port Already in Use
-- Change port in `docker-compose.yml` or use different port:
-  ```bash
-  python manage.py runserver 8001
-  ```
-
-### Migration Issues
-```bash
-cd url
-python manage.py makemigrations
 python manage.py migrate
+
+# Create superuser
+python manage.py createsuperuser
+
+# Start server
+python manage.py runserver
+
+# Access: http://127.0.0.1:8000/api/schema/swagger-ui/
 ```
 
-## 📝 Development Notes
+## Key Features
 
-### How It Works
-1. User submits a long URL via POST request
-2. Service generates a unique 6-character short code
-3. URL mapping is stored in both Redis (primary) and SQLite (backup)
-4. Short code is cached in Redis for ultra-fast lookups
-5. When user visits short URL, Redis provides instant redirect
+- **PostgreSQL Database**: Production-ready relational database
+- **User Accounts**: Custom User model with registration
+- **URL Ownership**: Each URL belongs to a user
+- **Redis Caching**: Fast URL lookups
+- **REST API**: Full CRUD operations
+- **Swagger UI**: Interactive API documentation
+- **Docker**: Complete containerization
 
-### Key Design Decisions
-- **Redis Caching**: Uses Redis for 100x faster URL lookups
-- **Unique Short Codes**: Random generation with collision checking
-- **RESTful Design**: Proper HTTP methods and status codes
-- **Docker**: Easy deployment and consistent environments
+## API Endpoints
 
-## 🚢 Production Deployment
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/shorten/` | Create short URL | No |
+| GET | `/{short_code}/` | Redirect to original URL | No |
+| GET | `/api/schema/swagger-ui/` | API documentation | No |
+| GET | `/admin/` | Admin panel | Yes (Staff) |
 
-For production deployment:
+## Technology Stack
 
-1. Update `.env` with production values:
-   - Set `DEBUG=False`
-   - Use strong `SECRET_KEY`
-   - Configure `ALLOWED_HOSTS`
+- **Framework**: Django 6.0 + Django REST Framework
+- **Database**: PostgreSQL 15
+- **Cache**: Redis 7
+- **API Docs**: drf-spectacular
+- **Containerization**: Docker & Docker Compose
 
-2. Use production Docker target:
-   ```bash
-   docker-compose -f docker-compose.prod.yml up
-   ```
+## Project Structure
 
-3. Use PostgreSQL instead of SQLite (recommended)
+```
+module6/
+├── url/
+│   ├── accounts/          # User management app
+│   │   ├── models.py      # Custom User model
+│   │   └── admin.py
+│   ├── api/               # REST API endpoints
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   └── urls.py
+│   ├── shortener/         # Core URL shortening logic
+│   │   ├── models.py      # URL model
+│   │   └── services.py
+│   └── url/               # Project settings
+│       └── settings.py    # PostgreSQL config
+├── docker-compose.yml     # Orchestration
+└── Dockerfile
+```
 
-4. Set up proper reverse proxy (nginx)
+## Database Inspection
 
-## 📄 License
+```bash
+# Connect to PostgreSQL
+docker exec -it url_shortener_postgres psql -U postgres -d module6_db
 
-This project is created for educational purposes as part of the Python Backend course.
+# View users
+SELECT id, username, email FROM accounts_user;
 
-## 👨‍💻 Author
+# View URLs with owners
+SELECT url.short_url, url.original_url, u.username
+FROM shortener_url url
+JOIN accounts_user u ON url.owner_id = u.id;
 
-Created as Lab 1: URL Shortener Microservice
+# Exit
+\q
+```
+
+## Troubleshooting
+
+**Database connection error:**
+```bash
+# Ensure PostgreSQL is running
+docker-compose ps
+
+# Check logs
+docker-compose logs db
+```
+
+**Migrations not applied:**
+```bash
+docker exec -it url_shortener_web python manage.py migrate
+```
 
 ---
 
-**Happy URL Shortening! 🎉**
+**Module 6 Complete!**   *Next: Module 7 - Authentication & Authorization*

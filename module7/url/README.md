@@ -1,26 +1,118 @@
 # Module 7: URL Shortener with Authentication & Authorization
 
-A production-ready URL shortener microservice featuring **JWT authentication**, **role-based access control (RBAC)**, **tiered user system**, and **Redis caching**. Built with Django REST Framework and fully containerized with Docker.
+A production-ready URL shortener with **JWT authentication**, **role-based access control (RBAC)**, and **tiered user system** (Free/Premium). Built with Django REST Framework and fully containerized with Docker.
 
-##  Features
+##  Architecture
+
+```mermaid
+graph TB
+    Client[Client/Browser]
+    Django[Django Web Server]
+    PostgreSQL[(PostgreSQL Database)]
+    Redis[(Redis Cache)]
+    
+    Client -->|HTTP + JWT Token| Django
+    Django -->|Verify Token| Django
+    Django -->|Check Permissions| Django
+    Django -->|Query/Store| PostgreSQL
+    Django -->|Cache URLs| Redis
+    
+    subgraph "Authentication Flow"
+        Login[Login] -->|Username/Password| JWT[Generate JWT]
+        JWT -->|Access Token| Client
+    end
+    
+    subgraph "Authorization"
+        Request[API Request] -->|Check Tier| RBAC[Free/Premium]
+        RBAC -->|Allow/Deny| Response[Response]
+    end
+    
+    subgraph "Docker Compose"
+        Django
+        PostgreSQL
+        Redis
+    end
+```
+
+### Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Django
+    participant JWT
+    participant DB
+    
+    User->>Django: POST /accounts/register/
+    Django->>DB: Create User (Free/Premium)
+    Django->>User: 201 Created
+    
+    User->>Django: POST /accounts/login/
+    Django->>DB: Verify credentials
+    Django->>JWT: Generate tokens
+    JWT->>User: Access + Refresh tokens
+    
+    User->>Django: POST /api/urls/ (with JWT)
+    Django->>JWT: Verify token
+    Django->>DB: Check user tier
+    Django->>DB: Create URL (if allowed)
+    Django->>User: 201 Created
+```
+
+##  Quick Start
+
+### Run with Docker (Recommended)
+
+```bash
+# Navigate to module
+cd module7/url
+
+# Start all services (web, db, redis)
+docker-compose up -d
+
+# Run migrations
+docker exec -it url_shortener_web python manage.py migrate
+
+# Create superuser
+docker exec -it url_shortener_web python manage.py createsuperuser
+
+# Access the app
+# Swagger UI: http://localhost:8000/api/schema/swagger-ui/
+# Admin: http://localhost:8000/admin/
+```
+
+### Test the API
+
+```bash
+# 1. Register a user
+curl -X POST http://localhost:8000/accounts/register/ \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","email":"test@example.com","password":"SecurePass123!","password_confirm":"SecurePass123!","is_premium":false}'
+
+# 2. Login to get JWT token
+curl -X POST http://localhost:8000/accounts/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","password":"SecurePass123!"}'
+
+# 3. Create short URL (use access token from step 2)
+curl -X POST http://localhost:8000/api/urls/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -d '{"original_url":"https://www.example.com"}'
+```
+
+##  Key Features
 
 ### Authentication & Security
-- **JWT Authentication**: Secure token-based authentication with access and refresh tokens
-- **User Registration**: Email validation and secure password hashing
-- **Rate Limiting**: Throttling on login endpoint (5 attempts/minute) to prevent brute force attacks
-- **Password Security**: Django's PBKDF2 password hashing with salt
+- **JWT Tokens**: Access and refresh tokens
+- **User Registration**: Email validation, password hashing
+- **Rate Limiting**: 5 login attempts/minute
+- **Secure Passwords**: PBKDF2 hashing with salt
 
 ### Authorization & RBAC
-- **Custom Permissions**: `IsOwnerOrReadOnly` - users can only modify their own URLs
-- **Tiered User System**: Free and Premium user tiers with different capabilities
-- **Business Logic Enforcement**: Automatic tier-based feature restrictions
-
-### URL Shortening
-- **Smart URL Generation**: Automatic short code generation with collision detection
-- **Custom Aliases**: Premium users can set custom short codes
-- **Fast Redirects**: Redis-cached URL lookups for instant redirection
-- **Click Tracking**: Record IP address, user agent, and referrer for each click
-- **Analytics**: Premium users get detailed click statistics by country
+- **Custom Permissions**: `IsOwnerOrReadOnly`
+- **Tiered Users**: Free and Premium tiers
+- **Business Logic**: Automatic tier-based restrictions
 
 ### Tier-Based Features
 
@@ -30,450 +122,173 @@ A production-ready URL shortener microservice featuring **JWT authentication**, 
 | Custom Aliases | ❌ | ✅ |
 | Detailed Analytics | ❌ | ✅ |
 | Click Tracking | ✅ | ✅ |
-| URL Redirection | ✅ | ✅ |
+
+##  API Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/accounts/register/` | Register user | No |
+| POST | `/accounts/login/` | Login (get JWT) | No |
+| POST | `/accounts/token/refresh/` | Refresh access token | No |
+| POST | `/api/urls/` | Create short URL | Yes |
+| GET | `/{short_code}/` | Redirect to original URL | No |
+| GET | `/api/schema/swagger-ui/` | API documentation | No |
 
 ## Technology Stack
 
-- **Framework**: Django 5.0.1 + Django REST Framework 3.14
+- **Framework**: Django 5.0 + Django REST Framework
 - **Authentication**: djangorestframework-simplejwt 5.3
-- **Database**: PostgreSQL 15 (Alpine)
-- **Cache**: Redis 7 (Alpine)
-- **API Documentation**: drf-spectacular 0.27 (OpenAPI/Swagger)
+- **Database**: PostgreSQL 15
+- **Cache**: Redis 7
+- **API Docs**: drf-spectacular
 - **Containerization**: Docker & Docker Compose
-- **Python**: 3.11
-
-##  Prerequisites
-
-- Docker Desktop installed and running
-- Docker Compose (included with Docker Desktop)
-- Git (for cloning the repository)
-
-##  Quick Start
-
-### 1. Clone and Navigate
-
-```bash
-cd c:\Users\Amalitech\Desktop\amali\Labs\Labs\module7\url
-```
-
-### 2. Configure Environment
-
-Create `.env` file (or verify it exists):
-
-```bash
-POSTGRES_DB=module7_db
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-
-SECRET_KEY=django-insecure-super-secret-key
-DEBUG=True
-REDIS_LOCATION=redis://redis:6379/1
-```
-
-### 3. Start Services
-
-```bash
-# Start all containers (PostgreSQL, Redis, Django)
-docker-compose up -d
-
-# Check containers are running
-docker-compose ps
-```
-
-### 4. Run Migrations
-
-```bash
-# Apply database migrations
-docker exec -it url_shortener_web python manage.py migrate
-
-# Create superuser (optional, for admin access)
-docker exec -it url_shortener_web python manage.py createsuperuser
-```
-
-### 5. Access the Application
-
-- **Swagger UI**: http://localhost:8000/api/schema/swagger-ui/
-- **ReDoc**: http://localhost:8000/api/schema/redoc/
-- **Admin Panel**: http://localhost:8000/admin/
-- **API Schema**: http://localhost:8000/api/schema/
-
-##  API Documentation
-
-### Authentication Endpoints
-
-#### Register User
-```http
-POST /accounts/register/
-Content-Type: application/json
-
-{
-  "username": "testuser",
-  "email": "user@example.com",
-  "password": "SecurePass123!",
-  "password_confirm": "SecurePass123!",
-  "is_premium": false
-}
-```
-
-**Response (201 Created)**:
-```json
-{
-  "username": "testuser",
-  "email": "user@example.com",
-  "is_premium": false
-}
-```
-
-#### Login
-```http
-POST /accounts/login/
-Content-Type: application/json
-
-{
-  "username": "testuser",
-  "password": "SecurePass123!"
-}
-```
-
-**Response (200 OK)**:
-```json
-{
-  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-  "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
-}
-```
-
-#### Refresh Token
-```http
-POST /accounts/token/refresh/
-Content-Type: application/json
-
-{
-  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."
-}
-```
-
-### URL Management Endpoints
-
-#### Create Short URL (Requires Authentication)
-```http
-POST /api/urls/
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "original_url": "https://www.example.com",
-  "custom_alias": "my-link"  // Optional, premium only
-}
-```
-
-**Response (201 Created)**:
-```json
-{
-  "id": 1,
-  "original_url": "https://www.example.com",
-  "short_url": "my-link",
-  "short_link": "http://localhost:8000/my-link/",
-  "click_count": 0,
-  "detailed_stats": null,  // Premium users see click data here
-  "created_at": "2026-02-16T10:00:00Z"
-}
-```
-
-#### Redirect to Original URL (Public)
-```http
-GET /{short_code}/
-```
-
-**Response**: 302 Redirect to original URL
-
-##  Testing Guide
-
-### Using Swagger UI
-
-1. **Open Swagger UI**: http://localhost:8000/api/schema/swagger-ui/
-
-2. **Register a User**:
-   - Find `POST /accounts/register/`
-   - Click "Try it out"
-   - Enter user details
-   - Execute
-
-3. **Login**:
-   - Find `POST /accounts/login/`
-   - Enter credentials
-   - Copy the `access` token from response
-
-4. **Authorize**:
-   - Click green "Authorize" button at top
-   - Enter: `Bearer <your_access_token>`
-   - Click "Authorize" then "Close"
-
-5. **Create URLs**:
-   - Find `POST /api/urls/`
-   - Click "Try it out"
-   - Enter URL data
-   - Execute
-
-6. **Test Redirect**:
-   - Copy `short_link` from response
-   - Open in browser
-   - Should redirect to original URL
-
-### Testing Business Logic
-
-**Free User Limits**:
-```bash
-# Create 11 URLs as free user
-# 11th URL should fail with: "Free users can only create up to 10 active URLs."
-```
-
-**Premium Features**:
-```bash
-# Try custom alias as free user - should fail
-# Try custom alias as premium user - should work
-# Premium users see detailed_stats, free users see null
-```
-
-**Rate Limiting**:
-```bash
-# Try 6 failed logins within 1 minute
-# 6th attempt should return: 429 Too Many Requests
-```
-
-## Database Inspection
-
-### Connect to PostgreSQL
-
-```bash
-docker exec -it url_shortener_postgres psql -U postgres -d module7_db
-```
-
-### Useful Queries
-
-```sql
--- View all users
-SELECT id, username, email, is_premium, tier FROM accounts_user;
-
--- View all URLs with owner info
-SELECT url.short_url, url.original_url, u.username, u.is_premium
-FROM shortener_url url
-JOIN accounts_user u ON url.owner_id = u.id;
-
--- Count URLs per user
-SELECT u.username, COUNT(url.id) as url_count
-FROM accounts_user u
-LEFT JOIN shortener_url url ON u.id = url.owner_id
-GROUP BY u.username;
-
--- View click tracking data
-SELECT url.short_url, c.country, COUNT(*) as clicks
-FROM shortener_click c
-JOIN shortener_url url ON c.url_id = url.id
-GROUP BY url.short_url, c.country;
-
--- Exit
-\q
-```
-
-##  Redis Inspection
-
-### Connect to Redis
-
-```bash
-docker exec -it url_shortener_redis redis-cli
-```
-
-### Useful Commands
-
-```redis
-# Test connection
-PING
-
-# View all cached URLs
-KEYS url:*
-
-# Get cached URL
-GET url:abc123
-
-# View rate limiting data
-KEYS login_throttle:*
-GET login_throttle:testuser
-
-# Monitor real-time commands
-MONITOR
-
-# Exit
-EXIT
-```
 
 ## Project Structure
 
 ```
 module7/url/
-├── accounts/                    # Authentication app
-│   ├── models.py               # Custom User model
-│   ├── serializers.py          # Login, Register serializers
-│   ├── views.py                # Login, Register views
-│   ├── urls.py                 # Auth endpoints
-│   └── throttling.py           # Rate limiting
-├── api/                        # API app
-│   ├── serializers.py          # URL serializers
-│   ├── views.py                # URL CRUD views
-│   ├── urls.py                 # API endpoints
-│   └── permissions.py          # Custom permissions
-├── shortener/                  # Core business logic
-│   ├── models.py               # Url, Click, Tag models
-│   ├── services.py             # UrlShortenerService
-│   └── admin.py                # Admin configuration
-├── url/                        # Project settings
-│   ├── settings.py             # Django configuration
-│   └── urls.py                 # Main URL routing
-├── .env                        # Environment variables
-├── docker-compose.yml          # Docker orchestration
-├── Dockerfile                  # Docker image
-├── requirements.txt            # Python dependencies
-└── README.md                   # This file
+├── accounts/              # Authentication app
+│   ├── models.py         # Custom User model (tier field)
+│   ├── serializers.py    # Login, Register serializers
+│   ├── views.py          # Login, Register views
+│   ├── urls.py           # Auth endpoints
+│   └── throttling.py     # Rate limiting
+├── api/                   # REST API endpoints
+│   ├── serializers.py    # URL serializers
+│   ├── views.py          # URL CRUD views
+│   ├── urls.py           # API endpoints
+│   └── permissions.py    # IsOwnerOrReadOnly
+├── shortener/             # Core business logic
+│   ├── models.py         # URL, Click, Tag models
+│   ├── services.py       # UrlShortenerService
+│   └── admin.py
+├── url/
+│   ├── settings.py       # JWT & Redis config
+│   └── urls.py
+├── docker-compose.yml     # 3 services: web, db, redis
+└── Dockerfile
 ```
 
-## API Endpoints Summary
+## Database Inspection
 
-| Method | Endpoint | Auth Required | Description |
-|--------|----------|---------------|-------------|
-| POST | `/accounts/register/` | ❌ | Register new user |
-| POST | `/accounts/login/` | ❌ | Login and get JWT tokens |
-| POST | `/accounts/token/refresh/` | ❌ | Refresh access token |
-| POST | `/api/urls/` | ✅ | Create short URL |
-| GET | `/{short_code}/` | ❌ | Redirect to original URL |
-| GET | `/api/schema/` | ❌ | OpenAPI schema (JSON) |
-| GET | `/api/schema/swagger-ui/` | ❌ | Interactive API docs |
-| GET | `/admin/` | ✅ (Staff) | Django admin panel |
+```bash
+# Connect to PostgreSQL
+docker exec -it url_shortener_postgres psql -U postgres -d module7_db
+
+# View users with tiers
+SELECT id, username, email, is_premium, tier FROM accounts_user;
+
+# View URLs with owner info
+SELECT url.short_url, url.original_url, u.username, u.is_premium
+FROM shortener_url url
+JOIN accounts_user u ON url.owner_id = u.id;
+
+# Count URLs per user (check Free user limit)
+SELECT u.username, u.tier, COUNT(url.id) as url_count
+FROM accounts_user u
+LEFT JOIN shortener_url url ON u.id = url.owner_id
+GROUP BY u.username, u.tier;
+
+# View click tracking
+SELECT url.short_url, c.country, COUNT(*) as clicks
+FROM shortener_click c
+JOIN shortener_url url ON c.url_id = url.id
+GROUP BY url.short_url, c.country;
+
+# Exit
+\q
+```
+
+## Testing Business Logic
+
+### Test Free User Limits
+
+```bash
+# 1. Register as Free user
+# 2. Create 10 URLs (should succeed)
+# 3. Try to create 11th URL (should fail with error message)
+# Expected: "Free users can only create up to 10 active URLs."
+```
+
+### Test Premium Features
+
+```bash
+# 1. Register as Premium user (is_premium: true)
+# 2. Create URL with custom alias
+# Expected: Custom alias works, detailed_stats visible
+
+# 3. Register as Free user
+# 4. Try custom alias
+# Expected: Error - "Only premium users can set custom aliases"
+```
+
+### Test Rate Limiting
+
+```bash
+# Try 6 failed logins within 1 minute
+# Expected: 6th attempt returns 429 Too Many Requests
+```
+
+## JWT Token Management
+
+```bash
+# Login returns two tokens
+{
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",  # Valid for 1 day
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."   # Valid for 5 minutes
+}
+
+# Use access token in requests
+Authorization: Bearer <access_token>
+
+# Refresh when access token expires
+curl -X POST http://localhost:8000/accounts/token/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh":"YOUR_REFRESH_TOKEN"}'
+```
 
 ## Troubleshooting
 
-### Containers Won't Start
-
+**JWT token invalid:**
 ```bash
-# Check logs
-docker-compose logs web
-docker-compose logs db
-docker-compose logs redis
-
-# Restart services
-docker-compose restart
-
-# Full reset
-docker-compose down -v
-docker-compose up -d
+# Check token hasn't expired
+# Ensure "Bearer " prefix in Authorization header
+# Verify SECRET_KEY matches between requests
 ```
 
-### Database Connection Error
-
+**Rate limiting not working:**
 ```bash
-# Wait for database to be ready
-docker-compose up -d db
-timeout /t 10
-docker-compose up -d web
+# Check Redis is running
+docker-compose ps redis
+
+# Test Redis connection
+docker exec -it url_shortener_redis redis-cli PING
 ```
 
-### Redis Connection Error
-
+**Free user can create >10 URLs:**
 ```bash
-# Verify REDIS_LOCATION in .env
-cat .env | grep REDIS
-
-# Should be: redis://redis:6379/1
-# NOT: redis://127.0.0.1:6379/1
+# Check business logic in api/views.py
+# Verify tier field in User model
+# Check URL count query
 ```
 
-### Swagger UI Not Loading
+## Monitor Redis Cache
 
 ```bash
-# Check for serializer errors
-docker-compose logs web | grep -i error
+# Connect to Redis
+docker exec -it url_shortener_redis redis-cli
 
-# Restart web container
-docker-compose restart web
+# View cached URLs
+KEYS url:*
+
+# View rate limiting data
+KEYS login_throttle:*
+GET login_throttle:testuser
+
+# Exit
+EXIT
 ```
-
-##  Security Features
-
-- **JWT Tokens**: Secure, stateless authentication
-- **Password Hashing**: PBKDF2 with salt (Django default)
-- **Rate Limiting**: Prevents brute force attacks
-- **Input Validation**: URL format validation
-- **Permission Classes**: Owner-based access control
-- **CORS Ready**: Configurable for production
-
-## Production Deployment
-
-### Environment Variables
-
-Update `.env` for production:
-
-```bash
-SECRET_KEY=<generate-strong-secret-key>
-DEBUG=False
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
-
-# Use strong database credentials
-POSTGRES_PASSWORD=<strong-password>
-
-# Configure Redis with password
-REDIS_LOCATION=redis://:password@redis:6379/1
-```
-
-### Docker Production Build
-
-```bash
-# Build production image
-docker-compose -f docker-compose.prod.yml build
-
-# Start production services
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Recommended Production Setup
-
-1. Use **PostgreSQL** (already configured)
-2. Use **Redis** with password authentication
-3. Set up **nginx** as reverse proxy
-4. Enable **HTTPS** with SSL certificates
-5. Configure **CORS** for frontend domains
-6. Set up **logging** and monitoring
-7. Use **Gunicorn** or **uWSGI** instead of runserver
-
-## Performance
-
-- **Redis Caching**: 100x faster URL lookups vs database queries
-- **Connection Pooling**: Efficient database connections
-- **Lazy Loading**: Optimized queries with `select_related`
-- **Indexed Fields**: Fast lookups on `short_url` and `owner_id`
-
-##  License
-
-This project is created for educational purposes as part of the Python Backend Development course - Module 7: Authentication & Authorization.
-
-##  Author
-
-**Ishimwe Diane**
-- GitHub: [@Ishimwediane](https://github.com/Ishimwediane)
-
-##  Learning Outcomes
-
-By completing this module, you've learned:
-- JWT authentication implementation
-- Role-based access control (RBAC)
-- Custom Django permissions
-- Business logic enforcement
-- Redis caching strategies
-- Rate limiting and throttling
-- Docker containerization
-- API documentation with Swagger
-- Security best practices
 
 ---
 
-**Module 7 Complete! 🎉**
+**Module 7 Complete!** 🎉 *Next: Module 8 - Celery & Logging*

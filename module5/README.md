@@ -2,7 +2,7 @@
 
 A simple, beginner-friendly URL shortener microservice built with Django REST Framework, featuring built-in caching, Docker containerization, and interactive API documentation with Swagger UI.
 
-## 🚀 Features
+## Features
 
 - **URL Shortening**: Convert long URLs into short, shareable links
 - **Automatic Redirect**: Short URLs automatically redirect to original URLs
@@ -12,7 +12,7 @@ A simple, beginner-friendly URL shortener microservice built with Django REST Fr
 - **Docker Support**: Fully containerized with Docker Compose
 - **Admin Panel**: Django admin interface for managing URLs
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Framework**: Django 5.0 + Django REST Framework
 - **Cache**: Redis (in-memory data store)
@@ -21,12 +21,12 @@ A simple, beginner-friendly URL shortener microservice built with Django REST Fr
 - **Containerization**: Docker & Docker Compose
 - **Database**: SQLite (default, easily switchable to PostgreSQL)
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.11+
 - Docker & Docker Compose (for containerized setup)
 
-## 🔧 Setup Instructions
+## Setup Instructions
 
 ### Option 1: Run with Docker (Recommended)
 
@@ -78,7 +78,7 @@ A simple, beginner-friendly URL shortener microservice built with Django REST Fr
    - Swagger UI: http://127.0.0.1:8000/api/schema/swagger-ui/
    - Admin: http://127.0.0.1:8000/admin/
 
-## 📚 API Usage
+## API Usage
 
 ### 1. Create Short URL
 
@@ -118,7 +118,7 @@ curl -X POST http://localhost:8000/api/shorten/ \
 
 **Response**: 302 Found (redirect)
 
-## 🧪 Testing
+## Testing
 
 ### Run Tests
 ```bash
@@ -133,7 +133,7 @@ The test suite includes:
 - API endpoint tests
 - Integration tests
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 module5/
@@ -157,7 +157,7 @@ module5/
 └── README.md                    # This file
 ```
 
-## 🎯 API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -167,7 +167,7 @@ module5/
 | GET | `/api/schema/swagger-ui/` | Interactive API documentation |
 | GET | `/admin/` | Django admin panel |
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Port Already in Use
 - Change port in `docker-compose.yml` or use different port:
@@ -182,7 +182,7 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-## 📝 Development Notes
+## Development Notes
 
 ### How It Works
 1. User submits a long URL via POST request
@@ -197,7 +197,7 @@ python manage.py migrate
 - **RESTful Design**: Proper HTTP methods and status codes
 - **Docker**: Easy deployment and consistent environments
 
-## 🚢 Production Deployment
+## Production Deployment
 
 For production deployment:
 
@@ -215,11 +215,11 @@ For production deployment:
 
 4. Set up proper reverse proxy (nginx)
 
-## 📄 License
+## License
 
 This project is created for educational purposes as part of the Python Backend course.
 
-## 👨‍💻 Author
+## Author
 
 Created as Lab 1: URL Shortener Microservice
 

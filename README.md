@@ -1,448 +1,411 @@
-# Python Labs - Complete Submission Repository
+# Python Labs - Complete Monorepo
 
-This repository contains my comprehensive solutions for Python programming labs across multiple modules, covering OOP fundamentals, clean code practices, advanced Python concepts, and database integration.
+A comprehensive Python learning journey from **OOP fundamentals** to **production-ready Django microservices** with Celery, JWT authentication, and structured logging.
 
-## Repository Overview
+##  Repository Architecture
 
-This repository is organized into **5 modules**, each containing multiple labs that progressively build Python development skills:
+```mermaid
+graph TB
+    subgraph "Modules 1-2: Python Fundamentals"
+        M1[Module 1: OOP<br/>4 Labs]
+        M2[Module 2: Clean Code & Testing<br/>4 Labs]
+    end
+    
+    subgraph "Module 3: Advanced Python"
+        M3[Module 3: Collections & Async<br/>2 Labs]
+    end
+    
+    subgraph "Module 4: Database Integration"
+        M4[Module 4: PostgreSQL, MongoDB, Redis<br/>1 Lab]
+    end
+    
+    subgraph "Modules 5-8: Django Microservices Evolution"
+        M5[Module 5: Basic Microservice<br/>Django + Redis]
+        M6[Module 6: Database & Users<br/>+ PostgreSQL + Accounts]
+        M7[Module 7: Auth & RBAC<br/>+ JWT + Tiered Users]
+        M8[Module 8: Production<br/>+ Celery + Logging]
+    end
+    
+    M1 --> M2
+    M2 --> M3
+    M3 --> M4
+    M4 --> M5
+    M5 --> M6
+    M6 --> M7
+    M7 --> M8
+```
 
-| Module | Focus Area | Labs | Status |
-|--------|-----------|------|--------|
-| **Module 1** | OOP Fundamentals | 4 Labs | Complete |
-| **Module 2** | Clean Code & Testing | 4 Labs | Complete |
-| **Module 3** | Advanced Python | 2 Labs |  Complete |
-| **Module 4** | Database Integration | 1 Lab | Complete |
-| **Module 5** | Django Microservices | 1 Lab | Complete |
+##  Modules Overview
 
----
+| Module | Focus | Labs | Key Technologies |
+|--------|-------|------|------------------|
+| **[Module 1](./module1)** | OOP Fundamentals | 4 | Classes, Inheritance, Polymorphism |
+| **[Module 2](./module2)** | Clean Code & Testing | 4 | TDD, pytest, bcrypt, PostgreSQL |
+| **[Module 3](./module3)** | Advanced Python | 2 | asyncio, aiohttp, dataclasses |
+| **[Module 4](./module4)** | Database Integration | 1 | PostgreSQL, MongoDB, Redis |
+| **[Module 5](./module5)** | Django Microservices | 1 | Django REST, Redis, Docker |
+| **[Module 6](./module6)** | PostgreSQL & Users | 1 | PostgreSQL, Custom User Model |
+| **[Module 7](./module7)** | Auth & Authorization | 1 | JWT, RBAC, Rate Limiting |
+| **[Module 8](./module8)** | Production Features | 1 | Celery, Celery Beat, JSON Logging |
 
-## Module 1: Object-Oriented Programming Fundamentals
+##  Django Microservices Evolution (Modules 5-8)
 
-**Focus**: Core OOP principles, inheritance, polymorphism, encapsulation, and abstraction.
+### Architecture Progression
 
-### Labs
+```mermaid
+graph LR
+    subgraph "Module 5: Basic"
+        D5[Django] --> R5[Redis Cache]
+    end
+    
+    subgraph "Module 6: + Database"
+        D6[Django] --> PG6[(PostgreSQL)]
+        D6 --> R6[Redis]
+        PG6 -.User Accounts.-> D6
+    end
+    
+    subgraph "Module 7: + Auth"
+        D7[Django + JWT] --> PG7[(PostgreSQL)]
+        D7 --> R7[Redis]
+        PG7 -.Free/Premium Users.-> D7
+    end
+    
+    subgraph "Module 8: + Production"
+        D8[Django] --> PG8[(PostgreSQL)]
+        D8 --> R8[Redis Broker]
+        R8 --> C8[Celery Worker]
+        R8 --> B8[Celery Beat]
+        C8 --> L8[JSON Logs]
+        D8 --> L8
+    end
+```
 
-| Lab | Project | Description | Key Concepts |
-|-----|---------|-------------|--------------|
-| 1 | [Employee Payroll Tracker](./module1/Employee-Payroll-Tracker) | Console-based payroll management system | Classes, Inheritance, Polymorphism, Abstract Base Classes |
-| 2 | [Library Management System](./module1/library-management) | Library book and member management | Encapsulation, Class Design, Data Structures |
-| 3 | [Student Management System](./module1/student-management-system) | Student records and grade tracking | OOP Design Patterns, File I/O |
-| 4 | [Vehicle Rental System](./module1/vehicle-rental) | Vehicle rental and booking management | Inheritance Hierarchies, Business Logic |
+### Feature Comparison
 
-### Key Features
-- **Employee Payroll Tracker**: Supports Full-Time, Contract, and Intern employees with automatic tax calculation and payslip generation
-- **Library Management**: Book cataloging, member management, borrowing/returning workflows
-- **Student Management**: Grade tracking, GPA calculation, student records management
-- **Vehicle Rental**: Multi-vehicle type support, rental calculations, booking system
+| Feature | Module 5 | Module 6 | Module 7 | Module 8 |
+|---------|----------|----------|----------|----------|
+| **Database** | SQLite | PostgreSQL | PostgreSQL | PostgreSQL |
+| **Caching** | Redis | Redis | Redis | Redis |
+| **User Accounts** | ❌ | ✅ | ✅ | ✅ |
+| **Authentication** | ❌ | Basic | JWT | JWT |
+| **Authorization** | ❌ | ❌ | RBAC (Free/Premium) | RBAC |
+| **Rate Limiting** | ❌ | ❌ | ✅ | ✅ |
+| **Click Tracking** | ❌ | ❌ | ✅ | ✅ (Async) |
+| **Async Tasks** | ❌ | ❌ | ❌ | Celery |
+| **Scheduled Tasks** | ❌ | ❌ | ❌ | Celery Beat |
+| **Logging** | Basic | Basic | Basic | JSON Structured |
+| **Docker Services** | 2 (web, redis) | 3 (web, db, redis) | 3 | 5 (web, db, redis, worker, beat) |
 
----
+##  Quick Start
 
-## Module 2: Clean Code, Testing & Git
+### Prerequisites
 
-**Focus**: Clean code principles, TDD, testing strategies, and professional Git workflows.
+- Python 3.11+
+- Docker & Docker Compose (for Django modules)
+- PostgreSQL (for local development)
+- Git
 
-### Labs
+### Running Any Module
 
-| Lab | Project | Description | Key Concepts |
-|-----|---------|-------------|--------------|
-| 1 | [Resilient Data Importer](./module2/resilient-data-importer) | CSV data import with validation and error handling | Exception Handling, File I/O, Data Validation |
-| 2 | [Weather API Stub](./module2/weather-api-stub) | TDD-based weather service with mock provider | TDD, Mocking, Dependency Injection |
-| 3 | [Secure Service Module](./module2/secure-service-module) | Authentication module with password hashing | Security, bcrypt, Interface Design |
-| 4 | [Data Processing Pipeline](./module2/data_processing_pipeline) | Multi-stage data pipeline with sentiment analysis | Pipeline Architecture, Database Integration |
+```bash
+# Navigate to module
+cd module{X}
 
-### Key Features
-- **Resilient Data Importer**: Email validation, duplicate detection, JSON storage with atomic writes
-- **Weather API Stub**: Mock provider pattern, SOLID principles, comprehensive test coverage
-- **Secure Service Module**: User authentication, password hashing with bcrypt, 100% test coverage
-- **Data Processing Pipeline**: Text cleaning, sentiment analysis, PostgreSQL/SQLite integration
+# For Django modules (5-8)
+docker-compose up -d
+docker exec -it url_shortener_web python manage.py migrate
+docker exec -it url_shortener_web python manage.py createsuperuser
 
----
+# For Python modules (1-4)
+python -m venv venv
+venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+python main.py
+```
 
-## Module 3: Advanced Python Concepts
+##  Module Details
 
-**Focus**: Advanced data structures, collections, async programming, and performance optimization.
+### Module 1: OOP Fundamentals
 
-### Labs
+**Labs**: Employee Payroll, Library Management, Student Management, Vehicle Rental
 
-| Lab | Project | Description | Key Concepts |
-|-----|---------|-------------|--------------|
-| 1 | [Student Grade Analytics Tool](./module3/lab1-Student-Grade-Analytics-Tool) | CSV-based grade analytics with advanced collections | `dataclasses`, `Counter`, `defaultdict`, `deque`, Type Hints |
-| 5 | [Async Web Scraper](./module3/lab5-Async-Web-Scraper) | Multi-approach web scraper with benchmarking | `asyncio`, `aiohttp`, Threading, Performance Comparison |
+**Key Concepts**:
+- Classes and Objects
+- Inheritance and Polymorphism
+- Abstract Base Classes
+- Encapsulation
 
-### Key Features
-- **Grade Analytics Tool**: 
-  - Advanced collections (`Counter`, `defaultdict`, `OrderedDict`, `deque`)
-  - Comprehensive type hinting with `TypedDict`
-  - Grade distribution analysis and rolling averages
-  
-- **Async Web Scraper**:
-  - Three implementations: Sequential, Threaded, Async
-  - Performance benchmarking and comparison
-  - Utility decorators (`@retry`, `@log_execution`)
-  - Async generators for data processing
-
----
-
-## Module 4: Database Integration & Analytics
-
-**Focus**: Database design, SQL optimization, NoSQL integration, and data pipeline architecture.
-
-### Labs
-
-| Lab | Project | Description | Key Concepts |
-|-----|---------|-------------|--------------|
-| 1 | [E-Commerce Analytics Pipeline](./module4/Lab1_Ecommerce) | Full-stack data pipeline with PostgreSQL, MongoDB, Redis | Database Design, CRUD, Transactions, Caching, Advanced SQL |
-
-### Key Features
-- **Database Schema**: 3NF normalized design with ER diagram
-- **PostgreSQL Integration**: 
-  - Connection pooling with psycopg2
-  - CRUD operations with parameterized queries
-  - ACID transactions
-  - Window functions (RANK)
-  - Common Table Expressions (CTEs)
-  - JSONB for flexible metadata
-  - Performance optimization with EXPLAIN ANALYZE
-  
-- **NoSQL Integration**:
-  - MongoDB Atlas for session storage
-  - Redis caching layer
-  
-- **Architecture**:
-  - Repository pattern for data access
-  - Service layer for business logic
-  - Clean separation of concerns
-
----
-
-## Module 5: Django Microservices
-
-**Focus**: RESTful API development, microservices architecture, Docker containerization, and API documentation.
-
-### Labs
-
-| Lab | Project | Description | Key Concepts |
-|-----|---------|-------------|--------------|
-| 1 | [URL Shortener Microservice](./module5) | Django REST API for URL shortening with Redis caching | Django REST Framework, Redis, Docker, OpenAPI/Swagger, Microservices |
-
-### Key Features
-- **Django REST Framework**: 
-  - RESTful API design with proper HTTP methods
-  - Serializers for data validation
-  - ViewSets and API views
-  - Interactive Swagger UI documentation
-  
-- **Caching Layer**:
-  - Redis integration for fast URL lookups
-  - Cache-aside pattern implementation
-  
-- **Containerization**:
-  - Docker multi-stage builds
-  - Docker Compose orchestration
-  - Production-ready configuration
-  
-- **Architecture**:
-  - Service layer pattern
-  - Clean separation of concerns
-  - RESTful resource design
+[View Module 1 Details →](./module1)
 
 ---
 
-## Complete Repository Structure
+### Module 2: Clean Code & Testing
+
+**Labs**: Data Importer, Weather API Stub, Secure Service, Data Pipeline
+
+**Key Concepts**:
+- Test-Driven Development (TDD)
+- Unit Testing with pytest
+- Mocking and Dependency Injection
+- bcrypt Password Hashing
+- PostgreSQL Integration
+
+[View Module 2 Details →](./module2)
+
+---
+
+### Module 3: Advanced Python
+
+**Labs**: Grade Analytics Tool, Async Web Scraper
+
+**Key Concepts**:
+- Advanced Collections (Counter, defaultdict, deque)
+- Type Hints and dataclasses
+- Asynchronous Programming (asyncio, aiohttp)
+- Performance Optimization
+- Threading vs Async Comparison
+
+[View Module 3 Details →](./module3)
+
+---
+
+### Module 4: Database Integration
+
+**Lab**: E-Commerce Analytics Pipeline
+
+**Key Concepts**:
+- PostgreSQL (3NF, CTEs, Window Functions)
+- MongoDB (Document Storage)
+- Redis (Caching)
+- Repository Pattern
+- ACID Transactions
+
+[View Module 4 Details →](./module4)
+
+---
+
+### Module 5: Django Microservices
+
+**Lab**: URL Shortener Microservice
+
+**Architecture**:
+```mermaid
+graph LR
+    Client --> Django
+    Django --> Redis[Redis Cache]
+    Django --> DB[(SQLite)]
+```
+
+**Key Features**:
+- Django REST Framework
+- Redis Caching
+- Swagger UI Documentation
+- Docker Containerization
+
+[View Module 5 Details →](./module5)
+
+---
+
+### Module 6: PostgreSQL & User Accounts
+
+**Lab**: URL Shortener with PostgreSQL
+
+**Architecture**:
+```mermaid
+graph LR
+    Client --> Django
+    Django --> PG[(PostgreSQL)]
+    Django --> Redis[Redis Cache]
+    PG -.User Accounts.-> Django
+```
+
+**Key Features**:
+- PostgreSQL Database
+- Custom User Model
+- URL Ownership
+- Docker Compose (3 services)
+
+[View Module 6 Details →](./module6)
+
+---
+
+### Module 7: Authentication & Authorization
+
+**Lab**: URL Shortener with JWT & RBAC
+
+**Architecture**:
+```mermaid
+graph TB
+    Client -->|JWT Token| Django
+    Django -->|Verify| JWT[JWT Auth]
+    Django -->|Check Tier| RBAC[Free/Premium]
+    Django --> PG[(PostgreSQL)]
+    Django --> Redis[Redis Cache]
+```
+
+**Key Features**:
+- JWT Authentication (Access + Refresh Tokens)
+- Role-Based Access Control (RBAC)
+- Tiered Users (Free: 10 URLs, Premium: Unlimited)
+- Rate Limiting (5 login attempts/min)
+- Click Tracking with Analytics
+
+[View Module 7 Details →](./module7)
+
+---
+
+### Module 8: Production Features
+
+**Lab**: URL Shortener with Celery & Logging
+
+**Architecture**:
+```mermaid
+graph TB
+    Client --> Django
+    Django -->|Queue Tasks| Redis[Redis Broker]
+    Redis --> Worker[Celery Worker]
+    Redis --> Beat[Celery Beat]
+    Django --> PG[(PostgreSQL)]
+    Worker --> PG
+    Django --> Logs[JSON Logs]
+    Worker --> Logs
+```
+
+**Key Features**:
+- Celery Worker (Async Task Processing)
+- Celery Beat (Scheduled Tasks)
+- Structured JSON Logging
+- Async Click Tracking
+- Production-Ready Docker Setup (5 services)
+
+[View Module 8 Details →](./module8)
+
+---
+
+## Technology Stack
+
+### Core Python
+- Python 3.11+
+- dataclasses, typing, pathlib
+- collections (Counter, defaultdict, deque)
+
+### Testing & Quality
+- pytest, black, mypy, ruff
+- pre-commit hooks
+
+### Databases
+- PostgreSQL 15
+- MongoDB Atlas
+- Redis 7
+
+### Django & APIs
+- Django 5.0-6.0
+- Django REST Framework
+- djangorestframework-simplejwt
+- drf-spectacular (Swagger)
+
+### Async & Task Queue
+- asyncio, aiohttp
+- Celery 5.3
+- Celery Beat
+
+### Containerization
+- Docker
+- Docker Compose
+
+##  Repository Structure
 
 ```
 Labs/
-├── README.md                           # This file
-│
-├── module1/                            # OOP Fundamentals
-│   ├── Employee-Payroll-Tracker/
-│   ├── library-management/
-│   ├── student-management-system/
-│   └── vehicle-rental/
-│
-├── module2/                            # Clean Code & Testing
-│   ├── resilient-data-importer/
-│   ├── weather-api-stub/
-│   ├── secure-service-module/
-│   └── data_processing_pipeline/
-│
-├── module3/                            # Advanced Python
-│   ├── lab1-Student-Grade-Analytics-Tool/
-│   ├── lab5-Async-Web-Scraper/
-│   └── .pre-commit-config.yaml
-│
-├── module4/                            # Database Integration
-│   └── Lab1_Ecommerce/
-│
-└── module5/                            # Django Microservices
-    └── url/                            # URL Shortener Microservice
+├── module1/                    # OOP Fundamentals (4 labs)
+├── module2/                    # Clean Code & Testing (4 labs)
+├── module3/                    # Advanced Python (2 labs)
+├── module4/                    # Database Integration (1 lab)
+├── module5/                    # Django Microservices (1 lab)
+│   └── url/                    # Basic URL Shortener
+├── module6/                    # PostgreSQL & Users (1 lab)
+│   └── url/                    # + PostgreSQL + Accounts
+├── module7/                    # Auth & Authorization (1 lab)
+│   └── url/                    # + JWT + RBAC
+└── module8/                    # Production Features (1 lab)
+    └── url/                    # + Celery + Logging
 ```
 
----
+##  Completion Status
 
-## Quick Start Guide
+- [x] **Module 1**: 4/4 Labs Complete
+- [x] **Module 2**: 4/4 Labs Complete
+- [x] **Module 3**: 2/2 Labs Complete
+- [x] **Module 4**: 1/1 Lab Complete
+- [x] **Module 5**: 1/1 Lab Complete
+- [x] **Module 6**: 1/1 Lab Complete
+- [x] **Module 7**: 1/1 Lab Complete
+- [x] **Module 8**: 1/1 Lab Complete
 
-### Prerequisites
-- **Python 3.11+** (required for all modules)
-- **PostgreSQL** (Module 4)
-- **MongoDB** (Module 4 - Atlas or local)
-- **Redis** (Module 4 & 5)
-- **Docker & Docker Compose** (Module 5 - recommended)
+**Total**: 15 Labs Across 8 Modules 
 
-### General Setup for Any Lab
+##  Learning Path
 
-1. **Navigate to the specific lab directory**
-   ```bash
-   cd module2/resilient-data-importer
-   ```
+### Beginner Track (Modules 1-2)
+Start here if you're new to Python or OOP:
+1. Module 1: Learn OOP fundamentals
+2. Module 2: Master testing and clean code
 
-2. **Create and activate virtual environment**
-   ```bash
-   # Windows
-   python -m venv .venv
-   .venv\Scripts\activate
-   
-   # macOS/Linux
-   python -m venv .venv
-   source .venv/bin/activate
-   ```
+### Intermediate Track (Modules 3-4)
+Advanced Python concepts and databases:
+3. Module 3: Async programming and advanced collections
+4. Module 4: Multi-database integration
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Advanced Track (Modules 5-8)
+Production-ready Django microservices:
+5. Module 5: Basic Django REST API
+6. Module 6: Add PostgreSQL and user accounts
+7. Module 7: Implement JWT authentication and RBAC
+8. Module 8: Add Celery for async tasks and structured logging
 
-4. **Run the lab** (see individual lab README for specific instructions)
-   ```bash
-   python main.py
-   ```
+##  Development Workflow
 
-5. **Run tests** (where applicable)
-   ```bash
-   pytest -v
-   ```
-
----
-
-## Learning Objectives Demonstrated
-
-### Core Python Skills
-- **OOP Principles**: Classes, inheritance, polymorphism, encapsulation, abstraction
-- **Clean Code**: SOLID principles, DRY, separation of concerns
-- **Type Safety**: Comprehensive type hints, static type checking with mypy
-- **Error Handling**: Custom exceptions, graceful error recovery
-- **File I/O**: CSV parsing, JSON serialization, context managers, `pathlib`
-
-### Advanced Concepts
-- **Data Structures**: `Counter`, `defaultdict`, `OrderedDict`, `deque`, `dataclasses`
-- **Async Programming**: `asyncio`, `aiohttp`, concurrent execution
-- **Performance**: Benchmarking, optimization, threading vs async comparison
-- **Decorators**: Custom decorators for retry logic and logging
-
-### Testing & Quality
--  **Testing**: Unit tests, integration tests, TDD workflow, >80% coverage
--  **Mocking**: Mock objects, dependency injection, test isolation
--  **Code Quality**: Black formatting, ruff linting, mypy type checking
--  **Pre-commit Hooks**: Automated quality checks
-
-### Database & Integration
-- **SQL**: Database design (3NF), CRUD operations, transactions, indexes
-- **Advanced SQL**: Window functions, CTEs, JSONB queries, query optimization
-- **NoSQL**: MongoDB document storage, Redis caching
-- **Architecture**: Repository pattern, service layer, connection pooling
-
-### Professional Practices
-- **Git Workflow**: Feature branches, conventional commits, pull requests
-- **Documentation**: Comprehensive README files, docstrings, code comments
-- **Project Structure**: Modular design, clear separation of concerns
-- **Environment Management**: Virtual environments, dependency management
-
----
-
-##  Testing Strategy
-
-### Module 2 & 4: Comprehensive Test Suites
+### For Python Labs (Modules 1-4)
 
 ```bash
-# Run all Module 2 tests
-cd module2
-pytest resilient-data-importer/tests/ -v
-pytest weather-api-stub/tests/ -v
-pytest secure-service-module/tests/ -v
-pytest data_processing_pipeline/tests/ -v
-
-# Run Module 4 tests (if available)
-cd module4/Lab1_Ecommerce
-pytest tests/ -v
+cd module{X}/{lab-name}
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+pytest -v  # Run tests
+python main.py  # Run application
 ```
 
-### Test Coverage
-- **Unit Tests**: Individual component testing in isolation
-- **Integration Tests**: End-to-end workflow validation
-- **Coverage Target**: >80% across all tested modules
+### For Django Labs (Modules 5-8)
 
----
+```bash
+cd module{X}/url
+docker-compose up -d
+docker exec -it url_shortener_web python manage.py migrate
+docker exec -it url_shortener_web python manage.py createsuperuser
 
-## Code Quality Standards
-
-All projects adhere to professional Python standards:
-
-| Tool | Purpose | Status |
-|------|---------|--------|
-| **Type Hints** | Full type annotations throughout |
-| **Docstrings** | Comprehensive function/class documentation | 
-| **PEP 8** | Python style guide compliance | 
-| **Black** | Consistent code formatting | 
-| **Ruff** | Fast Python linting | 
-| **Mypy** | Static type checking | 
-| **Pre-commit** | Automated quality checks (Module 3) | 
-
----
-
-## Git Workflow
-
-### Branching Strategy
-
-```
-main (production-ready code)
-  └── developer (main development branch)
-       ├── feature/module1-*
-       ├── feature/module2-*
-       ├── feature/module3-*
-       └── feature/module4-*
+# Access Swagger UI
+http://localhost:8000/api/schema/swagger-ui/
 ```
 
-### Commit Convention
+##   Key Metrics
 
-Following [Conventional Commits](https://www.conventionalcommits.org/):
+- **Total Lines of Code**: ~15,000+
+- **Test Coverage**: >80% (Modules 2-4)
+- **Docker Services**: 5 (Module 8)
+- **API Endpoints**: 20+ (Django modules)
+- **Database Tables**: 15+ across all modules
 
-- `feat:` - New features and lab implementations
-- `fix:` - Bug fixes and corrections
-- `test:` - Test additions or modifications
-- `docs:` - Documentation updates
-- `refactor:` - Code refactoring without feature changes
-- `style:` - Code style and formatting changes
-
----
-
-## Technologies & Libraries
-
-### Core Python
-- **Python 3.11+** - Modern Python features
-- **dataclasses** - Structured data modeling
-- **typing** - Type hints and annotations
-- **pathlib** - Modern file path handling
-- **collections** - Advanced data structures
-
-### Testing & Quality
-- **pytest** - Testing framework
-- **black** - Code formatter
-- **mypy** - Static type checker
-- **ruff** - Fast Python linter
-- **pre-commit** - Git hooks for quality checks
-
-### Security & Authentication
-- **bcrypt** - Password hashing (Module 2, Lab 3)
-
-### Database & Integration
-- **psycopg2** - PostgreSQL adapter (Module 2 & 4)
-- **pymongo** - MongoDB driver (Module 4)
-- **redis** - Redis client (Module 4 & 5)
-- **testcontainers** - Integration testing (Module 2, Lab 4)
-
-### Async & Web
-- **asyncio** - Asynchronous programming (Module 3)
-- **aiohttp** - Async HTTP client (Module 3)
-
-### Django & REST APIs
-- **Django 5.0** - Web framework (Module 5)
-- **Django REST Framework** - RESTful API toolkit (Module 5)
-- **drf-spectacular** - OpenAPI/Swagger documentation (Module 5)
-- **gunicorn** - WSGI HTTP server (Module 5)
-
----
-
-## Documentation
-
-Each lab includes comprehensive documentation:
-
-- **README.md**: Project overview, setup instructions, usage examples
-- **docs/** (where applicable): Architecture diagrams, design decisions
-- **Inline Comments**: Complex logic explanations
-- **Docstrings**: Function and class documentation
-- **Type Hints**: Self-documenting code through annotations
-
----
-
-## Completion Status
-
-### Module 1: OOP Fundamentals
-- [x] Employee Payroll Tracker
-- [x] Library Management System
-- [x] Student Management System
-- [x] Vehicle Rental System
-
-### Module 2: Clean Code & Testing
-- [x] Resilient Data Importer
-- [x] Weather API Stub
-- [x] Secure Service Module
-- [x] Data Processing Pipeline
-
-### Module 3: Advanced Python
-- [x] Student Grade Analytics Tool
-- [x] Async Web Scraper
-
-### Module 4: Database Integration
-- [x] E-Commerce Analytics Pipeline
-
-### Module 5: Django Microservices
-- [x] URL Shortener Microservice
-
-### Overall
-- [x] All 12 labs implemented
-- [x] Comprehensive documentation
-- [x] Code quality standards met
-- [x] Git repository properly structured
-- [x] Individual README files for each lab
-
----
-
-## Author
+##  Author
 
 **Diane Ishimwe**
 - Email: ishimwediane400@gmail.com
 - GitHub: [@Ishimwediane](https://github.com/Ishimwediane)
 
----
+##  License
 
-## Submission Information
-
-- **Academic Period**: 2025-2026
-- **Program**: Python Backend and AI application Track
-- **Repository**: Complete lab submissions across 5 modules
+Educational project for Python Backend and AI Application Track (2025-2026)
 
 ---
 
-## Acknowledgments
-
-- Course instructors for comprehensive lab requirements and guidance
-- Python community for excellent libraries and tools
-- Clean Code principles by Robert C. Martin
-- Real-world project inspirations for practical applications
-
----
-
-## Notes
-
-- Each module builds upon previous concepts, creating a progressive learning path
-- All labs are self-contained and can be run independently
-- Database labs (Module 4) require additional setup (PostgreSQL, MongoDB, Redis)
-- Django labs (Module 5) support both Docker and local development
-- Async labs (Module 3) demonstrate performance optimization techniques
-- Testing labs (Module 2) showcase professional TDD workflows
-
----
-
-**Thank you for reviewing my comprehensive Python lab work!** 
-
-*This repository demonstrates proficiency in Python fundamentals, OOP, clean code practices, advanced concepts, testing strategies, database integration, and Django microservices development.*
+**🎉 Complete Python Learning Journey - From Fundamentals to Production!**
