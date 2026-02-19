@@ -6,7 +6,8 @@ A simple, beginner-friendly URL shortener microservice built with Django REST Fr
 
 - **URL Shortening**: Convert long URLs into short, shareable links
 - **Automatic Redirect**: Short URLs automatically redirect to original URLs
-- **Built-in Caching**: Fast URL lookups with Django's local memory cache
+- **Database Optimization**: Efficient queries using `select_related` and `prefetch_related`
+- **Analytics**: Built-in click tracking with database-level aggregation
 - **REST API**: Clean RESTful API with proper HTTP status codes
 - **API Documentation**: Interactive Swagger UI for testing endpoints
 - **Docker Support**: Fully containerized with Docker Compose
@@ -15,7 +16,7 @@ A simple, beginner-friendly URL shortener microservice built with Django REST Fr
 ## 🛠️ Technology Stack
 
 - **Framework**: Django 5.0 + Django REST Framework
-- **Cache**: Redis (in-memory data store)
+- **Optimization**: Django ORM (select_related, prefetch_related, indexes)
 - **API Documentation**: drf-spectacular (OpenAPI/Swagger)
 - **Server**: Gunicorn (production)
 - **Containerization**: Docker & Docker Compose
@@ -192,10 +193,12 @@ python manage.py migrate
 5. When user visits short URL, Redis provides instant redirect
 
 ### Key Design Decisions
-- **Redis Caching**: Uses Redis for 100x faster URL lookups
-- **Unique Short Codes**: Random generation with collision checking
+- **Database Indexing**: `db_index=True` on critical fields for fast lookups
+- **Query Optimization**: Preventing N+1 problems with eager loading
+- **Database Aggregation**: Using `annotate()` for efficient analytics calculation
 - **RESTful Design**: Proper HTTP methods and status codes
 - **Docker**: Easy deployment and consistent environments
+
 
 ## 🚢 Production Deployment
 
