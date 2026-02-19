@@ -1,14 +1,4 @@
 services:
-  redis:
-    image: redis:7-alpine
-    container_name: url_shortener_redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes
-
-
   db:
     image: postgres:15-alpine
     container_name: url_shortener_postgres
@@ -34,8 +24,6 @@ services:
       - .env
     depends_on:
       - db
-      - redis
 
 volumes:
-  redis_data:
   postgres_data:

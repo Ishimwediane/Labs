@@ -1,7 +1,12 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
-from shortener.models import Url
+from shortener.models import Url, Tag
 from django.conf import settings
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['name']
 
 class UrlCreateSerializer(serializers.Serializer):
     original_url = serializers.URLField(max_length=2000)
@@ -14,11 +19,12 @@ class UrlCreateSerializer(serializers.Serializer):
 
 class UrlSerializer(serializers.ModelSerializer):
     short_link = serializers.SerializerMethodField()
+    tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Url
-        fields = ['id', 'original_url', 'short_url', 'short_link', 'created_at']
-        read_only_fields = ['id', 'short_url', 'created_at']
+        fields = ['id', 'original_url', 'short_url', 'short_link', 'created_at', 'click_count', 'is_active', 'expires_at', 'tags', 'custom_alias', 'title', 'description', 'favicon']
+        read_only_fields = ['id', 'short_url', 'created_at', 'click_count']
 
     @extend_schema_field(serializers.URLField())
     def get_short_link(self, obj):

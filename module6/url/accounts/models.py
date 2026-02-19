@@ -7,8 +7,8 @@ class UserTier(models.TextChoices):
     ENTERPRISE="enterprise", "Enterprise"
     
 class User(AbstractUser):
+    email = models.EmailField(unique=True) 
     is_premium = models.BooleanField(default=False)
-
     tier = models.CharField(max_length=20,choices=UserTier.choices,default=UserTier.FREE)
 
     def __str__(self):
