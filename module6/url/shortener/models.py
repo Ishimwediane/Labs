@@ -6,19 +6,23 @@ from django.db.models import Count #  aggregation
 
 
 class Tag(models.Model):
-    name=models.CharField(max_length=50)
+    name=models.CharField(max_length=50, unique=True)
     def __str__(self):
         return self.name
 
 class Url(models.Model):
     original_url = models.URLField(max_length=2000)
-    short_url = models.CharField(max_length=10, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    short_url = models.CharField(max_length=10, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     owner=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='urls')
     click_count = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     expires_at=models.DateTimeField(null=True,blank=True)
     tags=models.ManyToManyField(Tag,related_name='urls',blank=True)
+    custom_alias=models.CharField(max_length=50,unique=True,null=True,blank=True)
+    title=models.CharField(max_length=255, null=True, blank=True, unique=True)
+    description=models.CharField(max_length=500, null=True, blank=True, unique=True)
+    favicon=models.CharField(max_length=2000, null=True, blank=True, unique=True)
     
     #query set
     objects=URLQuerySet.as_manager()

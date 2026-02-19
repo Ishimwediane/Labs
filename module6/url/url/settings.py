@@ -147,27 +147,14 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
-# Cache Configuration - Using Redis for fast URL lookups
-# Fallback to DummyCache if Redis is not available locally for simple testing
-CACHE_BACKEND = config('CACHE_BACKEND', default='django_redis.cache.RedisCache')
-REDIS_LOCATION = config('REDIS_LOCATION', default='redis://127.0.0.1:6379/1')
-
-if CACHE_BACKEND == 'django.core.cache.backends.dummy.DummyCache':
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        }
+# Cache Configuration
+# Local Memory Cache for development/testing without Redis
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     }
-else:
-    CACHES = {
-        'default': {
-            'BACKEND': CACHE_BACKEND,
-            'LOCATION': REDIS_LOCATION,
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            }
-        }
-    }
+}
 
 BASE_URL = config('BASE_URL', default='http://localhost:8000')
 
