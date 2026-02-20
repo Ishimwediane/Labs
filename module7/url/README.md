@@ -30,7 +30,20 @@ A production-ready URL shortener microservice featuring **JWT authentication**, 
 | Custom Aliases | ❌ | ✅ |
 | Detailed Analytics | ❌ | ✅ |
 | Click Tracking | ✅ | ✅ |
-| URL Redirection | ✅ | ✅ |
+
+##  API Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/accounts/register/` | Register user | No |
+| POST | `/accounts/login/` | Login (get JWT) | No |
+| POST | `/accounts/token/refresh/` | Refresh access token | No |
+| POST | `/api/urls/` | Create short URL | Yes |
+| GET | `/api/urls/me/` | List all my URLs | Yes |
+| GET | `/api/urls/{short_code}/analytics/` | Click analytics per country | Yes |
+| GET | `/{short_code}/` | Redirect to original URL | No |
+| GET | `/api/schema/swagger-ui/` | Swagger UI documentation | No |
+| GET | `/api/schema/redoc/` | ReDoc documentation | No |
 
 ## Technology Stack
 
@@ -428,51 +441,22 @@ REDIS_LOCATION=redis://:password@redis:6379/1
 ### Docker Production Build
 
 ```bash
-# Build production image
-docker-compose -f docker-compose.prod.yml build
+# Connect to Redis CLI
+docker exec url_shortener_redis redis-cli
 
-# Start production services
-docker-compose -f docker-compose.prod.yml up -d
+# View cached URLs (stored in db1)
+SELECT 1
+KEYS *
+
+# View rate limiting data (stored in db0 by default)
+SELECT 0
+KEYS login_throttle:*
+
+# Exit
+EXIT
 ```
 
-### Recommended Production Setup
-
-1. Use **PostgreSQL** (already configured)
-2. Use **Redis** with password authentication
-3. Set up **nginx** as reverse proxy
-4. Enable **HTTPS** with SSL certificates
-5. Configure **CORS** for frontend domains
-6. Set up **logging** and monitoring
-7. Use **Gunicorn** or **uWSGI** instead of runserver
-
-## Performance
-
-- **Redis Caching**: 100x faster URL lookups vs database queries
-- **Connection Pooling**: Efficient database connections
-- **Lazy Loading**: Optimized queries with `select_related`
-- **Indexed Fields**: Fast lookups on `short_url` and `owner_id`
-
-##  License
-
-This project is created for educational purposes as part of the Python Backend Development course - Module 7: Authentication & Authorization.
-
-##  Author
-
-**Ishimwe Diane**
-- GitHub: [@Ishimwediane](https://github.com/Ishimwediane)
-
-##  Learning Outcomes
-
-By completing this module, you've learned:
-- JWT authentication implementation
-- Role-based access control (RBAC)
-- Custom Django permissions
-- Business logic enforcement
-- Redis caching strategies
-- Rate limiting and throttling
-- Docker containerization
-- API documentation with Swagger
-- Security best practices
+> **Note:** The app uses Redis database `1` (`REDIS_LOCATION=redis://redis:6379/1`) to keep URL cache separate from other services (e.g. Celery) that use `db0`.
 
 ---
 
