@@ -131,8 +131,16 @@ curl -X POST http://localhost:8000/api/urls/ \
 | POST | `/accounts/login/` | Login (get JWT) | No |
 | POST | `/accounts/token/refresh/` | Refresh access token | No |
 | POST | `/api/urls/` | Create short URL | Yes |
+<<<<<<< HEAD
 | GET | `/{short_code}/` | Redirect to original URL | No |
 | GET | `/api/schema/swagger-ui/` | API documentation | No |
+=======
+| GET | `/api/urls/me/` | List all my URLs | Yes |
+| GET | `/api/urls/{short_code}/analytics/` | Click analytics per country | Yes |
+| GET | `/{short_code}/` | Redirect to original URL | No |
+| GET | `/api/schema/swagger-ui/` | Swagger UI documentation | No |
+| GET | `/api/schema/redoc/` | ReDoc documentation | No |
+>>>>>>> module7
 
 ## Technology Stack
 
@@ -289,6 +297,56 @@ GET login_throttle:testuser
 EXIT
 ```
 
+<<<<<<< HEAD
+=======
+##  Security Features
+
+- **JWT Tokens**: Secure, stateless authentication
+- **Password Hashing**: PBKDF2 with salt (Django default)
+- **Rate Limiting**: Prevents brute force attacks
+- **Input Validation**: URL format validation
+- **Permission Classes**: Owner-based access control
+- **CORS Ready**: Configurable for production
+
+## Production Deployment
+
+### Environment Variables
+
+Update `.env` for production:
+
+```bash
+SECRET_KEY=<generate-strong-secret-key>
+DEBUG=False
+ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+
+# Use strong database credentials
+POSTGRES_PASSWORD=<strong-password>
+
+# Configure Redis with password
+REDIS_LOCATION=redis://:password@redis:6379/1
+```
+
+### Docker Production Build
+
+```bash
+# Connect to Redis CLI
+docker exec url_shortener_redis redis-cli
+
+# View cached URLs (stored in db1)
+SELECT 1
+KEYS *
+
+# View rate limiting data (stored in db0 by default)
+SELECT 0
+KEYS login_throttle:*
+
+# Exit
+EXIT
+```
+
+> **Note:** The app uses Redis database `1` (`REDIS_LOCATION=redis://redis:6379/1`) to keep URL cache separate from other services (e.g. Celery) that use `db0`.
+
+>>>>>>> module7
 ---
 
 **Module 7 Complete!** 🎉 *Next: Module 8 - Celery & Logging*
