@@ -9,9 +9,9 @@ DEBUG = config("DEBUG", default=True, cast=bool)
 ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
-    # Only the bare minimum — no admin, no sessions, no auth needed
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
+    "rest_framework",
     "preview",
 ]
 

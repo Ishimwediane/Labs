@@ -1,29 +1,20 @@
-
-import json
-import logging
-from django.http import JsonResponse
-from django.views import View
-
-logger = logging.getLogger(__name__)
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import PreviewRequestSerializer
+from .services import MetadataExtractorService
 
 
-class FetchPreviewView(View):
-    
+class PreviewView(APIView):
+
     def post(self, request):
-        try:
-            data = json.loads(request.body)
-            url = data.get("url", "").strip()
-        except (json.JSONDecodeError, AttributeError):
-            return JsonResponse({"error": "Invalid JSON body"}, status=400)
+        serializer = PreviewRequestSerializer(data=request.data)
 
-        if not url:
-            return JsonResponse({"error": "Missing 'url' field"}, status=400)
+        if serializer.is_valid():
+            url = serializer.validated_data["url"]
 
-        logger.info("Preview request received", extra={"url": url})
-        
-        return JsonResponse({
-            "title": None,
-            "description": None,
-            "favicon": None,
-            "message": "Phase 2 not implemented yet"
-        })
+            metadata = MetadataExtractorService.extract_metadata(url)
+
+            return Response(metadata, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
