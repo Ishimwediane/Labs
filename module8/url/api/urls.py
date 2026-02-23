@@ -4,10 +4,11 @@ from .views import (
     UrlDetailView,
     RedirectUrlView,
     UrlAnalyticsView,
+    TagListView,
 )
 
 urlpatterns = [
-    # List + Create
+    # List , Create
     path('api/urls/', UrlListCreateView.as_view(), name='url_list_create'),
 
     # Retrieve (GET) + Update (PUT) + Delete (DELETE) — all in UrlDetailView
@@ -15,6 +16,9 @@ urlpatterns = [
 
     # Analytics
     path('api/analytics/<str:short_code>/', UrlAnalyticsView.as_view(), name='url_analytics'),
+
+    # Tags — list all available tag names
+    path('api/tags/', TagListView.as_view(), name='tag_list'),
 
     # Public redirect
     path('<str:short_code>/', RedirectUrlView.as_view(), name='redirect_url'),
