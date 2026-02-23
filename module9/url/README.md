@@ -1,6 +1,6 @@
-# Module 9: URL Microservice
+# Module 8: URL Shortener - Production Ready
 
-A production-ready URL microservice with **JWT authentication**, **Redis caching**, **async task processing**, and **structured logging**. This service handles the core URL shortening, redirection, and analytics in the Module 9 Microservices architecture.
+A production-ready URL shortener with **JWT authentication**, **Redis caching**, **async task processing**, and **structured logging**. Built with Django REST Framework, Celery, and Docker.
 
 ## 🚀 Features
 
@@ -10,7 +10,6 @@ A production-ready URL microservice with **JWT authentication**, **Redis caching
 - **Periodic Cleanup Tasks** with Celery Beat
 - **Structured JSON Logging** for production monitoring
 - **Health Monitoring** endpoint
-- **Tag Management** for organizing URLs
 
 ## 🏗️ Architecture
 
@@ -35,7 +34,7 @@ graph TB
 3. Click Tracking → Async Task → Worker → Postgres (non-blocking)
 4. Cleanup → Beat (nightly) → Worker → Postgres
 
-## Tech Stack
+##  Tech Stack
 
 - Django 5.0.1 + DRF 3.14
 - PostgreSQL 15 + Redis 7
@@ -43,13 +42,13 @@ graph TB
 - Docker + Docker Compose
 - python-json-logger
 
-## How to Run (Standalone)
+##  How to Run
 
-### 1. Start Services
+### 1. Start All Services
 
 ```bash
 # Navigate to project
-cd c:\Users\Amalitech\Desktop\amali\Labs\Labs\module9\url
+cd c:\Users\Amalitech\Desktop\amali\Labs\Labs\module8\url
 
 # Build and start all containers
 docker-compose up -d --build
@@ -71,7 +70,21 @@ docker exec -it url_shortener_web python manage.py createsuperuser
 - **Health Check**: http://localhost:8000/health-check/
 - **Admin**: http://localhost:8000/admin/
 
-## API Endpoints
+### Useful Commands
+
+```bash
+# View logs
+docker-compose logs -f web
+docker-compose logs -f celery_worker
+
+# Restart services
+docker-compose restart
+
+# Clean reset
+docker-compose down -v
+```
+
+##  API Endpoints
 
 ### Authentication
 | Method | Endpoint | Auth | Description |
@@ -84,18 +97,17 @@ docker exec -it url_shortener_web python manage.py createsuperuser
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | POST | `/api/urls/` | ✅ | Create short URL |
-| GET | `/api/urls/` | ✅ | List URLs (paginated) |
 | GET | `/{short_code}/` | - | Redirect to original |
 | PUT | `/api/urls/{short_code}/` | ✅ | Update URL |
-| GET | `/api/tags/` | ✅ | List available tags |
 
 ### Monitoring
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | GET | `/health-check/` | - | DB & Redis status |
 | GET | `/api/schema/swagger-ui/` | - | API docs |
+| GET | `/admin/` | ✅ | Admin panel |
 
-## Quick API Usage
+##  Quick API Usage
 
 **Register:**
 ```bash
@@ -119,17 +131,17 @@ POST /accounts/login/
 # Returns: {"access": "...", "refresh": "..."}
 ```
 
-**Create URL with Tags:**
+**Create URL:**
 ```bash
 POST /api/urls/
 Authorization: Bearer <access_token>
 {
   "original_url": "https://example.com",
-  "tags": ["Marketing", "Personal"]
+  "custom_alias": "my-link"  # Premium only
 }
 ```
 
-## Testing
+##  Testing
 
 ### Using Swagger UI
 1. Open http://localhost:8000/api/schema/swagger-ui/
@@ -146,7 +158,7 @@ curl -L http://localhost:8000/<short_code>/
 docker-compose logs celery_worker | grep "Click tracked"
 ```
 
-## Project Structure
+##  Project Structure
 
 ```
 module8/url/
@@ -160,7 +172,7 @@ module8/url/
 └── requirements.txt
 ```
 
-## Security
+##  Security
 
 - JWT token authentication
 - PBKDF2 password hashing
@@ -168,7 +180,7 @@ module8/url/
 - Owner-based permissions
 - Input validation
 
-## Logging
+##  Logging
 
 All logs in JSON format:
 ```json
@@ -184,13 +196,22 @@ All logs in JSON format:
 
 View logs: `cat logs/app.log` or `docker-compose logs web`
 
-## Performance & Optimization
+##  Performance
 
 - **Redis caching**: 100x faster redirects
 - **Async tasks**: Non-blocking click tracking
-- **Pagination**: Efficient list retrieval for thousands of links
-- **Service Layer**: Clean separation of business logic from views
+- **Indexed fields**: Fast database lookups
+- **Connection pooling**: Efficient DB connections
+
+##  Module 8 Learning Outcomes
+
+✅ Redis caching strategies (cache-first, invalidation)  
+✅ Celery async tasks (write-behind pattern)  
+✅ Celery Beat periodic scheduling  
+✅ Structured JSON logging  
+✅ Docker multi-container orchestration  
+✅ Production-ready deployment patterns
 
 ---
 
-**Author**: Ishimwe Diane | **Module**: 9 - Microservices 🚀
+**Author**: Ishimwe Diane | **Module**: 8 - Advanced Optimization & Production Readiness 🎉

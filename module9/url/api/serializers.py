@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
-from shortener.models import Url, Tag
+from shortener.models import Url, Click, Tag
 from django.conf import settings
 
 
@@ -11,66 +11,38 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class UrlCreateSerializer(serializers.Serializer):
-    """Input schema for POST /api/urls/ — validates fields only, no DB calls."""
     original_url = serializers.URLField(max_length=2000)
     custom_alias = serializers.CharField(max_length=50, required=False, allow_blank=True)
-    tags = serializers.ListField(
-        child=serializers.CharField(max_length=50),
-        required=False,
-        allow_empty=True,
-        help_text="List of tag names to assign e.g. ['Marketing', 'Social Media']"
-    )
 
     def validate_original_url(self, value):
         if not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("URL must start with http:// or https://")
         return value
 
-    def validate_tags(self, value):
-        """Verify every tag name exists in the database."""
-        valid_names = set(Tag.objects.values_list('name', flat=True))
-        bad = [t for t in value if t not in valid_names]
-        if bad:
-            raise serializers.ValidationError(
-                f"Unknown tag(s): {bad}. Available: {sorted(valid_names)}"
-            )
-        return value
 
+class UrlUpdateSerializer(serializers.ModelSerializer):
+    """Used for PUT /api/urls/{short_code}/ — update target URL, optionally reset clicks."""
+    reset_clicks = serializers.BooleanField(write_only=True, required=False, default=False)
 
-class UrlUpdateSerializer(serializers.Serializer):
-    """
-    Input schema for PUT /api/urls/{short_code}/ 
-    """
-    original_url = serializers.URLField(max_length=2000, required=False)
-    is_active = serializers.BooleanField(required=False)
-    expires_at = serializers.DateTimeField(required=False, allow_null=True)
-    reset_clicks = serializers.BooleanField(required=False, default=False)
-    tags = serializers.ListField(
-        child=serializers.CharField(max_length=50),
-        required=False,
-        allow_empty=True,
-        help_text="Replaces all tags on the URL. Pass [] to remove all tags."
-    )
+    class Meta:
+        model = Url
+        fields = ['original_url', 'is_active', 'expires_at', 'reset_clicks']
 
-    def validate_tags(self, value):
-        """Verify every tag name exists in the database."""
-        valid_names = set(Tag.objects.values_list('name', flat=True))
-        bad_tags = [t for t in value if t not in valid_names]
-        if bad_tags:
-            raise serializers.ValidationError(
-                f"Unknown tag(s): {bad_tags}. Available: {sorted(valid_names)}"
-            )
-        return value
+    def update(self, instance, validated_data):
+        reset = validated_data.pop('reset_clicks', False)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if reset:
+            instance.click_count = 0
+        instance.save()
+        return instance
 
 
 class UrlSerializer(serializers.ModelSerializer):
-    """
-    Read-only representation of a Url instance.
-    """
     short_link = serializers.SerializerMethodField()
     click_count = serializers.IntegerField(read_only=True)
     detailed_stats = serializers.SerializerMethodField()
-    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+    tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Url
@@ -88,7 +60,16 @@ class UrlSerializer(serializers.ModelSerializer):
         return f'{base_url}/{obj.short_url}/'
 
     def get_detailed_stats(self, obj):
-        return self.context.get('detailed_stats')
+        """Only return click breakdown for Premium users."""
+        request = self.context.get('request')
+        if request and hasattr(request.user, 'is_premium') and request.user.is_premium:
+            clicks = Click.objects.filter(url=obj)
+            stats = {}
+            for click in clicks:
+                country = click.country or "Unknown"
+                stats[country] = stats.get(country, 0) + 1
+            return stats
+        return None
 
 
 class AnalyticsSerializer(serializers.Serializer):
