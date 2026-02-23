@@ -4,9 +4,13 @@ from .views import (
     UrlDetailView,
     RedirectUrlView,
     UrlAnalyticsView,
+    TagListView,
 )
 
 urlpatterns = [
+    # Tags
+    path('api/tags/', TagListView.as_view(), name='tag_list'),
+
     # List + Create
     path('api/urls/', UrlListCreateView.as_view(), name='url_list_create'),
 
