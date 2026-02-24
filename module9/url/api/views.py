@@ -28,7 +28,7 @@ class UrlListCreateView(APIView):
         ],
         responses={200: UrlSerializer(many=True)},
     )
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         """GET /api/urls/ — list the authenticated user's URLs."""
         url_queryset = (
             Url.objects.filter(owner=request.user)
@@ -45,7 +45,7 @@ class UrlListCreateView(APIView):
         return Response(serializer.data)
 
     @extend_schema(request=UrlCreateSerializer, responses={201: UrlSerializer})
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = UrlCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -91,14 +91,14 @@ class UrlListCreateView(APIView):
 
 class UrlDetailView(APIView):
     @extend_schema(responses={200: UrlSerializer})
-    def get(self, request, short_code):
+    def get(self, request, short_code, *args, **kwargs):
         url_obj = get_object_or_404(Url, short_url=short_code, owner=request.user)
         return Response(
             UrlSerializer(url_obj, context={"request": request}).data
         )
 
     @extend_schema(request=UrlUpdateSerializer, responses={200: UrlSerializer})
-    def put(self, request, short_code):
+    def put(self, request, short_code, *args, **kwargs):
         url_obj = get_object_or_404(Url, short_url=short_code, owner=request.user)
 
         serializer = UrlUpdateSerializer(url_obj, data=request.data, partial=True)
@@ -122,7 +122,7 @@ class UrlDetailView(APIView):
         )
 
     @extend_schema(responses={204: None})
-    def delete(self, request, short_code):
+    def delete(self, request, short_code, *args, **kwargs):
         url_obj = get_object_or_404(Url, short_url=short_code, owner=request.user)
 
         
@@ -144,7 +144,7 @@ class RedirectUrlView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(responses={302: None, 404: None})
-    def get(self, request, short_code):
+    def get(self, request, short_code, *args, **kwargs):
         ip = request.META.get("REMOTE_ADDR")
         user_agent = request.META.get("HTTP_USER_AGENT", "")
         referer = request.META.get("HTTP_REFERER", "")
@@ -194,7 +194,7 @@ class UrlAnalyticsView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(responses={200: AnalyticsSerializer})
-    def get(self, request, short_code):
+    def get(self, request, short_code, *args, **kwargs):
         url_obj = get_object_or_404(Url, short_url=short_code, owner=request.user)
 
         total_clicks = url_obj.click_count
