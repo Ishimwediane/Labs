@@ -17,15 +17,15 @@ def fetch_url_metadata_task(self, url_id):
     Async task to fetch page title, description, and favicon via the Preview Service.
     Implements:
     - Retries with exponential backoff
-    - Circuit Breaker (Bonus): Skips domains that fail repeatedly
+    - Circuit Breaker : Skips domains that fail repeatedly
     """
     try:
         url_obj = Url.objects.get(id=url_id)
         domain = urlparse(url_obj.original_url).netloc
         
         # 1. Circuit Breaker Check
-        cb_key = f"cb:blocked:{domain}"
-        if cache.get(cb_key):
+        circuit_breaker_key = f"blocked:{domain}"
+        if cache.get(circuit_breaker_key):
             logger.warning(f"Circuit Breaker: Skipping fetch for {domain} (blocked)")
             return {"status": "skipped", "reason": "circuit_breaker"}
 
@@ -48,13 +48,13 @@ def fetch_url_metadata_task(self, url_id):
         logger.error(f"Url ID {url_id} not found during metadata fetch.")
     except (httpx.RequestError, httpx.HTTPStatusError) as e:
         # 2. Track failures for Circuit Breaker
-        fail_key = f"cb:fail:{domain}"
+        fail_key = f"fail:{domain}"
         fail_count = cache.get(fail_key, 0) + 1
         cache.set(fail_key, fail_count, timeout=3600)  # Keep fail count for 1 hour
 
         if fail_count >= 5:
             logger.error(f"Circuit Breaker: Blocking domain {domain} due to {fail_count} failures.")
-            cache.set(cb_key, True, timeout=600)  # Block for 10 minutes
+            cache.set(circuit_breaker_key, True, timeout=600)  # Block for 10 minutes
 
         logger.warning(
             f"Preview service error for {domain}: {str(e)}. Retry {self.request.retries}/3",

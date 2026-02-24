@@ -30,7 +30,7 @@ This service can be built and run independently for testing.
 ### 1. Build the Scraper Image
 ```bash
 # Navigate to preview_service folder
-cd c:\Users\Amalitech\Desktop\amali\Labs\Labs\module9\preview_service
+cd preview_service
 
 # Build the custom image
 docker build -t my-preview-service .
