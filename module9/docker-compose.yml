@@ -1,0 +1,94 @@
+
+
+services:
+  # Shared Infrastructure 
+  redis:
+    image: redis:7-alpine
+    container_name: m9_redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  db:
+    image: postgres:15-alpine
+    container_name: m9_postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  # Main URL Shortener App (port 8000) 
+
+  web:
+    build: ./url
+    container_name: m9_web
+    command: python manage.py runserver 0.0.0.0:8000
+    working_dir: /app
+    volumes:
+      - ./url:/app
+    ports:
+      - "8002:8000"
+    env_file:
+      - ./url/.env
+    environment:
+      # Let the main app know where to reach the preview service
+      PREVIEW_SERVICE_URL: http://preview:8001
+    depends_on:
+      - db
+      - redis
+      - preview
+
+  # Celery Worker — processes async tasks (click tracking, preview fetching)
+  celery_worker:
+    build: ./url
+    container_name: m9_celery_worker
+    command: celery -A url worker --loglevel=info
+    working_dir: /app
+    volumes:
+      - ./url:/app
+    env_file:
+      - ./url/.env
+    environment:
+      PREVIEW_SERVICE_URL: http://preview:8001
+    depends_on:
+      - db
+      - redis
+      - preview
+
+  # Celery Beat — runs periodic tasks (nightly URL cleanup)
+  celery_beat:
+    build: ./url
+    container_name: m9_celery_beat
+    command: celery -A url beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    working_dir: /app
+    volumes:
+      - ./url:/app
+    env_file:
+      - ./url/.env
+    depends_on:
+      - db
+      - redis
+
+  # Preview Microservice (port 8001) 
+
+  preview:
+    build: ./preview_service
+    container_name: m9_preview
+    ports:
+      - "8001:8001"
+    environment:
+      REDIS_URL: redis://redis:6379/2
+      DEBUG: "False"
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  postgres_data:
