@@ -19,11 +19,12 @@ graph TB
         M4[Module 4: PostgreSQL, MongoDB, Redis<br/>1 Lab]
     end
     
-    subgraph "Modules 5-8: Django Microservices Evolution"
+    subgraph "Modules 5-9: Django Microservices Evolution"
         M5[Module 5: Basic Microservice<br/>Django + Redis]
         M6[Module 6: Database & Users<br/>+ PostgreSQL + Accounts]
         M7[Module 7: Auth & RBAC<br/>+ JWT + Tiered Users]
         M8[Module 8: Production<br/>+ Celery + Logging]
+        M9[Module 9: Microservices<br/>+ Distributed Scraper]
     end
     
     M1 --> M2
@@ -33,6 +34,7 @@ graph TB
     M5 --> M6
     M6 --> M7
     M7 --> M8
+    M8 --> M9
 ```
 
 ##  Modules Overview
@@ -47,6 +49,7 @@ graph TB
 | **[Module 6](./module6)** | PostgreSQL & Users | 1 | PostgreSQL, Custom User Model |
 | **[Module 7](./module7)** | Auth & Authorization | 1 | JWT, RBAC, Rate Limiting |
 | **[Module 8](./module8)** | Production Features | 1 | Celery, Celery Beat, JSON Logging |
+| **[Module 9](./module9)** | Microservices | 1 | Microservices, Circuit Breaker, Retries |
 
 ##  Django Microservices Evolution (Modules 5-8)
 
@@ -78,6 +81,15 @@ graph LR
         C8 --> L8[JSON Logs]
         D8 --> L8
     end
+    
+    subgraph "Module 9: Microservices"
+        D9[URL Service] --> PG9[(PostgreSQL)]
+        D9 --> R9[Redis]
+        W9[Celery Worker] --> R9
+        W9 --> P9[Preview Service]
+        P9 --> Internet((Internet))
+        W9 --> PG9
+    end
 ```
 
 ### Feature Comparison
@@ -93,8 +105,8 @@ graph LR
 | **Click Tracking** | ❌ | ❌ | ✅ | ✅ (Async) |
 | **Async Tasks** | ❌ | ❌ | ❌ | Celery |
 | **Scheduled Tasks** | ❌ | ❌ | ❌ | Celery Beat |
-| **Logging** | Basic | Basic | Basic | JSON Structured |
-| **Docker Services** | 2 (web, redis) | 3 (web, db, redis) | 3 | 5 (web, db, redis, worker, beat) |
+| **Logging** | Basic | Basic | Basic | JSON Structured | JSON Structured |
+| **Docker Services** | 2 (web, redis) | 3 (web, db, redis) | 3 | 5 (web, db, redis, worker, beat) | 6 (web, db, redis, worker, beat, preview) |
 
 ##  Quick Start
 
@@ -329,6 +341,9 @@ Labs/
 │   └── url/                    # + JWT + RBAC
 └── module8/                    # Production Features (1 lab)
     └── url/                    # + Celery + Logging
+└── module9/                    # Microservices Essentials (1 lab)
+    ├── url/                    # Main URL Service
+    └── preview_service/        # Preview Microservice
 ```
 
 ##  Completion Status
@@ -341,8 +356,9 @@ Labs/
 - [x] **Module 6**: 1/1 Lab Complete
 - [x] **Module 7**: 1/1 Lab Complete
 - [x] **Module 8**: 1/1 Lab Complete
+- [x] **Module 9**: 1/1 Lab Complete
 
-**Total**: 15 Labs Across 8 Modules 
+**Total**: 16 Labs Across 9 Modules 
 
 ##  Learning Path
 
@@ -362,6 +378,7 @@ Production-ready Django microservices:
 6. Module 6: Add PostgreSQL and user accounts
 7. Module 7: Implement JWT authentication and RBAC
 8. Module 8: Add Celery for async tasks and structured logging
+9. Module 9: Decouple into Microservices with a distributed scraper
 
 ##  Development Workflow
 
