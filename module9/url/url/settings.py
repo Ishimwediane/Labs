@@ -51,11 +51,13 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "rest_framework_simplejwt",
     'django_celery_beat',
+    'corsheaders',
 
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -159,7 +161,10 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_THROTTLE_RATES':{
         'login': '5/minute',
-    }
+    },
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1', 'v2'],
 }
 
 # drf-spectacular Configuration
@@ -207,6 +212,12 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
+
+# URL Preview Service Configuration
+PREVIEW_SERVICE_URL = config("PREVIEW_SERVICE_URL", default="http://localhost:8001")
+
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS = True  # For dev/lab environments
 
 # LOGGING CONFIGURATION
 # Structured JSON logging for production-ready monitoring

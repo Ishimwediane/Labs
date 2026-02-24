@@ -1,5 +1,6 @@
 from .models import Url
 from core.utils import generate_short_code
+from .tasks import fetch_url_metadata_task
 
 class UrlShortenerService:
     @staticmethod
@@ -23,6 +24,9 @@ class UrlShortenerService:
             short_url=short_code,
             owner=owner
         )
+        # Trigger the async metadata fetch task
+        fetch_url_metadata_task.delay(url.id)
+        
         return url
     
     @staticmethod
