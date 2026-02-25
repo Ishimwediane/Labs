@@ -149,13 +149,13 @@ SPECTACULAR_SETTINGS = {
 
 # Cache Configuration
 # Local Memory Cache for development/testing without Redis
+
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+    "default": {
+        "BACKEND": config("CACHE_BACKEND"),
+        "LOCATION": config("REDIS_LOCATION"),
     }
 }
-
 BASE_URL = config('BASE_URL', default='http://localhost:8000')
 
 AUTH_USER_MODEL = "accounts.User"
