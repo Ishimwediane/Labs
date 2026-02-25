@@ -41,7 +41,7 @@ A simple, beginner-friendly URL shortener microservice built with Django REST Fr
    ```
 
 3. **Access the application**
-   - API Documentation (Swagger): http://localhost:8000/api/schema/swagger-ui/
+   - API Documentation (Swagger): http://localhost:8000/api/docs/
    - Django Admin: http://localhost:8000/admin/
    - API Endpoint: http://localhost:8000/api/shorten/
 
@@ -74,9 +74,7 @@ A simple, beginner-friendly URL shortener microservice built with Django REST Fr
    python manage.py runserver
    ```
 
-6. **Access the application**
-   - Swagger UI: http://127.0.0.1:8000/api/schema/swagger-ui/
-   - Admin: http://127.0.0.1:8000/admin/
+
 
 ## 📚 API Usage
 

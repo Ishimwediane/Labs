@@ -25,7 +25,7 @@ class CreateShortUrlView(APIView):
             serializer.validated_data['original_url']
         )
         
-        cache.set(f'url:{url_obj.short_url}', url_obj.original_url, timeout=None)
+        cache.set(f'url:{url_obj.short_url}', url_obj.original_url, timeout=3600)
         
         return Response(UrlSerializer(url_obj).data, status=status.HTTP_201_CREATED)
 
@@ -41,6 +41,6 @@ class RedirectUrlView(APIView):
         if not original_url:
             url_obj = get_object_or_404(Url, short_url=short_code)
             original_url = url_obj.original_url
-            cache.set(f'url:{short_code}', original_url, timeout=None)
+            cache.set(f'url:{short_code}', original_url, timeout=3600)
         
         return redirect(original_url)
