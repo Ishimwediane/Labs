@@ -14,6 +14,7 @@ from .serializers import (
     UrlSerializer, UrlCreateSerializer,
     UrlUpdateSerializer, AnalyticsSerializer,
 )
+from accounts.models import UserTier
 from shortener.services import UrlShortenerService
 from shortener.models import Url, Click
 
@@ -199,22 +200,23 @@ class UrlAnalyticsView(APIView):
 
         total_clicks = url_obj.click_count
 
-        # Clicks grouped by country
-        clicks_by_country = list(
-            Click.objects.filter(url=url_obj)
-            .values("country")
-            .annotate(total_clicks=Count("id"))
-            .order_by("-total_clicks")
-        )
-
         response_data = {
             "url": url_obj.short_url,
             "total_clicks": total_clicks,
-            "clicks_by_country": clicks_by_country,
         }
 
-        # Premium users also get recent click time-series
-        if hasattr(request.user, "is_premium") and request.user.is_premium:
+        # Pro and Enterprise get country stats
+        if hasattr(request.user, "tier") and request.user.tier in [UserTier.PRO, UserTier.ENTERPRISE]:
+            clicks_by_country = list(
+                Click.objects.filter(url=url_obj)
+                .values("country")
+                .annotate(total_clicks=Count("id"))
+                .order_by("-total_clicks")
+            )
+            response_data["clicks_by_country"] = clicks_by_country
+
+        # Enterprise users only get recent granular click time-series
+        if hasattr(request.user, "tier") and request.user.tier == UserTier.ENTERPRISE:
             recent = list(
                 Click.objects.filter(url=url_obj)
                 .order_by("-created_at")[:20]

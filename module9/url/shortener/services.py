@@ -1,5 +1,6 @@
 from .models import Url
 from core.utils import generate_short_code
+from accounts.models import UserTier
 from .tasks import fetch_url_metadata_task
 
 class UrlShortenerService:
@@ -7,15 +8,22 @@ class UrlShortenerService:
     def create_short_url(original_url,owner,custom_alias=None):
         """
         create a short URL with business rules:
-        free users:max 10 active URLs,cannot set custom alias
-        premium users:unlimited active URLs,can set custom alias
+        create a short URL with business rules based on UserTier:
+        free users: max 10 active URLs, cannot set custom alias
+        pro users: max 50 active URLs, can set custom alias
+        enterprise users: unlimited active URLs, can set custom alias
         """
-        if not owner.is_premium:
-            active_urls_count = Url.objects.filter(owner=owner, is_active=True).count()
+        active_urls_count = Url.objects.filter(owner=owner, is_active=True).count()
+        
+        if owner.tier == UserTier.FREE:
             if active_urls_count >= 10:
                 raise ValueError("Free users can only create up to 10 active URLs.")
             if custom_alias:
                 raise ValueError("Free users cannot set a custom alias.")
+                
+        elif owner.tier == UserTier.PRO:
+            if active_urls_count >= 50:
+                raise ValueError("Pro users can only create up to 50 active URLs. Upgrade to Enterprise for unlimited.")
         short_code=custom_alias or generate_short_code()
         while Url.objects.filter(short_url=short_code).exists():
             short_code=generate_short_code()
