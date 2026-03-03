@@ -2,10 +2,17 @@ from django.db import models
 from django.conf import settings
 from .managers import URLQuerySet
 from django.db.models import Count
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
+
+    def clean(self):
+        super().clean()
+        if self.name:
+            self.name = self.name.lower().strip()
 
     def __str__(self):
         return self.name
@@ -28,6 +35,15 @@ class Url(models.Model):
     favicon = models.CharField(max_length=2000, null=True, blank=True)
 
     objects = URLQuerySet.as_manager()
+
+    def clean(self):
+        super().clean()
+        if self.expires_at and self.expires_at <= timezone.now():
+            raise ValidationError({'expires_at': "Expiration datetime must be in the future."})
+            
+        if self.original_url:
+            if 'localhost' in self.original_url or '127.0.0.1' in self.original_url:
+                raise ValidationError({'original_url': "Cannot save internal URLs."})
 
     def __str__(self):
         return self.short_url

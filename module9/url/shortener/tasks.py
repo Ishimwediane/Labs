@@ -36,9 +36,12 @@ def fetch_url_metadata_task(self, url_id):
             response.raise_for_status()
             metadata = response.json()
 
-        # Update the URL model
-        url_obj.title = metadata.get("title")
-        url_obj.description = metadata.get("description")
+        # Update the URL model, truncating to prevent Database crashes
+        if metadata.get("title"):
+            url_obj.title = metadata.get("title")[:255]
+        if metadata.get("description"):
+            url_obj.description = metadata.get("description")[:500]
+            
         url_obj.favicon = metadata.get("favicon")
         url_obj.save(update_fields=["title", "description", "favicon"])
 

@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
 from shortener.models import Url, Click, Tag
+from shortener.tasks import fetch_url_metadata_task
 from django.conf import settings
+import re
+from django.utils import timezone
+from django.utils.html import strip_tags
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -17,6 +21,19 @@ class UrlCreateSerializer(serializers.Serializer):
     def validate_original_url(self, value):
         if not value.startswith(('http://', 'https://')):
             raise serializers.ValidationError("URL must start with http:// or https://")
+        if 'localhost' in value or '127.0.0.1' in value:
+            raise serializers.ValidationError("Cannot shorten internal URLs.")
+        return value
+
+    def validate_custom_alias(self, value):
+        if value:
+            if not re.match(r'^[a-zA-Z0-9_-]{3,50}$', value):
+                raise serializers.ValidationError("Alias must be 3-50 characters long and contain only alphanumeric characters, hyphens, and underscores.")
+            reserved = ['api', 'admin', 'login', 'register', 'auth', 'urls', 'analytics', 'swagger']
+            if value.lower() in reserved:
+                raise serializers.ValidationError(f"The alias '{value}' is reserved and cannot be used.")
+            if Url.objects.filter(short_url=value).exists() or Url.objects.filter(custom_alias=value).exists():
+                raise serializers.ValidationError("This alias is already in use.")
         return value
 
 
@@ -26,15 +43,50 @@ class UrlUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Url
-        fields = ['original_url', 'is_active', 'expires_at', 'reset_clicks']
+        fields = ['original_url', 'is_active', 'expires_at', 'reset_clicks', 'title', 'description']
+
+    def validate_title(self, value):
+        if value:
+            return strip_tags(value)
+        return value
+
+    def validate_description(self, value):
+        if value:
+            return strip_tags(value)
+        return value
+
+    def validate_expires_at(self, value):
+        if value and value <= timezone.now():
+            raise serializers.ValidationError("Expiration date must be in the future.")
+        return value
+
+    def validate_original_url(self, value):
+        if value:
+            if not value.startswith(('http://', 'https://')):
+                raise serializers.ValidationError("URL must start with http:// or https://")
+            if 'localhost' in value or '127.0.0.1' in value:
+                raise serializers.ValidationError("Cannot shorten internal URLs.")
+        return value
 
     def update(self, instance, validated_data):
         reset = validated_data.pop('reset_clicks', False)
+        
+        # Check if the target URL has actually changed
+        trigger_scrape = False
+        if 'original_url' in validated_data and validated_data['original_url'] != instance.original_url:
+            trigger_scrape = True
+            
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         if reset:
             instance.click_count = 0
+            
         instance.save()
+        
+        if trigger_scrape:
+            # Dispatch the celery worker to fetch the new site's metadata
+            fetch_url_metadata_task.delay(instance.id)
+            
         return instance
 
 

@@ -16,5 +16,5 @@ urlpatterns = [
     path('api/<version>/auth/', include('accounts.urls')),
     
     # core app urls
-    path('core/', include('core.urls')),
+    path('api/<version>/core/', include('core.urls')),
 ]
