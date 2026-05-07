@@ -19,6 +19,8 @@ async def root():
     return {
         "project": settings.APP_NAME,
         "environment": settings.ENVIRONMENT,
+        "debug": settings.DEBUG,
+        "primary_provider": settings.PRIMARY_PROVIDER,
         "message": "LibraryMind setup complete",
         "status": "ready"
     }

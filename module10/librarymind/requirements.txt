@@ -5,7 +5,7 @@ pydantic-settings
 python-dotenv
 openai
 anthropic
-google-generativeai
+google-genai
 chromadb
 redis
 tenacity
