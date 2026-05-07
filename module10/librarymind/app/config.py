@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
     GEMINI_MODEL: str = "gemini-1.5-pro"
     OPENAI_EMBEDDING_MODEL: str = "text-embedding-3-small"
+    GEMINI_EMBEDDING_MODEL: str = "gemini-embedding-001"
 
     # Vector Database
     CHROMA_PERSIST_DIR: str = "./chroma_db"

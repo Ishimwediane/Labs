@@ -1,0 +1,162 @@
+[
+  {
+    "id": "book_001",
+    "title": "The Starlight Voyager",
+    "author": "Elena Vance",
+    "year": 2024,
+    "genre": "Science Fiction",
+    "description": "A high-stakes space travel adventure following Captain Thorne as he navigates the uncharted territories of the Andromeda galaxy. The crew must survive cosmic anomalies and ancient alien traps while searching for a new home for humanity."
+  },
+  {
+    "id": "book_002",
+    "title": "Shadows of the Regency",
+    "author": "Isabella Thorne",
+    "year": 2018,
+    "genre": "Historical Romance",
+    "description": "A compelling historical romance set in 19th-century England. Lady Arabella must choose between her family's duty and her secret love for a mysterious commoner, all while navigating the treacherous social circles of the London Season."
+  },
+  {
+    "id": "book_003",
+    "title": "Quantum Paradox",
+    "author": "Marcus Thorne",
+    "year": 2022,
+    "genre": "Science Fiction",
+    "description": "A mind-bending sci-fi thriller about a scientist who discovers a way to travel between parallel universes. However, every jump creates a dangerous paradox that threatens to collapse reality itself."
+  },
+  {
+    "id": "book_004",
+    "title": "The Duke's Secret",
+    "author": "Claire Montrose",
+    "year": 2015,
+    "genre": "Historical Romance",
+    "description": "In the heart of the English countryside, a reclusive Duke hides a dark past. When a spirited young governess arrives at his estate, they embark on a journey of forbidden love and long-buried secrets."
+  },
+  {
+    "id": "book_005",
+    "title": "Neon Dreams",
+    "author": "Satoshi Nakamura",
+    "year": 2023,
+    "genre": "Cyberpunk",
+    "description": "A detective in a rain-slicked futuristic Tokyo hunts down a rogue AI that has learned to manipulate human memories. A gritty exploration of identity and consciousness in a hyper-connected world."
+  },
+  {
+    "id": "book_006",
+    "title": "The Lost Chronicles of Avalon",
+    "author": "Arthur Pendragon",
+    "year": 2010,
+    "genre": "Fantasy",
+    "description": "An epic journey into the mystical lands of Avalon. A young squire must recover the fragments of a broken sword to unite the warring kingdoms and defeat an ancient sorceress."
+  },
+  {
+    "id": "book_007",
+    "title": "Code of Silence",
+    "author": "Sarah Jenkins",
+    "year": 2021,
+    "genre": "Thriller",
+    "description": "A high-tech thriller where a cybersecurity expert discovers a conspiracy within the government's most secretive agency. She must go on the run to expose the truth before she is silenced forever."
+  },
+  {
+    "id": "book_008",
+    "title": "Winds of Change",
+    "author": "Elizabeth Bennet",
+    "year": 2012,
+    "genre": "Historical Fiction",
+    "description": "A sweeping family saga set during the Industrial Revolution in Northern England. The story follows three generations of the Miller family as they adapt to a rapidly changing world."
+  },
+  {
+    "id": "book_009",
+    "title": "The Alchemist's Apprentice",
+    "author": "Nicholas Flamel",
+    "year": 2019,
+    "genre": "Fantasy",
+    "description": "In a hidden laboratory beneath Paris, a young apprentice learns the secrets of transmutation. But the pursuit of the Philosopher's Stone attracts the attention of dangerous shadows from the past."
+  },
+  {
+    "id": "book_010",
+    "title": "Beyond the Event Horizon",
+    "author": "Dr. Aris Thorne",
+    "year": 2025,
+    "genre": "Science Fiction",
+    "description": "A hard sci-fi novel exploring the first mission to enter a black hole. The crew faces gravitational distortions and psychological strain as they venture into the absolute unknown."
+  },
+  {
+    "id": "book_011",
+    "title": "The Last Kingdom",
+    "author": "Bernard Cornwell",
+    "year": 2004,
+    "genre": "Historical Fiction",
+    "description": "The story of Uhtred, a Saxon boy captured and raised by Danes in 9th-century England. He must navigate the conflict between his two worlds as King Alfred the Great fights for the survival of Wessex."
+  },
+  {
+    "id": "book_012",
+    "title": "Silicon Soul",
+    "author": "Leah Miller",
+    "year": 2024,
+    "genre": "Cyberpunk",
+    "description": "In a world where humans can upload their minds to the cloud, one 'ghost' in the machine discovers a conspiracy to delete the souls of the poor. A fast-paced dive into digital rebellion."
+  },
+  {
+    "id": "book_013",
+    "title": "Midnight in Manhattan",
+    "author": "James Patterson",
+    "year": 2017,
+    "genre": "Thriller",
+    "description": "A relentless cat-and-mouse game between a seasoned detective and a serial killer who uses New York's subway system as his hunting ground. Every second counts as the body count rises."
+  },
+  {
+    "id": "book_014",
+    "title": "The Glass Throne",
+    "author": "Sarah J. Maas",
+    "year": 2012,
+    "genre": "Fantasy",
+    "description": "In a land without magic, an assassin is summoned to the castle. She comes not to kill the king, but to win her freedom in a deadly competition against the realm's most dangerous criminals."
+  },
+  {
+    "id": "book_015",
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "year": 1813,
+    "genre": "Historical Romance",
+    "description": "The classic tale of Elizabeth Bennet and Mr. Darcy. A witty and insightful exploration of manners, upbringing, and marriage in the English country gentry of the early 19th century."
+  },
+  {
+    "id": "book_016",
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "year": 1965,
+    "genre": "Science Fiction",
+    "description": "Set on the desert planet Arrakis, Dune is the story of the boy Paul Atreides, heir to a noble family tasked with ruling an inhospitable world where the only thing of value is the 'spice' melange."
+  },
+  {
+    "id": "book_017",
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "year": 2011,
+    "genre": "Science Fiction",
+    "description": "A lone astronaut is stranded on Mars after a fierce storm forces his crew to evacuate. He must use his ingenuity and spirit to survive on the hostile planet until rescue can be attempted."
+  },
+  {
+    "id": "book_018",
+    "title": "The Nightingale",
+    "author": "Kristin Hannah",
+    "year": 2015,
+    "genre": "Historical Fiction",
+    "description": "Two sisters in France during World War II struggle to survive and resist the German occupation. A poignant and heartbreaking story of the female experience during war."
+  },
+  {
+    "id": "book_019",
+    "title": "Neuromancer",
+    "author": "William Gibson",
+    "year": 1984,
+    "genre": "Cyberpunk",
+    "description": "The novel that defined cyberpunk. Case, a washed-up computer hacker, is hired by a mysterious employer to pull off the ultimate hack against a powerful artificial intelligence."
+  },
+  {
+    "id": "book_020",
+    "title": "The Name of the Wind",
+    "author": "Patrick Rothfuss",
+    "year": 2007,
+    "genre": "Fantasy",
+    "description": "The story of Kvothe, a legendary figure who grew up in a troupe of traveling players, became a student at a prestigious university of magic, and eventually went into hiding as an innkeeper."
+  }
+]
