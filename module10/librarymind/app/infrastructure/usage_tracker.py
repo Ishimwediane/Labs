@@ -43,7 +43,7 @@ class UsageTracker:
             return 0
             
         try:
-            # Use gpt-4 encoding as a default for most modern models
+            # Use gpt-4 encoding 
             encoding_model = model if model and "gpt" in model else "gpt-4"
             encoding = tiktoken.encoding_for_model(encoding_model)
             return len(encoding.encode(text))

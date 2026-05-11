@@ -50,6 +50,7 @@ class CacheService:
         payload_hash = hashlib.sha256(serialized_payload.encode()).hexdigest()
         return f"{namespace}:{payload_hash}"
 
+    
     def get(self, key: str) -> Optional[Any]:
         """
         Retrieve a value from the cache. 
