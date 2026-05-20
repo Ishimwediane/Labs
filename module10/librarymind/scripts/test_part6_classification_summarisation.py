@@ -1,14 +1,12 @@
 """
-scripts/test_part6_classification_summarisation.py
-====================================================
-Part 6 — LibraryMind Classification & Summarisation
+
 
 PURPOSE:
     Validates that all Part 6 components work correctly — both in
     isolation (unit tests, no AI calls) and end-to-end (live AI calls).
 
 WHAT IS TESTED:
-    ── Unit Tests (no AI calls, always fast) ────────────────────────────
+    ── Unit Tests (no AI calls, always fast) 
     Test U1  — strip_markdown_fences: plain JSON passes through unchanged
     Test U2  — strip_markdown_fences: ```json … ``` fences are stripped
     Test U3  — strip_markdown_fences: plain ``` … ``` fences are stripped
@@ -24,7 +22,7 @@ WHAT IS TESTED:
     Test U13 — SummarisationService: non-string item raises ValueError
     Test U14 — SummarisationService: empty string in list raises ValueError
 
-    ── Live Integration Tests (real AI calls) ───────────────────────────
+    ── Live Integration Tests (real AI calls) 
     Test L1  — ClassificationService: classify a frustrated account ticket
     Test L2  — ClassificationService: classify a low-priority suggestion
     Test L3  — ClassificationService: all output fields are present
@@ -37,9 +35,6 @@ WHAT IS TESTED:
     Test L10 — SummarisationService: key_themes, praise, criticism are lists
     Test L11 — UsageTracker: requests were recorded for both services
 
-HOW TO RUN:
-    cd librarymind
-    python -m scripts.test_part6_classification_summarisation
 
 NOTE:
     Unit tests run without any AI provider. They test the shared JSON
@@ -53,10 +48,10 @@ import io
 import logging
 import sys
 
-# ── Fix Windows terminal encoding ─────────────────────────────────────
+# Fix Windows terminal encoding 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
-# ── Imports ───────────────────────────────────────────────────────────
+# Imports 
 from app.config import get_settings
 from app.infrastructure.rate_limiter import TokenBucketRateLimiter
 from app.infrastructure.usage_tracker import UsageTracker
@@ -75,22 +70,21 @@ from app.utils.json_output import (
     extract_json,
 )
 
-# ── Logging ───────────────────────────────────────────────────────────
+# Logging 
 logging.basicConfig(level=logging.WARNING, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
-# =====================================================================
+
 # Test counters (global, simple)
-# =====================================================================
+
 
 _pass_count = 0
 _fail_count = 0
 
 
-# =====================================================================
 # Assertion helpers
-# =====================================================================
+
 
 def print_separator(title: str) -> None:
     """Print a clearly labelled section divider."""
@@ -155,9 +149,8 @@ def run_live_test(label: str, fn, *args, **kwargs):
         return None
 
 
-# =====================================================================
-# ── UNIT TESTS  (no AI calls) ────────────────────────────────────────
-# =====================================================================
+# UNIT TESTS  (no AI calls) 
+
 
 def run_unit_tests() -> None:
     """
@@ -168,7 +161,7 @@ def run_unit_tests() -> None:
     """
     print_separator("UNIT TESTS — JSON Output Pipeline  (app/utils/json_output.py)")
 
-    # ── Test U1: plain JSON passes through strip_markdown_fences unchanged ──
+    # Test U1: plain JSON passes through strip_markdown_fences unchanged 
     plain = '{"category": "account", "priority": "high"}'
     result = strip_markdown_fences(plain)
     assert_equal(
@@ -177,7 +170,7 @@ def run_unit_tests() -> None:
         plain,
     )
 
-    # ── Test U2: ```json ... ``` fences are stripped ───────────────────────
+    # Test U2: ```json ... ``` fences are stripped 
     fenced_json = '```json\n{"category": "account"}\n```'
     result = strip_markdown_fences(fenced_json)
     assert_equal(
@@ -186,7 +179,7 @@ def run_unit_tests() -> None:
         '{"category": "account"}',
     )
 
-    # ── Test U3: plain ``` ... ``` fences (no language tag) ───────────────
+    # Test U3: plain ``` ... ``` fences (no language tag)
     fenced_plain = '```\n{"category": "account"}\n```'
     result = strip_markdown_fences(fenced_plain)
     assert_equal(
@@ -195,7 +188,7 @@ def run_unit_tests() -> None:
         '{"category": "account"}',
     )
 
-    # ── Test U4: valid JSON parses to the expected dict ───────────────────
+    # Test U4: valid JSON parses to the expected dict 
     valid_json = '{"category": "technical", "priority": "high"}'
     parsed = parse_json_safely(valid_json)
     assert_equal(
@@ -204,7 +197,7 @@ def run_unit_tests() -> None:
         {"category": "technical", "priority": "high"},
     )
 
-    # ── Test U5: invalid JSON raises ValueError ────────────────────────────
+    # Test U5: invalid JSON raises ValueError 
     assert_raises(
         "U5 · parse_json_safely raises ValueError on invalid JSON",
         ValueError,
@@ -212,7 +205,7 @@ def run_unit_tests() -> None:
         "This is not JSON at all.",
     )
 
-    # ── Test U6: all required keys present → no error ─────────────────────
+    # Test U6: all required keys present → no error 
     data = {"category": "account", "priority": "high", "sentiment": "neutral"}
     try:
         validate_required_keys(data, ["category", "priority", "sentiment"])
@@ -220,7 +213,7 @@ def run_unit_tests() -> None:
     except ValueError as exc:
         _record_fail("U6 · validate_required_keys passes when all keys are present", str(exc))
 
-    # ── Test U7: missing key raises ValueError with the key named ─────────
+    # Test U7: missing key raises ValueError with the key named 
     def _check_missing():
         validate_required_keys({"category": "account"}, ["category", "priority"])
 
@@ -230,7 +223,7 @@ def run_unit_tests() -> None:
         _check_missing,
     )
 
-    # ── Test U8: extract_json full pipeline on fenced input ───────────────
+    # Test U8: extract_json full pipeline on fenced input 
     fenced = '```json\n{"category": "borrowing", "priority": "medium"}\n```'
     result = extract_json(fenced, required_keys=["category", "priority"])
     assert_equal(
@@ -239,7 +232,7 @@ def run_unit_tests() -> None:
         {"category": "borrowing", "priority": "medium"},
     )
 
-    # =========================================================================
+    
     print_separator("UNIT TESTS — ClassificationService Input Validation")
 
     settings     = get_settings()
@@ -254,7 +247,7 @@ def run_unit_tests() -> None:
         settings=settings,
     )
 
-    # ── Test U9: empty string raises ValueError ────────────────────────────
+    #  Test U9: empty string raises ValueError 
     assert_raises(
         "U9  · empty ticket_text raises ValueError",
         ValueError,
@@ -262,7 +255,7 @@ def run_unit_tests() -> None:
         "",
     )
 
-    # ── Test U10: too-short text raises ValueError ─────────────────────────
+    #  Test U10: too-short text raises ValueError 
     assert_raises(
         "U10 · ticket_text under 10 chars raises ValueError",
         ValueError,
@@ -270,7 +263,7 @@ def run_unit_tests() -> None:
         "Hi",
     )
 
-    # =========================================================================
+    
     print_separator("UNIT TESTS — SummarisationService Input Validation")
 
     summariser = SummarisationService(
@@ -280,7 +273,7 @@ def run_unit_tests() -> None:
         settings=settings,
     )
 
-    # ── Test U11: empty list raises ValueError ─────────────────────────────
+    # Test U11: empty list raises ValueError 
     assert_raises(
         "U11 · empty reviews list raises ValueError",
         ValueError,
@@ -288,7 +281,7 @@ def run_unit_tests() -> None:
         [],
     )
 
-    # ── Test U12: list over 50 items raises ValueError ─────────────────────
+    # Test U12: list over 50 items raises ValueError 
     assert_raises(
         "U12 · list of 51 reviews raises ValueError",
         ValueError,
@@ -296,7 +289,7 @@ def run_unit_tests() -> None:
         ["review"] * 51,
     )
 
-    # ── Test U13: non-string item in list raises ValueError ───────────────
+    #  Test U13: non-string item in list raises ValueError 
     assert_raises(
         "U13 · non-string review item raises ValueError",
         ValueError,
@@ -304,7 +297,7 @@ def run_unit_tests() -> None:
         ["Great book", 42, "Another review"],
     )
 
-    # ── Test U14: empty string in list raises ValueError ──────────────────
+    #  Test U14: empty string in list raises ValueError
     assert_raises(
         "U14 · empty-string review item raises ValueError",
         ValueError,
@@ -313,9 +306,8 @@ def run_unit_tests() -> None:
     )
 
 
-# =====================================================================
-# ── LIVE INTEGRATION TESTS  (real AI calls) ──────────────────────────
-# =====================================================================
+#  LIVE INTEGRATION TESTS  (real AI calls) 
+
 
 def run_live_tests() -> None:
     """
@@ -346,12 +338,11 @@ def run_live_tests() -> None:
         settings=settings,
     )
 
-    # ==================================================================
     # Ticket Classifier — Live Tests
-    # ==================================================================
+
     print_separator("LIVE TESTS — ClassificationService  (real AI call)")
 
-    # ── L1: frustrated account ticket ─────────────────────────────────
+    #  L1: frustrated account ticket 
     ticket_frustrated = (
         "My library card isn't working at the self-checkout and "
         "I'm very frustrated. I've been trying for 20 minutes."
@@ -371,7 +362,7 @@ def run_live_tests() -> None:
             "Expected a non-empty dict."
         )
 
-    # ── L2: low-priority suggestion ticket ────────────────────────────
+    #  L2: low-priority suggestion ticket
     ticket_suggestion = (
         "It would be great if the library had a wider selection "
         "of audiobooks for learning languages."
@@ -391,9 +382,9 @@ def run_live_tests() -> None:
             "Expected a non-empty dict."
         )
 
-    # ── L3–L6: field and enum checks only if L1 succeeded ────────────
+    # L3–L6: field and enum checks only if L1 succeeded 
     if result_1 is not None:
-        # ── L3: all required output fields are present ────────────────
+        #  L3: all required output fields are present 
         required = ["category", "priority", "sentiment", "department", "summary"]
         for field in required:
             assert_true(
@@ -402,21 +393,21 @@ def run_live_tests() -> None:
                 f"Field '{field}' missing from classification result."
             )
 
-        # ── L4: category is within allowed values ─────────────────────
+        #  L4: category is within allowed values 
         assert_true(
             f"L4 · category value '{result_1.get('category')}' is in allowed set",
             result_1.get("category") in ALLOWED_CATEGORIES,
             f"Got {result_1.get('category')!r}, allowed: {sorted(ALLOWED_CATEGORIES)}"
         )
 
-        # ── L5: priority is within allowed values ─────────────────────
+        #  L5: priority is within allowed values 
         assert_true(
             f"L5 · priority value '{result_1.get('priority')}' is in allowed set",
             result_1.get("priority") in ALLOWED_PRIORITIES,
             f"Got {result_1.get('priority')!r}, allowed: {sorted(ALLOWED_PRIORITIES)}"
         )
 
-        # ── L6: sentiment is within allowed values ────────────────────
+        # L6: sentiment is within allowed values 
         assert_true(
             f"L6 · sentiment value '{result_1.get('sentiment')}' is in allowed set",
             result_1.get("sentiment") in ALLOWED_SENTIMENTS,
@@ -425,9 +416,9 @@ def run_live_tests() -> None:
     else:
         print("  [SKIP] L3–L6 skipped because L1 did not return a result.")
 
-    # ==================================================================
+   
     # Review Summariser — Live Tests
-    # ==================================================================
+
     print_separator("LIVE TESTS — SummarisationService  (real AI call)")
 
     sample_reviews = [
@@ -452,7 +443,7 @@ def run_live_tests() -> None:
         import json as _json
         print("  " + _json.dumps(summary, indent=4).replace("\n", "\n  "))
 
-    # ── L8–L10: content checks only if summariser call succeeded ──────
+    #  L8–L10: content checks only if summariser call succeeded 
     if summary is not None:
         assert_true(
             "L7 · summarise_reviews returns a non-empty dict",
@@ -460,7 +451,7 @@ def run_live_tests() -> None:
             "Expected a non-empty dict."
         )
 
-        # ── L8: all required output fields are present ────────────────
+        #  L8: all required output fields are present 
         required_summary = [
             "overall_sentiment", "average_rating", "key_themes",
             "praise", "criticism", "recommendation"
@@ -472,7 +463,7 @@ def run_live_tests() -> None:
                 f"Field '{field}' missing from summary result."
             )
 
-        # ── L9: average_rating is a number ────────────────────────────
+        #  L9: average_rating is a number 
         rating = summary.get("average_rating")
         assert_true(
             f"L9 · average_rating is int or float (got {type(rating).__name__}: {rating})",
@@ -480,7 +471,7 @@ def run_live_tests() -> None:
             f"Expected int or float, got {type(rating).__name__}: {rating!r}"
         )
 
-        # ── L10: key_themes, praise, criticism are lists ──────────────
+        #  L10: key_themes, praise, criticism are lists 
         for list_field in ("key_themes", "praise", "criticism"):
             value = summary.get(list_field)
             assert_true(
@@ -491,9 +482,8 @@ def run_live_tests() -> None:
     else:
         print("  [SKIP] L7–L10 skipped because summarise_reviews did not return a result.")
 
-    # ==================================================================
     # Usage Tracker — shared check
-    # ==================================================================
+
     print_separator("LIVE TESTS — UsageTracker  (shared check)")
 
     total_requests = usage_tracker.get_total_requests()
@@ -509,10 +499,8 @@ def run_live_tests() -> None:
         f"Expected >= 3 requests, got {total_requests}."
     )
 
-
-# =====================================================================
 # Main runner
-# =====================================================================
+
 
 def run_all_tests() -> None:
     """Run all unit tests then all live integration tests."""
@@ -521,24 +509,24 @@ def run_all_tests() -> None:
     print("  LibraryMind Part 6 — Classification & Summarisation Tests")
     print("█" * 64)
 
-    # ── Phase 1: Unit tests ───────────────────────────────────────────
-    print("\n\n📋  PHASE 1: Unit Tests  (no AI calls, offline-safe)")
+    # Phase 1: Unit tests 
+    print("\n\n  PHASE 1: Unit Tests  (no AI calls, offline-safe)")
     run_unit_tests()
 
-    # ── Phase 2: Live integration tests ──────────────────────────────
-    print("\n\n🌐  PHASE 2: Live Integration Tests  (real AI calls)")
+    # Phase 2: Live integration tests 
+    print("\n\n PHASE 2: Live Integration Tests  (real AI calls)")
     run_live_tests()
 
-    # ── Final report ─────────────────────────────────────────────────
+    # Final report 
     total = _pass_count + _fail_count
     print("\n" + "=" * 64)
     print(f"  TEST RESULTS:  {_pass_count} passed,  {_fail_count} failed  (of {total} total)")
     print("=" * 64)
 
     if _fail_count == 0:
-        print("\n  ✅  All tests passed. Part 6 is working correctly.")
+        print("\n    All tests passed. Part 6 is working correctly.")
     else:
-        print(f"\n  ❌  {_fail_count} test(s) failed. Review the [FAIL] lines above.")
+        print(f"\n   {_fail_count} test(s) failed. Review the [FAIL] lines above.")
 
     print()
 

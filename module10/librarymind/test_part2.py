@@ -5,7 +5,7 @@ from app.infrastructure.rate_limiter import TokenBucketRateLimiter, RateLimitExc
 from app.infrastructure.usage_tracker import UsageTracker
 from app.config import get_settings
 
-# Configure minimal logging for the test output
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ def run_cache_test():
     
     payload = {"query": "Tell me about libraries", "model": "gemini-3-flash"}
     
-    # 1. Test deterministic key generation
+
     key1 = cache.make_key("rag_search", payload)
     key2 = cache.make_key("rag_search", payload)
     
@@ -27,7 +27,7 @@ def run_cache_test():
     else:
         print("[ERROR] Error: Keys do not match.")
 
-    # 2. Test store and retrieve
+   
     sample_data = {"result": "Libraries are amazing places for learning.", "tokens": 12}
     
     set_success = cache.set(key1, sample_data, ttl=60)
@@ -91,10 +91,10 @@ def run_usage_tracker_test():
         print(f"[ERROR] Error: Metrics check failed. Reqs: {total_reqs}, Cost: {daily_cost}")
 
 if __name__ == "__main__":
-    print("=== LibraryMind Part 2: Infrastructure Manual Validation ===")
+    print("LibraryMind Part 2: Infrastructure Manual Validation")
     
     run_cache_test()
     run_rate_limiter_test()
     run_usage_tracker_test()
     
-    print("\n=== Validation Complete ===")
+    print("Validation Complete")

@@ -51,6 +51,7 @@ class UsageTracker:
             # Rough fallback: ~4 characters per token
             return len(text) // 4
 
+   
     def _estimate_cost(self, model: str, prompt_tokens: int, completion_tokens: int) -> float:
         """Estimate the cost of a request based on the pricing table."""
         prices = self.pricing_table.get(model, (0.0, 0.0))

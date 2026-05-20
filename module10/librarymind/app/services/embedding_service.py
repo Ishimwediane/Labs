@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 class EmbeddingService:
     """
     Service for generating text embeddings.
-    Tries OpenAI first (as per preference), falls back to Gemini if OpenAI is unavailable.
     Includes caching to avoid redundant API calls.
     """
 
@@ -19,11 +18,9 @@ class EmbeddingService:
         self.settings = get_settings()
         self.cache = CacheService()
         
-        # Initialize OpenAI
         self.openai_client = OpenAI(api_key=self.settings.OPENAI_API_KEY)
         self.openai_model = self.settings.OPENAI_EMBEDDING_MODEL
         
-        # Initialize Gemini
         self.gemini_client = genai.Client(api_key=self.settings.GEMINI_API_KEY)
         self.gemini_model = self.settings.GEMINI_EMBEDDING_MODEL
         

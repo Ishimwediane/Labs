@@ -6,6 +6,7 @@ from app.providers.base import BaseAIProvider
 from app.providers.openai_provider import OpenAIProvider
 from app.providers.anthropic_provider import AnthropicProvider
 from app.providers.gemini_provider import GeminiProvider
+from app.providers.amalitech_provider import AmalitechProvider
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +52,13 @@ class ResilientAIService:
                 logger.info("Gemini provider initialized.")
             except Exception as e:
                 logger.error(f"Failed to initialize Gemini provider: {e}")
+
+        if self.settings.AMALITECH_API_KEY and "your_api_key_here" not in self.settings.AMALITECH_API_KEY:
+            try:
+                available_providers["amalitech"] = AmalitechProvider()
+                logger.info("AmaliTech provider initialized.")
+            except Exception as e:
+                logger.error(f"Failed to initialize AmaliTech provider: {e}")
 
         return available_providers
 

@@ -21,9 +21,10 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     ANTHROPIC_API_KEY: Optional[str] = None
     GEMINI_API_KEY: Optional[str] = None
+    AMALITECH_API_KEY: Optional[str] = None
 
     # Provider Configuration
-    PRIMARY_PROVIDER: Literal["openai", "anthropic", "gemini"] = "openai"
+    PRIMARY_PROVIDER: Literal["openai", "anthropic", "gemini", "amalitech"] = "openai"
     OPENAI_MODEL: str = "gpt-4-turbo-preview"
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
     GEMINI_MODEL: str = "gemini-1.5-pro"
@@ -55,10 +56,10 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_at_least_one_api_key(self) -> "Settings":
         """Ensure that at least one AI provider API key is configured."""
-        if not any([self.OPENAI_API_KEY, self.ANTHROPIC_API_KEY, self.GEMINI_API_KEY]):
+        if not any([self.OPENAI_API_KEY, self.ANTHROPIC_API_KEY, self.GEMINI_API_KEY, self.AMALITECH_API_KEY]):
             raise ValueError(
                 "At least one AI provider API key must be set: "
-                "OPENAI_API_KEY, ANTHROPIC_API_KEY, or GEMINI_API_KEY"
+                "OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, or AMALITECH_API_KEY"
             )
         return self
 

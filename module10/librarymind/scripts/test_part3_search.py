@@ -8,7 +8,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.services.embedding_service import EmbeddingService
 from app.infrastructure.vector_store import ChromaVectorStore
 
-# Configure logging to be minimal for clean output
 logging.basicConfig(level=logging.WARNING, format="%(levelname)s: %(message)s")
 
 def test_search():

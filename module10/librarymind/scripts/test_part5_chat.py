@@ -1,12 +1,7 @@
 """
-scripts/test_part5_chat.py
-===========================
-Part 5 — LibraryMind AI Librarian Chatbot
-
 PURPOSE:
     Validates that ChatService works correctly end-to-end.
-    Run this script directly — no web server needed.
-
+ 
 WHAT IS TESTED:
     Test 1 — Greeting:          A simple "Hi!" should get a warm reply, no sources.
     Test 2 — RAG grounding:     A book query should return a grounded answer with sources.
@@ -15,9 +10,6 @@ WHAT IS TESTED:
     Test 5 — Isolation:         A new conversation_id starts with zero history.
     Test 6 — Memory integrity:  Correct number of messages saved after 3 turns.
 
-HOW TO RUN:
-    cd librarymind
-    python -m scripts.test_part5_chat
 """
 
 import io
@@ -39,14 +31,13 @@ from app.services.chat_service import ChatService
 from app.services.embedding_service import EmbeddingService
 from app.services.rag_service import RAGService
 
-# ── Logging ───────────────────────────────────────────────────────────
+# Logging 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
-# =====================================================================
 # Helpers
-# =====================================================================
+
 
 def print_separator(title: str) -> None:
     """Print a clearly labelled section divider."""
@@ -85,9 +76,8 @@ def assert_true(label: str, condition: bool) -> None:
         print(f"  [FAIL] {label}")
 
 
-# =====================================================================
 # Dependency wiring
-# =====================================================================
+
 
 def build_chat_service() -> tuple[ChatService, ConversationStore, UsageTracker]:
     """
@@ -131,9 +121,8 @@ def build_chat_service() -> tuple[ChatService, ConversationStore, UsageTracker]:
     return chat_service, store, usage_tracker
 
 
-# =====================================================================
 # Individual tests
-# =====================================================================
+
 
 def test_greeting(chat_service: ChatService, conv_id: str) -> None:
     """
