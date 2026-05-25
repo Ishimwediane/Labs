@@ -1,7 +1,4 @@
 """
-app/services/summarisation_service.py
-======================================
-Part 6 — Review Summarisation Service
 
 WHAT THIS FILE DOES:
     SummarisationService takes a list of 1–50 book review strings and
@@ -51,9 +48,8 @@ from app.utils.json_output import extract_json
 logger = logging.getLogger(__name__)
 
 
-# ======================================================================
 # Constants
-# ======================================================================
+
 
 # Maximum number of reviews allowed in one request.
 MAX_REVIEWS = 50
@@ -80,9 +76,8 @@ EXPECTED_TYPES: dict[str, type | tuple[type, ...]] = {
 }
 
 
-# ======================================================================
 # SummarisationService
-# ======================================================================
+
 
 class SummarisationService:
     """
@@ -124,9 +119,8 @@ class SummarisationService:
 
         logger.info("SummarisationService initialised.")
 
-    # ==================================================================
     # PUBLIC METHOD
-    # ==================================================================
+
 
     def summarise_reviews(self, reviews: list[str]) -> dict[str, Any]:
         """
@@ -152,21 +146,21 @@ class SummarisationService:
                           invalid / incomplete / wrongly-typed JSON.
             RuntimeError: If all AI providers fail (from ResilientAIService).
         """
-        # ── Step 1: Validate input ─────────────────────────────────────
+        # 1: Validate input 
         reviews = self._validate_reviews(reviews)
 
         logger.info(f"Summarising {len(reviews)} review(s).")
 
-        # ── Step 2: Check rate limiter ─────────────────────────────────
+        # 2: Check rate limiter     
         # Raises RateLimitExceededError (HTTP 429) if the bucket is empty.
         self.rate_limiter.acquire()
 
-        # ── Step 3: Build prompts ──────────────────────────────────────
+        #3: Build prompts 
         system_prompt = self._build_system_prompt()
         user_prompt = self._build_user_prompt(reviews)
 
-        # ── Step 4: Call the AI provider ───────────────────────────────
-        # temperature=0.0 → most deterministic output, best for JSON tasks.
+        # 4: Call the AI provider 
+    
         raw_response = self.ai_service.generate(
             prompt=user_prompt,
             system=system_prompt,
@@ -176,18 +170,17 @@ class SummarisationService:
 
         logger.debug(f"Raw model response:\n{raw_response}")
 
-        # ── Steps 5–7: Strip fences → parse JSON → validate fields ─────
-        # extract_json() runs all three steps from app/utils/json_output.py
-        # and raises a clear ValueError if any step fails.
+        # 5–7: Strip fences → parse JSON → validate fields
+    
         summary = extract_json(
             raw_text=raw_response,
             required_keys=REQUIRED_FIELDS,
         )
 
-        # ── Step 8: Validate field types ───────────────────────────────
+        # 8: Validate field types
         self._validate_field_types(summary)
 
-        # ── Step 9: Record token usage and cost ────────────────────────
+        # 9: Record token usage and cost
         self._record_usage(
             prompt=system_prompt + user_prompt,
             completion=raw_response,
@@ -202,9 +195,8 @@ class SummarisationService:
 
         return summary
 
-    # ==================================================================
     # PRIVATE HELPERS
-    # ==================================================================
+
 
     def _validate_reviews(self, reviews: list[str]) -> list[str]:
         """
@@ -364,8 +356,9 @@ class SummarisationService:
             "openai":    self.settings.OPENAI_MODEL,
             "anthropic": self.settings.ANTHROPIC_MODEL,
             "gemini":    self.settings.GEMINI_MODEL,
+            "amalitech": self.settings.OPENAI_MODEL,
         }
-        model = model_map.get(provider, "unknown-model")
+        model = model_map.get(provider, self.settings.OPENAI_MODEL)
 
         self.usage_tracker.record_usage(
             provider=provider,
@@ -374,10 +367,8 @@ class SummarisationService:
             completion=completion,
         )
 
-
-# ======================================================================
 # QUICK DEMO  (run with: python -m app.services.summarisation_service)
-# ======================================================================
+
 
 if __name__ == "__main__":
     """
@@ -402,7 +393,7 @@ if __name__ == "__main__":
     usage_tracker = UsageTracker()
     rate_limiter  = TokenBucketRateLimiter()
 
-    # ── Instantiate the service ────────────────────────────────────────
+    # Instantiate the service 
     summariser = SummarisationService(
         ai_service=ai_service,
         usage_tracker=usage_tracker,
@@ -410,7 +401,7 @@ if __name__ == "__main__":
         settings=settings,
     )
 
-    # ── Example reviews ────────────────────────────────────────────────
+    # Example reviews 
     sample_reviews = [
         "This book completely pulled me in. The world-building is extraordinary "
         "and the characters feel real. A must-read for sci-fi fans.",

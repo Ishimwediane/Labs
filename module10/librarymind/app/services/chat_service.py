@@ -441,11 +441,12 @@ class ChatService:
         """
         provider = self.settings.PRIMARY_PROVIDER
         model_map = {
-            "openai": self.settings.OPENAI_MODEL,
+            "openai":    self.settings.OPENAI_MODEL,
             "anthropic": self.settings.ANTHROPIC_MODEL,
-            "gemini": self.settings.GEMINI_MODEL,
+            "gemini":    self.settings.GEMINI_MODEL,
+            "amalitech": self.settings.OPENAI_MODEL,
         }
-        return model_map.get(provider, "unknown-model")
+        return model_map.get(provider, self.settings.OPENAI_MODEL)
 
 
 # ======================================================================

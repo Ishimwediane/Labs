@@ -55,7 +55,7 @@ class RAGService:
 
         # 3. Retrieve Context (Vector Search)
         logger.info(f"Processing new RAG request: {question[:50]}...")
-        query_vector = self.embedding_service.generate_query_embedding(question)
+        query_vector = self.embedding_service.embed_text(question)
         raw_results = self.vector_store.search(
             query_embedding=query_vector, 
             top_k=self.settings.RAG_TOP_K
@@ -88,9 +88,15 @@ class RAGService:
 
         # 8. Usage Tracking (Accounting)
         # We record the tokens and cost for the LLM call
+        model_map = {
+            "openai":    self.settings.OPENAI_MODEL,
+            "anthropic": self.settings.ANTHROPIC_MODEL,
+            "gemini":    self.settings.GEMINI_MODEL,
+            "amalitech": self.settings.OPENAI_MODEL,
+        }
         self.usage_tracker.record_usage(
             provider=self.settings.PRIMARY_PROVIDER,
-            model=self.settings.OPENAI_MODEL if self.settings.PRIMARY_PROVIDER == "openai" else self.settings.GEMINI_MODEL,
+            model=model_map.get(self.settings.PRIMARY_PROVIDER, self.settings.OPENAI_MODEL),
             prompt=system_prompt + user_prompt,
             completion=ai_response
         )

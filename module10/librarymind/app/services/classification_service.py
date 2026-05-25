@@ -309,8 +309,9 @@ class ClassificationService:
             "openai":    self.settings.OPENAI_MODEL,
             "anthropic": self.settings.ANTHROPIC_MODEL,
             "gemini":    self.settings.GEMINI_MODEL,
+            "amalitech": self.settings.OPENAI_MODEL,
         }
-        model = model_map.get(provider, "unknown-model")
+        model = model_map.get(provider, self.settings.OPENAI_MODEL)
 
         self.usage_tracker.record_usage(
             provider=provider,
