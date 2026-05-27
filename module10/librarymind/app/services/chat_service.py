@@ -139,20 +139,20 @@ class ChatService:
 
         if history_text:
             sections.append(
-                "=== Recent Conversation History ===\n"
+                "Recent Conversation History \n"
                 "(Use this to understand follow-up questions.)\n"
                 f"{history_text}"
             )
 
         if context_text:
             sections.append(
-                "=== Library Catalogue Context ===\n"
+                " Library Catalogue Context \n"
                 "(These are the ONLY books you may recommend or discuss.)\n"
                 f"{context_text}"
             )
         else:
             sections.append(
-                "=== Library Catalogue Context ===\n"
+                "Library Catalogue Context \n"
                 "No relevant books were found. Do NOT invent any titles or authors."
             )
 
