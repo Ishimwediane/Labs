@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     OPENAI_MODEL: str = "gpt-4-turbo-preview"
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
     GEMINI_MODEL: str = "gemini-1.5-pro"
+    AMALITECH_MODEL: str = "gpt-4o-mini"
     OPENAI_EMBEDDING_MODEL: str = "text-embedding-3-small"
     GEMINI_EMBEDDING_MODEL: str = "gemini-embedding-001"
 

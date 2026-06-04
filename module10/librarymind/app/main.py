@@ -1,27 +1,3 @@
-"""
-app/main.py
-============
-Part 7 — LibraryMind FastAPI Application
-
-This is the entry point for the entire LibraryMind API.
-
-Registered routers:
-    GET  /health           — application status and usage metrics
-    POST /search/books     — semantic book search (vector similarity)
-    POST /search/ask       — RAG-powered Q&A
-    POST /chat             — multi-turn AI librarian chatbot
-    POST /classify/ticket  — support ticket classification
-    POST /summarise/reviews— review summarisation
-
-How to run:
-    cd librarymind
-    uvicorn app.main:app --reload --port 8000
-
-Interactive docs:
-    http://localhost:8000/docs   (Swagger UI)
-    http://localhost:8000/redoc  (ReDoc)
-"""
-
 import logging
 
 from fastapi import FastAPI, Request
@@ -32,20 +8,18 @@ from app.api.routers import chat, classify, health, search, summarise
 from app.config import get_settings
 from app.infrastructure.rate_limiter import RateLimitExceededError
 
-# ── Logging ───────────────────────────────────────────────────────────
+# Logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s  %(levelname)-8s  %(name)s — %(message)s",
 )
 logger = logging.getLogger(__name__)
 
-# ── Settings ──────────────────────────────────────────────────────────
+# Settings 
 settings = get_settings()
 
-# ======================================================================
-# Application factory
-# ======================================================================
 
+# Application factory
 app = FastAPI(
     title="LibraryMind API",
     description=(
@@ -68,11 +42,6 @@ app = FastAPI(
     debug=settings.DEBUG,
 )
 
-# ======================================================================
-# CORS Middleware
-# — allows any origin in development so Swagger UI, Postman, and
-#   frontend dev servers can all call the API without CORS errors.
-# ======================================================================
 
 app.add_middleware(
     CORSMiddleware,
@@ -83,9 +52,8 @@ app.add_middleware(
 )
 
 
-# ======================================================================
+
 # Global exception handlers
-# ======================================================================
 
 @app.exception_handler(RateLimitExceededError)
 async def rate_limit_handler(request: Request, exc: RateLimitExceededError):
@@ -100,9 +68,8 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceededError):
     )
 
 
-# ======================================================================
+
 # Routers
-# ======================================================================
 
 app.include_router(health.router)
 app.include_router(search.router)
@@ -110,11 +77,7 @@ app.include_router(chat.router)
 app.include_router(classify.router)
 app.include_router(summarise.router)
 
-
-# ======================================================================
 # Root redirect (convenience — sends browser users to /docs)
-# ======================================================================
-
 @app.get(
     "/",
     include_in_schema=False,  # don't pollute Swagger with this redirect
@@ -133,9 +96,8 @@ async def root():
     )
 
 
-# ======================================================================
+
 # Startup event — log which providers are active
-# ======================================================================
 
 @app.on_event("startup")
 async def on_startup():
@@ -148,10 +110,8 @@ async def on_startup():
     logger.info("=" * 60)
 
 
-# ======================================================================
-# Dev entrypoint
-# ======================================================================
 
+# Dev entrypoint
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(

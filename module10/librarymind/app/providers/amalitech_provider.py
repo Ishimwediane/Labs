@@ -29,7 +29,7 @@ class AmalitechProvider(BaseAIProvider):
             base_url="https://ai-api.amalitech.org/api/v2/public/v1",
             default_headers={"Provider": "openai", "X-Api-Key": settings.AMALITECH_API_KEY}
         )
-        self.model = settings.OPENAI_MODEL
+        self.model = settings.AMALITECH_MODEL
         self._provider_name = "amalitech"
 
     @property

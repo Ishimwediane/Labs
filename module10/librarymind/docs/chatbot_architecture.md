@@ -4,12 +4,6 @@
 
 ---
 
-## System Architecture Diagram
-
-![LibraryMind Part 5 — AI Librarian Chatbot Architecture](./part5_chatbot_architecture.png)
-
----
-
 ## Architecture Overview
 
 Part 5 builds the **AI Librarian Chatbot** on top of everything built in Parts 0–4.
