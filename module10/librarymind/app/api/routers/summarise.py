@@ -1,8 +1,4 @@
 """
-app/api/routers/summarise.py
-=============================
-Part 7 — Review Summarisation Endpoint
-
 Endpoint:
     POST /summarise/reviews — summarise 1–50 reviews into structured JSON
 """

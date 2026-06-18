@@ -23,7 +23,7 @@ class AmalitechProvider(BaseAIProvider):
 
     def __init__(self):
         settings = get_settings()
-        # We can use the OpenAI client but pointing to AmaliTech's proxy
+        
         self.client = OpenAI(
             api_key=settings.AMALITECH_API_KEY,
             base_url="https://ai-api.amalitech.org/api/v2/public/v1",

@@ -1,8 +1,4 @@
 """
-app/api/routers/search.py
-==========================
-Part 7 — Search Endpoints
-
 Endpoints:
     POST /search/books  — semantic vector search over the catalogue
     POST /search/ask    — RAG-powered Q&A (question → grounded answer)
@@ -35,10 +31,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/search", tags=["Search"])
 
 
-# ======================================================================
 # POST /search/books
-# ======================================================================
-
 @router.post(
     "/books",
     response_model=BookSearchResponse,
@@ -81,9 +74,8 @@ async def search_books(
     )
 
 
-# ======================================================================
+
 # POST /search/ask
-# ======================================================================
 
 @router.post(
     "/ask",

@@ -1,37 +1,3 @@
-"""
-app/api/dependencies.py
-========================
-Part 7 — Dependency Injection
-
-WHY THIS FILE EXISTS:
-    Every endpoint needs the same set of services (AI, RAG, chat, etc.).
-    Building those services on every single request would be wasteful —
-    each construction opens connections, loads config, and initialises clients.
-
-    FastAPI's `Depends()` system lets us build each service ONCE at startup
-    and reuse the same instance for every request.  This is called the
-    "singleton via dependency injection" pattern.
-
-HOW IT WORKS:
-    1. Each service is built by a plain Python function (a "provider function").
-    2. The function is decorated with @lru_cache so it only runs once.
-    3. Route handlers declare the service they need with `Depends(get_xyz)`.
-    4. FastAPI calls the provider function, gets the cached instance, and
-       injects it into the route handler.
-
-DEPENDENCY GRAPH:
-    Settings
-        └── ResilientAIService
-        └── UsageTracker
-        └── TokenBucketRateLimiter
-        └── CacheService
-        └── EmbeddingService
-              └── ChromaVectorStore
-                    └── RAGService
-                          └── ChatService
-                          └── ClassificationService
-                          └── SummarisationService
-"""
 
 import logging
 from functools import lru_cache
@@ -52,9 +18,9 @@ from app.services.summarisation_service import SummarisationService
 logger = logging.getLogger(__name__)
 
 
-# ======================================================================
+
 # Low-level singletons
-# ======================================================================
+
 
 @lru_cache()
 def get_cache_service() -> CacheService:
@@ -105,9 +71,9 @@ def get_conversation_store() -> ConversationStore:
     return ConversationStore()
 
 
-# ======================================================================
+
 # Higher-level service singletons
-# ======================================================================
+
 
 @lru_cache()
 def get_rag_service() -> RAGService:
