@@ -20,7 +20,9 @@ class UsageTracker:
         
         # Simple pricing table (Price per 1M tokens in USD)
         # Format: (input_price, output_price)
+        # Embedding models have no output tokens, so output_price is always 0.0
         self.pricing_table = {
+            # --- Chat / Generation Models ---
             "gpt-4o-mini": (0.15, 0.60),
             "gpt-4o": (5.00, 15.00),
             "gpt-4-turbo-preview": (10.00, 30.00),
@@ -30,6 +32,12 @@ class UsageTracker:
             "gemini-2.0-flash": (0.10, 0.40),
             "gemini-3-flash-preview": (0.10, 0.40),
             "gemini-flash-latest": (0.10, 0.40),
+            # --- Embedding Models (input only, no output tokens) ---
+            "text-embedding-3-small": (0.02, 0.0),
+            "text-embedding-3-large": (0.13, 0.0),
+            "text-embedding-ada-002": (0.10, 0.0),
+            "gemini-embedding-001": (0.025, 0.0),
+            "text-embedding-004": (0.025, 0.0),
         }
         
         logger.info("Usage Tracker initialized.")

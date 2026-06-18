@@ -6,21 +6,62 @@ from pydantic import BaseModel, Field
 # POST /search/books
 
 class BookSearchRequest(BaseModel):
-    """Body for semantic book search."""
+    """Body for semantic book search with optional filters and pagination."""
 
     query: str = Field(
         ...,
         min_length=3,
         max_length=500,
         description="The search query (e.g. 'dystopian novels about survival').",
-        examples=["science fiction books about space exploration"],
     )
     limit: int = Field(
         default=5,
         ge=1,
         le=20,
-        description="Maximum number of results to return (1–20).",
+        description="Maximum number of results to return per page (1–20).",
     )
+    page: int = Field(
+        default=1,
+        ge=1,
+        description="Page number to return (starts at 1). Use with limit to paginate results.",
+    )
+
+    # --- Optional Filters ---
+    # These narrow the results AFTER semantic search is done.
+    genre: Optional[str] = Field(
+        default=None,
+        description="Filter by exact genre (e.g. 'Science Fiction', 'Fantasy', 'Thriller').",
+    )
+    author: Optional[str] = Field(
+        default=None,
+        description="Filter by author name (partial match, case-insensitive).",
+    )
+    year_min: Optional[int] = Field(
+        default=None,
+        ge=0,
+        description="Only return books published from this year onwards.",
+    )
+    year_max: Optional[int] = Field(
+        default=None,
+        ge=0,
+        description="Only return books published up to and including this year.",
+    )
+
+    # This sets the pre-filled example in Swagger UI.
+    # When you open /docs and click 'Try it out', this is what you see.
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "query": "science fiction books about space exploration",
+                "limit": 5,
+                "page": 1,
+                "genre": None,
+                "author": None,
+                "year_min": None,
+                "year_max": None
+            }
+        }
+    }
 
 
 class BookResult(BaseModel):
@@ -39,7 +80,11 @@ class BookSearchResponse(BaseModel):
     """Response body for POST /search/books."""
 
     results: list[BookResult]
-    total: int = Field(description="Number of results returned.")
+    total: int = Field(description="Number of results in this page.")
+    total_matches: int = Field(description="Total books matching query + filters (before pagination).")
+    total_pages: int = Field(description="Total number of pages available.")
+    page: int = Field(description="The current page number.")
+    limit: int = Field(description="The page size that was requested.")
     query: str = Field(description="The original search query echoed back.")
 
 
@@ -48,15 +93,44 @@ class BookSearchResponse(BaseModel):
 
 
 class AskRequest(BaseModel):
-    """Body for RAG-powered question answering."""
+    """Body for RAG-powered question answering with optional filters."""
 
     question: str = Field(
         ...,
         min_length=5,
         max_length=500,
         description="A natural-language question about the library catalogue.",
-        examples=["Which books deal with artificial intelligence ethics?"],
     )
+
+    # --- Optional Filters ---
+    # These narrow the CONTEXT books the LLM sees before generating the answer.
+    # e.g. genre='Fantasy' means the AI will only answer using Fantasy books.
+    genre: Optional[str] = Field(
+        default=None,
+        description="Restrict context to books of this genre (e.g. 'Cyberpunk').",
+    )
+    year_min: Optional[int] = Field(
+        default=None,
+        ge=0,
+        description="Only use books published from this year onwards as context.",
+    )
+    year_max: Optional[int] = Field(
+        default=None,
+        ge=0,
+        description="Only use books published up to this year as context.",
+    )
+
+    # This sets the pre-filled example in Swagger UI.
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "question": "Which science fiction books deal with space travel?",
+                "genre": None,
+                "year_min": None,
+                "year_max": None
+            }
+        }
+    }
 
 
 class AskResponse(BaseModel):

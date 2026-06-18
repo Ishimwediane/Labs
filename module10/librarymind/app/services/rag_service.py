@@ -35,15 +35,21 @@ class RAGService:
         self.ai_service = ai_service
         self.settings = settings
 
-    def answer_question(self, question: str) -> Dict[str, Any]:
+    def answer_question(self, question: str, filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Main entry point to answer a patron's question using RAG.
+
+        filters (optional dict) can contain:
+          - genre    : str  — restrict context to books of this genre
+          - year_min : int  — only use books published from this year
+          - year_max : int  — only use books published up to this year
         """
+        filters = filters or {}
         if not question or len(question.strip()) < 3:
             return {"answer": "Please provide a valid question.", "sources": [], "cached": False}
 
-        # 1. Cache Check
-        cache_key = self._make_cache_key(question)
+        # 1. Cache Check (filters are included in the cache key)
+        cache_key = self._make_cache_key(question, filters)
         cached_result = self.cache_service.get(cache_key)
         if cached_result:
             logger.info(f"RAG Cache HIT for: {question[:30]}...")
@@ -54,14 +60,20 @@ class RAGService:
         self.rate_limiter.acquire()
 
         # 3. Retrieve Context (Vector Search)
+        # If filters are active we fetch the whole catalogue so nothing is missed.
+        # Without filters, just fetch RAG_TOP_K (efficient).
+        has_filters = any(v for v in filters.values() if v is not None)
+        fetch_k = 100 if has_filters else self.settings.RAG_TOP_K
+
         logger.info(f"Processing new RAG request: {question[:50]}...")
         query_vector = self.embedding_service.embed_text(question)
         raw_results = self.vector_store.search(
-            query_embedding=query_vector, 
-            top_k=self.settings.RAG_TOP_K
+            query_embedding=query_vector,
+            top_k=fetch_k
         )
 
-        # 4. Relevance Filtering
+        # 4. Apply metadata filters (genre, year range)
+        raw_results = self._apply_filters(raw_results, filters)
         filtered_results = self._filter_results(raw_results)
 
         # 5. Handle "No Results" (Anti-Hallucination)
@@ -113,12 +125,34 @@ class RAGService:
 
         return final_response
 
-    def _make_cache_key(self, question: str) -> str:
-        """Create a unique fingerprint for the RAG request."""
-        return self.cache_service.make_key(
-            namespace="rag:v1", 
-            payload={"q": question.strip().lower()}
-        )
+    def _make_cache_key(self, question: str, filters: Optional[Dict[str, Any]] = None) -> str:
+        """Create a unique fingerprint for the RAG request including any active filters."""
+        payload: Dict[str, Any] = {"q": question.strip().lower()}
+        if filters:
+            # Only include non-None filter values so cache keys stay compact
+            active = {k: v for k, v in filters.items() if v is not None}
+            if active:
+                payload["filters"] = active
+        return self.cache_service.make_key(namespace="rag:v1", payload=payload)
+
+    def _apply_filters(self, results: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Filter retrieved books by genre and year before passing to the LLM."""
+        filtered = results
+
+        genre = filters.get("genre")
+        if genre:
+            # Exact match, case-insensitive
+            filtered = [r for r in filtered if r.get("genre", "").lower() == genre.lower()]
+
+        year_min = filters.get("year_min")
+        if year_min is not None:
+            filtered = [r for r in filtered if r.get("year", 0) >= year_min]
+
+        year_max = filters.get("year_max")
+        if year_max is not None:
+            filtered = [r for r in filtered if r.get("year", 9999) <= year_max]
+
+        return filtered
 
     def _filter_results(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Remove books that don't meet the relevance threshold."""
