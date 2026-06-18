@@ -1,28 +1,9 @@
-"""
-app/api/models.py
-==================
-Part 7 — Pydantic Request & Response Models
-
-WHY THIS FILE EXISTS:
-    FastAPI uses Pydantic models to:
-    1. Validate incoming JSON request bodies (wrong types / missing fields → HTTP 422)
-    2. Serialise outgoing responses into clean, documented JSON
-    3. Power the automatic Swagger UI at /docs
-
-    All models for every endpoint live here so they are easy to find and review.
-
-NAMING CONVENTION:
-    - Request models end in  ...Request   (what the client sends)
-    - Response models end in ...Response  (what the API returns)
-"""
-
 from typing import Any, Optional
 from pydantic import BaseModel, Field
 
 
-# ======================================================================
+
 # POST /search/books
-# ======================================================================
 
 class BookSearchRequest(BaseModel):
     """Body for semantic book search."""
@@ -62,9 +43,9 @@ class BookSearchResponse(BaseModel):
     query: str = Field(description="The original search query echoed back.")
 
 
-# ======================================================================
+
 # POST /search/ask
-# ======================================================================
+
 
 class AskRequest(BaseModel):
     """Body for RAG-powered question answering."""
@@ -88,9 +69,9 @@ class AskResponse(BaseModel):
     cached: bool = Field(description="True if this answer was served from the Redis cache.")
 
 
-# ======================================================================
+
 # POST /chat
-# ======================================================================
+
 
 class ChatRequest(BaseModel):
     """Body for a single chatbot turn."""
@@ -124,9 +105,9 @@ class ChatResponse(BaseModel):
     conversation_id: str = Field(description="The conversation ID echoed back.")
 
 
-# ======================================================================
+
 # POST /classify/ticket
-# ======================================================================
+
 
 class TicketRequest(BaseModel):
     """Body for support ticket classification."""
@@ -163,9 +144,8 @@ class TicketClassificationResponse(BaseModel):
     )
 
 
-# ======================================================================
+
 # POST /summarise/reviews
-# ======================================================================
 
 class ReviewSummarisationRequest(BaseModel):
     """Body for review summarisation."""
@@ -221,9 +201,9 @@ class ReviewSummarisationResponse(BaseModel):
     )
 
 
-# ======================================================================
+
 # GET /health
-# ======================================================================
+
 
 class HealthResponse(BaseModel):
     """Response body for GET /health."""
@@ -235,10 +215,9 @@ class HealthResponse(BaseModel):
     daily_cost_usd: float = Field(description="Estimated AI spend today in USD.")
 
 
-# ======================================================================
-# Shared error shapes (for documentation only — FastAPI raises these
-# automatically, but documenting them helps Swagger UI users)
-# ======================================================================
+
+# Shared error shapes ( documenting them helps Swagger UI users)
+
 
 class ErrorDetail(BaseModel):
     detail: str

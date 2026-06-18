@@ -1,7 +1,4 @@
 """
-app/api/routers/health.py
-==========================
-Part 7 — Health Check Endpoint
 
 Endpoint:
     GET /health — returns application status, total AI requests, and daily spend

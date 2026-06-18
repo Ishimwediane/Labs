@@ -1,7 +1,4 @@
 """
-app/api/routers/chat.py
-========================
-Part 7 — Chatbot Endpoint
 
 Endpoint:
     POST /chat — multi-turn AI librarian conversation

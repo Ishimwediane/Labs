@@ -1,7 +1,4 @@
 """
-app/api/routers/classify.py
-============================
-Part 7 — Ticket Classification Endpoint
 
 Endpoint:
     POST /classify/ticket — classify a support ticket into structured JSON
