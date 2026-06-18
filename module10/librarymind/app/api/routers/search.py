@@ -53,6 +53,12 @@ async def search_books(
     """
     Embed the query string and run a vector similarity search over the
     library catalogue stored in ChromaDB.
+
+    FLOW:
+    1. Embed the query text into a vector.
+    2. Retrieve ALL books from ChromaDB, ranked by cosine similarity score.
+    3. Apply optional filters (genre, author, year range) on the ranked list.
+    4. Paginate using page + limit to return a slice of the filtered results.
     """
     try:
         query_vector = embedding_svc.embed_text(body.query)
@@ -63,15 +69,48 @@ async def search_books(
             detail=f"Embedding service unavailable: {exc}",
         )
 
-    raw_results = vector_store.search(query_embedding=query_vector, top_k=body.limit)
+    # Always fetch all books from ChromaDB, ranked by similarity score.
+    # top_k=100 covers any catalogue size. Results come back best-match first.
+    all_results = vector_store.search(query_embedding=query_vector, top_k=100)
 
-    books = [BookResult(**r) for r in raw_results]
+    # --- Optional Filters (applied in Python on the full ranked list) ---
+    filtered = all_results
+
+    if body.genre:
+        # Exact match, case-insensitive ("science fiction" == "Science Fiction")
+        filtered = [r for r in filtered if r["genre"].lower() == body.genre.lower()]
+
+    if body.author:
+        # Partial match — "Thorne" matches "Isabella Thorne" or "Marcus Thorne"
+        filtered = [r for r in filtered if body.author.lower() in r["author"].lower()]
+
+    if body.year_min is not None:
+        filtered = [r for r in filtered if r["year"] >= body.year_min]
+
+    if body.year_max is not None:
+        filtered = [r for r in filtered if r["year"] <= body.year_max]
+
+    # --- Pagination ---
+    # Convert page number → offset internally.
+    # The caller says "page 2", we calculate skip = (2-1) * 5 = 5.
+    total_matches = len(filtered)
+    offset = (body.page - 1) * body.limit
+    total_pages = max(1, -(-total_matches // body.limit))  # ceiling division
+    page_results = filtered[offset : offset + body.limit]
+
+    books = [BookResult(**r) for r in page_results]
 
     return BookSearchResponse(
         results=books,
         total=len(books),
+        total_matches=total_matches,
+        total_pages=total_pages,
+        page=body.page,
+        limit=body.limit,
         query=body.query,
     )
+
+
 
 
 
@@ -97,10 +136,18 @@ async def ask_question(
 ) -> AskResponse:
     """
     Run a full RAG pipeline: embed the question → retrieve relevant books →
-    generate a grounded answer → return answer + sources + cache flag.
+    filter by genre/year if requested → generate a grounded answer.
     """
+    # Build a filters dict from whatever the user provided.
+    # None values are ignored inside the RAG service.
+    filters = {
+        "genre":    body.genre,
+        "year_min": body.year_min,
+        "year_max": body.year_max,
+    }
+
     try:
-        result = rag_svc.answer_question(body.question)
+        result = rag_svc.answer_question(body.question, filters=filters)
     except RateLimitExceededError:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,

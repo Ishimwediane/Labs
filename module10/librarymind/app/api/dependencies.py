@@ -52,9 +52,9 @@ def get_ai_service() -> ResilientAIService:
 
 @lru_cache()
 def get_embedding_service() -> EmbeddingService:
-    """Return a single shared EmbeddingService instance."""
+    """Return a single shared EmbeddingService instance, wired with UsageTracker."""
     logger.info("Initialising EmbeddingService...")
-    return EmbeddingService()
+    return EmbeddingService(usage_tracker=get_usage_tracker())
 
 
 @lru_cache()
