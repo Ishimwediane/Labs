@@ -14,11 +14,19 @@ class ChromaVectorStore:
 
     def __init__(self):
         self.settings = get_settings()
-        # Initialize persistent client
-        self.client = chromadb.PersistentClient(path=self.settings.CHROMA_PERSIST_DIR)
-        self.collection = self._get_or_create_collection()
         
-        logger.info(f"ChromaVectorStore initialized at: {self.settings.CHROMA_PERSIST_DIR}")
+        # Initialize client (Dockerized HTTP vs Embedded Persistent)
+        if self.settings.CHROMA_HOST:
+            self.client = chromadb.HttpClient(
+                host=self.settings.CHROMA_HOST,
+                port=self.settings.CHROMA_PORT
+            )
+            logger.info(f"ChromaVectorStore connected via HTTP at {self.settings.CHROMA_HOST}:{self.settings.CHROMA_PORT}")
+        else:
+            self.client = chromadb.PersistentClient(path=self.settings.CHROMA_PERSIST_DIR)
+            logger.info(f"ChromaVectorStore initialized persistently at: {self.settings.CHROMA_PERSIST_DIR}")
+            
+        self.collection = self._get_or_create_collection()
 
     def _get_or_create_collection(self):
         """Get the existing collection or create a new one with cosine similarity."""

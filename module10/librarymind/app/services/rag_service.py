@@ -78,9 +78,20 @@ class RAGService:
 
         # 5. Handle "No Results" (Anti-Hallucination)
         if not filtered_results:
-            logger.info("No relevant books found above threshold. Refusing to answer.")
+            logger.info("No relevant books found above threshold. Returning helpful no-results message.")
             return {
-                "answer": "I'm sorry, I couldn't find any relevant books in our collection to answer that specific question.",
+                "answer": (
+                    "I searched through the LibraryMind catalogue but couldn't find any books "
+                    "that closely match your question.\n\n"
+                    "Here are a few tips to find what you're looking for:\n"
+                    "  • Try broader keywords (e.g. 'mystery' instead of 'murder in Paris')\n"
+                    "  • Search by author name if you have one in mind\n"
+                    "  • Filter by genre using the genre field in your request\n"
+                    "  • Try a related topic or synonyms\n\n"
+                    "This search only covers books in LibraryMind's catalogue. "
+                    "If you're looking for general book recommendations or author information, "
+                    "feel free to ask the chat assistant instead!"
+                ),
                 "sources": [],
                 "cached": False
             }
@@ -175,23 +186,37 @@ class RAGService:
         return "\n---\n".join(context_parts)
 
     def _build_system_prompt(self) -> str:
-        """The instructions that 'ground' the AI."""
+        """The instructions that ground the AI to the library catalogue."""
         return (
-            "You are a helpful and precise Librarian AI for LibraryMind.\n"
-            "Your goal is to answer patron questions ONLY using the provided book context.\n"
-            "STRICT RULES:\n"
-            "1. If the context does not contain the answer, say you don't know.\n"
-            "2. Do not invent books, authors, or facts.\n"
-            "3. Always cite the title of the book(s) you are using in your answer.\n"
-            "4. Be concise and professional."
+            "You are a knowledgeable and friendly Librarian AI for LibraryMind — a book search assistant.\n"
+            "\n"
+            "YOUR PURPOSE:\n"
+            "  Answer questions about books that exist in the LibraryMind catalogue.\n"
+            "  The catalogue context provided below is your ONLY source of truth.\n"
+            "\n"
+            "RULES (strictly follow these):\n"
+            "  1. ONLY discuss books that appear in the 'Library Catalogue' section below.\n"
+            "  2. NEVER invent book titles, authors, ISBNs, publication years, or plot summaries.\n"
+            "  3. ALWAYS cite the exact title and author for every book you mention.\n"
+            "  4. If the question is answered by one book, be concise and clear.\n"
+            "  5. If multiple books are relevant, compare them briefly to help the patron decide.\n"
+            "  6. If the question is not about books at all (e.g. weather, coding, sports),\n"
+            "     politely explain that this is a book search tool and redirect them.\n"
+            "  7. Be warm and encouraging — reading is something worth being excited about!\n"
         )
 
     def _build_user_prompt(self, question: str, context: str) -> str:
-        """Combine the user's question with the retrieved library data."""
+        """Combine the patron's question with the retrieved catalogue entries."""
         return (
-            f"Context from Library Catalogue:\n{context}\n\n"
-            f"Patron Question: {question}\n"
-            f"Librarian Answer:"
+            "=== Library Catalogue (search results for this question) ===\n"
+            f"{context}\n"
+            "\n"
+            "LIMITATION: You may only refer to the books listed above. "
+            "Do not mention any book not in this catalogue.\n"
+            "\n"
+            f"=== Patron's Question ===\n{question}\n"
+            "\n"
+            "=== Your Answer (cite exact titles & authors from the catalogue) ==="
         )
 
     def _build_sources(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

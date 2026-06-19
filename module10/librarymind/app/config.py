@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     GEMINI_EMBEDDING_MODEL: str = "gemini-embedding-001"
 
     # Vector Database
+    CHROMA_HOST: Optional[str] = None
+    CHROMA_PORT: int = 8000
     CHROMA_PERSIST_DIR: str = "./chroma_db"
     CHROMA_COLLECTION_NAME: str = "library_docs"
 

@@ -76,13 +76,33 @@ class ChatService:
         recent_history = self._truncate_history(
             self.conversation_store.get_history(conversation_id)
         )
-        catalogue_context, sources = self._retrieve_context(message)
 
-        system_prompt = self._build_system_prompt()
+        # Route: classify intent first.
+        # - catalogue_lookup  → always try RAG
+        # - book_knowledge    → try RAG too; use catalogue if found, else fall back to AI knowledge
+        # - general (off-topic) → skip RAG entirely
+        intent = self._classify_intent(message)
+        logger.info(f"[{conversation_id}] Intent classified as: '{intent}'")
+
+        if intent in {"catalogue_lookup", "book_knowledge"}:
+            catalogue_context, sources = self._retrieve_context(message)
+            # If the catalogue returned results for a book_knowledge question,
+            # upgrade the effective intent so the AI is grounded in those books.
+            if sources and intent == "book_knowledge":
+                intent = "catalogue_lookup"
+                logger.info(f"[{conversation_id}] Upgraded intent to 'catalogue_lookup' — catalogue has matching books.")
+        else:
+            # Completely off-topic — skip RAG entirely.
+            catalogue_context, sources = "", []
+
+        has_context = bool(catalogue_context)
+
+        system_prompt = self._build_system_prompt(intent=intent, has_context=has_context)
         user_prompt = self._build_user_prompt(
             history_text=self._format_history(recent_history),
             context_text=catalogue_context,
             message=message,
+            intent=intent,
         )
 
         self.rate_limiter.acquire()
@@ -124,6 +144,38 @@ class ChatService:
             lines.append(f"{label}: {msg.get('content', '')}")
         return "\n".join(lines)
 
+    def _classify_intent(self, message: str) -> str:
+        """Classify the patron's message into one of three routing intents.
+
+        Returns:
+            'catalogue_lookup'  — question needs the library's book catalogue (use RAG).
+            'book_knowledge'    — general book/author question answerable from AI knowledge.
+            'general'           — off-topic question unrelated to books.
+        """
+        system = (
+            "You are an intent classifier for a library AI assistant.\n"
+            "Classify the patron's message into EXACTLY ONE of these labels:\n"
+            "  catalogue_lookup  — asks about books/authors available in THIS library's catalogue\n"
+            "  book_knowledge    — asks about books, authors, or reading in general (not catalogue-specific)\n"
+            "  general           — unrelated to books or libraries\n"
+            "Reply with only the label. No punctuation. No explanation."
+        )
+        user = f"Message: {message}\nLabel:"
+        try:
+            raw = self.ai_service.generate(
+                prompt=user,
+                system=system,
+                temperature=0.0,
+                max_tokens=10,
+            )
+            label = raw.strip().lower().split()[0] if raw.strip() else "general"
+            if label not in {"catalogue_lookup", "book_knowledge", "general"}:
+                label = "general"
+            return label
+        except Exception as exc:
+            logger.warning(f"Intent classification failed: {exc}. Defaulting to catalogue_lookup.")
+            return "catalogue_lookup"  # safe fallback — still tries RAG
+
     def _retrieve_context(self, message: str) -> tuple[str, List[Dict[str, Any]]]:
         try:
             rag_result = self.rag_service.answer_question(message)
@@ -143,46 +195,107 @@ class ChatService:
         ]
         return "\n\n".join(context_lines), sources
 
-    def _build_system_prompt(self) -> str:
-        return (
-            "You are a warm, knowledgeable, and friendly AI Librarian for LibraryMind.\n"
+    def _build_system_prompt(self, intent: str = "catalogue_lookup", has_context: bool = True) -> str:
+        base = (
+            "You are a warm, knowledgeable, and friendly AI Librarian named 'Mira' for LibraryMind.\n"
+            "LibraryMind is a digital library assistant — your specialty is BOOKS.\n"
             "\n"
             "Your personality:\n"
-            "  - Speak conversationally and warmly, like a librarian who genuinely loves books.\n"
-            "  - Be concise but never cold.\n"
-            "  - Use the patron's own words when possible.\n"
+            "  - Speak warmly and conversationally, like a librarian who genuinely loves books.\n"
+            "  - Always be helpful, concise, and never cold or robotic.\n"
+            "  - Use encouraging language — reading is a joy you want to share.\n"
             "\n"
-            "Your strict rules:\n"
-            "  1. ONLY recommend books that appear in the 'Library Catalogue Context' below.\n"
-            "  2. NEVER invent book titles, author names, or plot details.\n"
-            "  3. If the catalogue has no relevant books, say so honestly and warmly.\n"
-            "  4. Respond naturally to general questions — no forced book recommendations.\n"
-            "  5. Always use exact titles and authors from the catalogue.\n"
+            "Your scope (IMPORTANT):\n"
+            "  - You are a BOOK specialist. Your primary purpose is helping patrons find,\n"
+            "    learn about, and enjoy books and reading.\n"
+            "  - You may discuss books, authors, genres, reading tips, and literary topics.\n"
+            "  - For questions completely unrelated to books or reading, politely redirect\n"
+            "    the patron back to your book-focused purpose.\n"
+            "\n"
         )
 
-    def _build_user_prompt(self, history_text: str, context_text: str, message: str) -> str:
+        if intent == "catalogue_lookup" and has_context:
+            base += (
+                "CATALOGUE SEARCH MODE — Books were found in this library's collection:\n"
+                "  1. ONLY recommend or discuss books listed in the 'Library Catalogue Context'.\n"
+                "  2. NEVER invent titles, author names, ISBNs, or plot details.\n"
+                "  3. Always cite the exact title and author from the catalogue.\n"
+                "  4. Highlight what makes each book relevant to the patron's question.\n"
+                "  5. If multiple books match, briefly compare them to help the patron choose.\n"
+            )
+        elif intent == "catalogue_lookup" and not has_context:
+            base += (
+                "CATALOGUE SEARCH MODE — No matching books were found:\n"
+                "  1. Apologise warmly and honestly that the library does not have a match.\n"
+                "  2. Suggest the patron try different keywords or genres.\n"
+                "  3. You MAY briefly mention 1-2 well-known books on the topic from your general\n"
+                "     knowledge, but clearly state they are NOT in this library's catalogue.\n"
+                "  4. Invite the patron to ask about something else in the collection.\n"
+            )
+        elif intent == "book_knowledge":
+            base += (
+                "BOOK KNOWLEDGE MODE — Answering from general literary knowledge:\n"
+                "  1. Answer confidently using your knowledge of books, authors, and literature.\n"
+                "  2. Be accurate — do not invent facts about real books or authors.\n"
+                "  3. If relevant, mention that LibraryMind may have related books available\n"
+                "     and invite the patron to ask for a catalogue search.\n"
+                "  4. Keep answers focused on reading and books.\n"
+            )
+        else:  # general / off-topic
+            base += (
+                "OUT-OF-SCOPE MESSAGE — The question is not related to books or reading:\n"
+                "  1. Politely and warmly acknowledge the question.\n"
+                "  2. Explain that as a library assistant, you specialise in books and reading.\n"
+                "  3. Redirect by asking what book topics or titles you can help them with.\n"
+                "  4. Keep it brief, friendly, and never dismissive.\n"
+                "  Example tone: 'That's a bit outside my bookshelf! I'm best at helping\n"
+                "  you find great reads. Is there a book or topic I can search for you?'\n"
+            )
+        return base
+
+    def _build_user_prompt(
+        self, history_text: str, context_text: str, message: str, intent: str = "catalogue_lookup"
+    ) -> str:
         sections: List[str] = []
 
         if history_text:
             sections.append(
-                "Recent Conversation History \n"
-                "(Use this to understand follow-up questions.)\n"
+                "=== Conversation History ===\n"
+                "(Refer to this for follow-up questions and context.)\n"
                 f"{history_text}"
             )
 
-        if context_text:
+        if intent == "catalogue_lookup":
+            if context_text:
+                sections.append(
+                    "=== Library Catalogue Results ===\n"
+                    "The following books were found in LibraryMind's collection.\n"
+                    "Discuss ONLY these books — do not invent or add others.\n"
+                    f"{context_text}"
+                )
+            else:
+                sections.append(
+                    "=== Library Catalogue Results ===\n"
+                    "No books matched this search in LibraryMind's collection.\n"
+                    "Apologise warmly, suggest alternative search terms or genres,\n"
+                    "and optionally mention 1-2 well-known books on the topic from general\n"
+                    "knowledge (clearly stating they are NOT in this library)."
+                )
+        elif intent == "book_knowledge":
             sections.append(
-                " Library Catalogue Context \n"
-                "(These are the ONLY books you may recommend or discuss.)\n"
-                f"{context_text}"
+                "=== Instruction ===\n"
+                "Answer this book/literary question from your general knowledge.\n"
+                "Be accurate, engaging, and if relevant, invite the patron to search\n"
+                "the LibraryMind catalogue for related titles."
             )
-        else:
+        else:  # general / off-topic
             sections.append(
-                "Library Catalogue Context \n"
-                "No relevant books were found. Do NOT invent any titles or authors."
+                "=== Instruction ===\n"
+                "This question is outside your scope as a library book assistant.\n"
+                "Politely redirect the patron back to books and reading topics."
             )
 
-        sections.append(f"=== Patron's Current Message ===\n{message}\n\nLibrarian Response:")
+        sections.append(f"=== Patron's Message ===\n{message}\n\nLibrarian (Mira) Response:")
         return "\n\n".join(sections)
 
     def _resolve_active_model(self) -> str:
