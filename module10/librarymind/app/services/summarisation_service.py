@@ -6,6 +6,7 @@ from app.infrastructure.rate_limiter import TokenBucketRateLimiter
 from app.infrastructure.usage_tracker import UsageTracker
 from app.providers.resilient_service import ResilientAIService
 from app.utils.json_output import extract_json
+from app.api.models import BookReviewSentiment
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ REQUIRED_FIELDS = [
 ]
 
 EXPECTED_TYPES: dict[str, type | tuple[type, ...]] = {
-    "overall_sentiment": str,
+    "overall_sentiment": BookReviewSentiment,
     "average_rating":    (int, float),
     "key_themes":        list,
     "praise":            list,
@@ -77,6 +78,21 @@ class SummarisationService:
         logger.debug(f"Raw model response:\n{raw_response}")
 
         summary = extract_json(raw_text=raw_response, required_keys=REQUIRED_FIELDS)
+        
+        # Normalize and validate overall_sentiment enum
+        sentiment_str = str(summary.get("overall_sentiment", "")).strip().lower()
+        matched_enum = None
+        for item in BookReviewSentiment:
+            if item.value == sentiment_str:
+                matched_enum = item
+                break
+        if not matched_enum:
+            raise ValueError(
+                f"Invalid 'overall_sentiment': {summary.get('overall_sentiment')!r}. "
+                f"Allowed: {sorted([e.value for e in BookReviewSentiment])}."
+            )
+        summary["overall_sentiment"] = matched_enum
+
         self._validate_field_types(summary)
         self._record_usage(prompt=system_prompt + user_prompt, completion=raw_response)
 

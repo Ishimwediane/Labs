@@ -301,12 +301,21 @@ class TicketClassificationResponse(BaseModel):
 
 # POST /summarise/reviews
 
+class BookReviewSentiment(str, Enum):
+    """Sentiment categories for a collection of reviews."""
+
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    MIXED = "mixed"
+
+
 class ReviewSummarisationRequest(BaseModel):
     """Body for review summarisation."""
 
     reviews: list[str] = Field(
         ...,
         min_length=1,
+        max_length=50,
         description="A list of 1–50 review strings to summarise holistically.",
         examples=[
             [
@@ -316,6 +325,26 @@ class ReviewSummarisationRequest(BaseModel):
             ]
         ],
     )
+
+    @field_validator("reviews")
+    @classmethod
+    def validate_reviews(cls, v: list[str]) -> list[str]:
+        if not isinstance(v, list):
+            raise ValueError("reviews must be a list")
+        if len(v) < 1:
+            raise ValueError("reviews list must not be empty.")
+        if len(v) > 50:
+            raise ValueError(f"Too many reviews. Max 50, got {len(v)}.")
+
+        cleaned: list[str] = []
+        for i, item in enumerate(v):
+            if not isinstance(item, str):
+                raise ValueError(f"Review at index {i} must be a string")
+            stripped = item.strip()
+            if not stripped:
+                raise ValueError(f"Review at index {i} is empty after stripping.")
+            cleaned.append(stripped)
+        return cleaned
 
     model_config = {
         "json_schema_extra": {
@@ -335,7 +364,7 @@ class ReviewSummarisationRequest(BaseModel):
 class ReviewSummarisationResponse(BaseModel):
     """Response body for POST /summarise/reviews."""
 
-    overall_sentiment: str = Field(
+    overall_sentiment: BookReviewSentiment = Field(
         description="Cross-review sentiment: positive | negative | mixed"
     )
     average_rating: float = Field(
