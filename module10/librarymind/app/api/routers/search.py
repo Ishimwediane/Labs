@@ -5,9 +5,10 @@ Endpoints:
 """
 
 import logging
-from typing import Annotated
+import math
+from typing import Annotated, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.api.dependencies import (
     get_embedding_service,
@@ -38,7 +39,8 @@ router = APIRouter(prefix="/search", tags=["Search"])
     summary="Semantic book search",
     description=(
         "Embed the query and search the ChromaDB catalogue for the most "
-        "semantically similar books. Returns books ranked by cosine similarity."
+        "semantically similar books. Results are ranked by cosine similarity. "
+        "Use the **`page`** and **`limit`** query parameters to paginate results."
     ),
     responses={
         429: {"description": "Rate limit exceeded."},
@@ -49,6 +51,8 @@ async def search_books(
     body: BookSearchRequest,
     embedding_svc: Annotated[EmbeddingService, Depends(get_embedding_service)],
     vector_store:  Annotated[ChromaVectorStore,  Depends(get_vector_store)],
+    page:  int = Query(default=1,  ge=1,       description="Page number (starts at 1)."),
+    limit: int = Query(default=10, ge=1, le=50, description="Results per page (1–50)."),
 ) -> BookSearchResponse:
     """
     Embed the query string and run a vector similarity search over the
@@ -58,7 +62,7 @@ async def search_books(
     1. Embed the query text into a vector.
     2. Retrieve ALL books from ChromaDB, ranked by cosine similarity score.
     3. Apply optional filters (genre, author, year range) on the ranked list.
-    4. Paginate using page + limit to return a slice of the filtered results.
+    4. Paginate using ?page & ?limit query params to return the requested slice.
     """
     try:
         query_vector = embedding_svc.embed_text(body.query)
@@ -69,19 +73,15 @@ async def search_books(
             detail=f"Embedding service unavailable: {exc}",
         )
 
-    # Always fetch all books from ChromaDB, ranked by similarity score.
-    # top_k=100 covers any catalogue size. Results come back best-match first.
     all_results = vector_store.search(query_embedding=query_vector, top_k=100)
 
-    # --- Optional Filters (applied in Python on the full ranked list) ---
+    # --- Apply optional filters ---
     filtered = all_results
 
     if body.genre:
-        # Exact match, case-insensitive ("science fiction" == "Science Fiction")
         filtered = [r for r in filtered if r["genre"].lower() == body.genre.lower()]
 
     if body.author:
-        # Partial match — "Thorne" matches "Isabella Thorne" or "Marcus Thorne"
         filtered = [r for r in filtered if body.author.lower() in r["author"].lower()]
 
     if body.year_min is not None:
@@ -90,13 +90,11 @@ async def search_books(
     if body.year_max is not None:
         filtered = [r for r in filtered if r["year"] <= body.year_max]
 
-    # --- Pagination ---
-    # Convert page number → offset internally.
-    # The caller says "page 2", we calculate skip = (2-1) * 5 = 5.
+    # --- Pagination (query-param driven) ---
     total_matches = len(filtered)
-    offset = (body.page - 1) * body.limit
-    total_pages = max(1, -(-total_matches // body.limit))  # ceiling division
-    page_results = filtered[offset : offset + body.limit]
+    total_pages = max(1, math.ceil(total_matches / limit))
+    offset = (page - 1) * limit
+    page_results = filtered[offset: offset + limit]
 
     books = [BookResult(**r) for r in page_results]
 
@@ -105,13 +103,10 @@ async def search_books(
         total=len(books),
         total_matches=total_matches,
         total_pages=total_pages,
-        page=body.page,
-        limit=body.limit,
+        page=page,
+        limit=limit,
         query=body.query,
     )
-
-
-
 
 
 # POST /search/ask
@@ -138,8 +133,7 @@ async def ask_question(
     Run a full RAG pipeline: embed the question → retrieve relevant books →
     filter by genre/year if requested → generate a grounded answer.
     """
-    # Build a filters dict from whatever the user provided.
-    # None values are ignored inside the RAG service.
+
     filters = {
         "genre":    body.genre,
         "year_min": body.year_min,

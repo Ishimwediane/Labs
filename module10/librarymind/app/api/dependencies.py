@@ -66,9 +66,13 @@ def get_vector_store() -> ChromaVectorStore:
 
 @lru_cache()
 def get_conversation_store() -> ConversationStore:
-    """Return a single shared ConversationStore instance."""
+    """Return a single shared ConversationStore instance (Redis-backed or in-memory)."""
+    settings = get_settings()
     logger.info("Initialising ConversationStore...")
-    return ConversationStore()
+    return ConversationStore(
+        redis_url=settings.REDIS_URL,
+        ttl=settings.CONVERSATION_TTL,
+    )
 
 
 

@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     CACHE_ENABLED: bool = True
     CACHE_DEFAULT_TTL: int = 3600
 
+    # Conversation session TTL in seconds (default: 24 hours)
+    CONVERSATION_TTL: int = 86400
+
     # Rate Limiting & RAG
     RATE_LIMIT_PER_MINUTE: int = Field(60, gt=0)
     RAG_TOP_K: int = 5

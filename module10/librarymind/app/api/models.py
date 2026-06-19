@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, List, Optional
 from pydantic import BaseModel, Field
 
 
@@ -6,24 +6,17 @@ from pydantic import BaseModel, Field
 # POST /search/books
 
 class BookSearchRequest(BaseModel):
-    """Body for semantic book search with optional filters and pagination."""
+    """Body for semantic book search with optional filters.
+
+    Pagination is controlled via query parameters (?page=&limit=) on the endpoint,
+    not inside this body — keeping the body focused on what you are searching for.
+    """
 
     query: str = Field(
         ...,
         min_length=3,
         max_length=500,
         description="The search query (e.g. 'dystopian novels about survival').",
-    )
-    limit: int = Field(
-        default=5,
-        ge=1,
-        le=20,
-        description="Maximum number of results to return per page (1–20).",
-    )
-    page: int = Field(
-        default=1,
-        ge=1,
-        description="Page number to return (starts at 1). Use with limit to paginate results.",
     )
 
     # --- Optional Filters ---
@@ -47,21 +40,18 @@ class BookSearchRequest(BaseModel):
         description="Only return books published up to and including this year.",
     )
 
-    # This sets the pre-filled example in Swagger UI.
-    # When you open /docs and click 'Try it out', this is what you see.
     model_config = {
         "json_schema_extra": {
             "example": {
                 "query": "science fiction books about space exploration",
-                "limit": 5,
-                "page": 1,
                 "genre": None,
                 "author": None,
                 "year_min": None,
-                "year_max": None
+                "year_max": None,
             }
         }
     }
+
 
 
 class BookResult(BaseModel):
@@ -150,13 +140,14 @@ class AskResponse(BaseModel):
 class ChatRequest(BaseModel):
     """Body for a single chatbot turn."""
 
-    conversation_id: str = Field(
-        ...,
+    conversation_id: Optional[str] = Field(
+        default=None,
         min_length=1,
         max_length=128,
         description=(
-            "A unique ID for this chat session. Use a UUID. "
-            "The same ID must be sent on every turn to maintain memory."
+            "A unique ID for this chat session. "
+            "If omitted, the server auto-generates a new UUID and returns it. "
+            "Send the same ID on every subsequent turn to maintain memory."
         ),
         examples=["550e8400-e29b-41d4-a716-446655440000"],
     )
@@ -176,7 +167,51 @@ class ChatResponse(BaseModel):
     sources: list[dict[str, Any]] = Field(
         description="Books referenced in this reply (may be empty for greetings)."
     )
-    conversation_id: str = Field(description="The conversation ID echoed back.")
+    conversation_id: str = Field(
+        description="The conversation ID for this session. Save this and send it on the next turn."
+    )
+
+
+# ── Session / History models ──────────────────────────────────────────────
+
+
+class SessionSummary(BaseModel):
+    """Metadata summary for a single active conversation session."""
+
+    conversation_id: str = Field(description="Unique session identifier.")
+    message_count: int = Field(description="Total number of messages (user + assistant) stored.")
+    last_role: Optional[str] = Field(
+        default=None,
+        description="Role of the last message: 'user' or 'assistant'.",
+    )
+    last_message_preview: Optional[str] = Field(
+        default=None,
+        description="First 80 characters of the most recent message.",
+    )
+    last_active: Optional[str] = Field(
+        default=None,
+        description="ISO-8601 timestamp of the most recent message.",
+    )
+
+
+class SessionListResponse(BaseModel):
+    """Response body for GET /chat/sessions."""
+
+    sessions: List[SessionSummary] = Field(description="Paginated list of active sessions.")
+    total: int = Field(description="Total number of active sessions (before pagination).")
+    page: int = Field(description="Current page number.")
+    limit: int = Field(description="Page size requested.")
+    total_pages: int = Field(description="Total number of pages available.")
+    storage_backend: str = Field(description="Active storage backend: 'redis' or 'memory'.")
+
+
+class SessionHistoryResponse(BaseModel):
+    """Response body for GET /chat/sessions/{conversation_id}."""
+
+    conversation_id: str = Field(description="Unique session identifier.")
+    messages: List[dict] = Field(description="Full ordered message history (oldest first).")
+    message_count: int = Field(description="Total number of messages stored.")
+    storage_backend: str = Field(description="Active storage backend: 'redis' or 'memory'.")
 
 
 

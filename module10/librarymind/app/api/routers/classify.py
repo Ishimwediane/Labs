@@ -1,5 +1,4 @@
 """
-
 Endpoint:
     POST /classify/ticket — classify a support ticket into structured JSON
 """
@@ -52,7 +51,6 @@ async def classify_ticket(
             detail="Rate limit exceeded. Please wait before classifying another ticket.",
         )
     except ValueError as exc:
-        # JSON parsing failure or validation failure — model returned bad output
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Classification failed — model returned invalid output: {exc}",

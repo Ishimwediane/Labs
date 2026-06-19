@@ -1,5 +1,6 @@
 import logging
-from typing import Any, Dict, List
+import uuid
+from typing import Any, Dict, List, Optional
 
 from app.config import Settings
 from app.infrastructure.conversation_store import ConversationStore
@@ -32,16 +33,22 @@ class ChatService:
         self.history_limit: int = getattr(settings, "CHAT_HISTORY_LIMIT", 10)
         logger.info(f"ChatService initialised. History limit: {self.history_limit}.")
 
-    def chat(self, conversation_id: str, message: str) -> Dict[str, Any]:
+    def chat(self, conversation_id: Optional[str], message: str) -> Dict[str, Any]:
         """Process one conversation turn and return the assistant's reply.
 
         Args:
-            conversation_id: Unique session identifier.
+            conversation_id: Unique session identifier. If None or empty,
+                             a new UUID is auto-generated and returned.
             message: The patron's current message.
 
         Returns:
             Dict with keys: reply, sources, conversation_id.
         """
+        # Auto-generate a session ID when the client does not provide one.
+        if not conversation_id or not conversation_id.strip():
+            conversation_id = str(uuid.uuid4())
+            logger.info(f"Auto-generated conversation_id: {conversation_id}")
+
         conversation_id, message = self._validate_inputs(conversation_id, message)
         logger.info(f"[{conversation_id}] New turn: '{message[:60]}...'")
 
@@ -79,9 +86,7 @@ class ChatService:
         return {"reply": reply, "sources": sources, "conversation_id": conversation_id}
 
     def _validate_inputs(self, conversation_id: str, message: str):
-        """Strip and validate inputs; raise ValueError if either is blank."""
-        if not conversation_id or not conversation_id.strip():
-            raise ValueError("conversation_id must not be empty.")
+        """Strip and validate inputs; raise ValueError only if message is blank."""
         if not message or not message.strip():
             raise ValueError("message must not be empty.")
         return conversation_id.strip(), message.strip()
