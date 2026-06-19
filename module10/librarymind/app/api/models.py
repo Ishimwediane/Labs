@@ -1,5 +1,6 @@
+from enum import Enum
 from typing import Any, List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 
@@ -254,6 +255,28 @@ class TicketRequest(BaseModel):
         ],
     )
 
+    @field_validator("ticket_text")
+    @classmethod
+    def validate_ticket_text(cls, v: str) -> str:
+        if not isinstance(v, str):
+            raise ValueError("ticket_text must be a string")
+        stripped = v.strip()
+        if len(stripped) < 10:
+            raise ValueError("ticket_text must contain at least 10 non-whitespace characters")
+        return stripped
+
+
+class LibraryDepartment(str, Enum):
+    """Predefined library departments for support tickets."""
+
+    CIRCULATION = "Circulation"
+    IT_SUPPORT = "IT Support"
+    COLLECTIONS = "Collections"
+    REFERENCE = "Reference"
+    MEMBERSHIP = "Membership"
+    BILLING = "Billing"
+    ADMINISTRATION = "Administration"
+
 
 class TicketClassificationResponse(BaseModel):
     """Response body for POST /classify/ticket."""
@@ -267,8 +290,8 @@ class TicketClassificationResponse(BaseModel):
     sentiment: str = Field(
         description="Patron sentiment: positive | neutral | negative"
     )
-    department: str = Field(
-        description="Suggested handling department (e.g. 'Membership', 'IT Support')."
+    department: LibraryDepartment = Field(
+        description="Predefined library department."
     )
     summary: str = Field(
         description="One-sentence summary of the ticket."

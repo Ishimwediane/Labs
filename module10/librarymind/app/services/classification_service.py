@@ -6,6 +6,7 @@ from app.infrastructure.rate_limiter import TokenBucketRateLimiter
 from app.infrastructure.usage_tracker import UsageTracker
 from app.providers.resilient_service import ResilientAIService
 from app.utils.json_output import extract_json
+from app.api.models import LibraryDepartment
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +14,8 @@ ALLOWED_CATEGORIES = {"account", "borrowing", "technical", "complaint", "suggest
 ALLOWED_PRIORITIES = {"low", "medium", "high", "urgent"}
 ALLOWED_SENTIMENTS = {"positive", "neutral", "negative"}
 REQUIRED_FIELDS = ["category", "priority", "sentiment", "department", "summary"]
+
+
 
 
 class ClassificationService:
@@ -95,7 +98,7 @@ class ClassificationService:
             "  - category:   one of: account, borrowing, technical, complaint, suggestion, general\n"
             "  - priority:   one of: low, medium, high, urgent\n"
             "  - sentiment:  one of: positive, neutral, negative\n"
-            "  - department: 1-3 words (e.g. 'Membership', 'IT Support')\n"
+            "  - department: one of: Circulation, IT Support, Collections, Reference, Membership, Billing, Administration\n"
             "  - summary:    max 12 words describing the issue\n"
             "\n"
             "Priority guidance:\n"
@@ -117,7 +120,7 @@ class ClassificationService:
         )
 
     def _validate_enum_fields(self, data: dict[str, Any]) -> None:
-        """Validate and normalise category, priority, and sentiment to lowercase."""
+        """Validate and normalise category, priority, and sentiment to lowercase; department to canonical title case."""
         checks = [
             ("category",  data["category"],  ALLOWED_CATEGORIES),
             ("priority",  data["priority"],  ALLOWED_PRIORITIES),
@@ -129,6 +132,20 @@ class ClassificationService:
                     f"Invalid '{field_name}': {value!r}. Allowed: {sorted(allowed_set)}."
                 )
             data[field_name] = str(value).lower()
+
+        dept_str = str(data.get("department", "")).strip().lower()
+        matched_enum = None
+        for item in LibraryDepartment:
+            if item.value.lower() == dept_str:
+                matched_enum = item
+                break
+
+        if not matched_enum:
+            allowed_vals = [e.value for e in LibraryDepartment]
+            raise ValueError(
+                f"Invalid 'department': {data.get('department')!r}. Allowed: {sorted(allowed_vals)}."
+            )
+        data["department"] = matched_enum
 
     def _record_usage(self, prompt: str, completion: str) -> None:
         """Record token usage and estimated cost for the active provider."""
