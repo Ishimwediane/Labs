@@ -3,6 +3,7 @@ Endpoints:
     POST /chat                             — multi-turn AI librarian conversation
     GET  /chat/sessions                    — list active sessions (paginated + filtered)
     GET  /chat/sessions/{conversation_id}  — full history for one session
+    POST /chat/sessions/{conversation_id}/reset — clear history, keep session ID alive
 """
 
 import logging
@@ -17,11 +18,13 @@ from app.api.models import (
     ChatResponse,
     SessionHistoryResponse,
     SessionListResponse,
+    SessionResetResponse,
     SessionSummary,
 )
 from app.infrastructure.conversation_store import ConversationStore
 from app.infrastructure.rate_limiter import RateLimitExceededError
-from app.services.chat_service import ChatService
+from app.services.chat_service import ChatService, SessionCapExceededError
+from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +68,11 @@ async def chat(
         result = chat_svc.chat(
             conversation_id=body.conversation_id,   # may be None — service handles it
             message=body.message,
+        )
+    except SessionCapExceededError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=str(exc),
         )
     except RateLimitExceededError:
         raise HTTPException(
@@ -133,12 +141,15 @@ async def list_sessions(
         )
 
     all_ids = store.list_conversations()
+    settings = get_settings()
+    max_messages = settings.MAX_MESSAGES_PER_SESSION
 
     # Build summaries and apply filters
     summaries: list[SessionSummary] = []
     for conv_id in all_ids:
         history = store.get_history(conv_id)
         count = len(history)
+        remaining = max(0, max_messages - count)
 
         if min_messages is not None and count < min_messages:
             continue
@@ -153,6 +164,7 @@ async def list_sessions(
             SessionSummary(
                 conversation_id=conv_id,
                 message_count=count,
+                messages_remaining=remaining,
                 last_role=role,
                 last_message_preview=(
                     (last_msg.get("content", "")[:80]) if last_msg else None
@@ -207,10 +219,51 @@ async def get_session_history(
         )
 
     messages = store.get_history(conversation_id)
+    settings = get_settings()
+    max_messages = settings.MAX_MESSAGES_PER_SESSION
+    remaining = max(0, max_messages - len(messages))
 
     return SessionHistoryResponse(
         conversation_id=conversation_id,
         messages=messages,
         message_count=len(messages),
+        messages_remaining=remaining,
         storage_backend=store.backend,
+    )
+
+
+# ── POST /chat/sessions/{conversation_id}/reset ────────────────────────
+
+
+@router.post(
+    "/sessions/{conversation_id}/reset",
+    response_model=SessionResetResponse,
+    summary="Reset a session's history",
+    description=(
+        "Clears all stored messages for the given session, resetting it to a clean state. "
+        "**The session ID remains valid** — you can immediately continue chatting with it. "
+        "Returns **404** if the session does not exist or has already expired."
+    ),
+    responses={
+        404: {"description": "Session not found."},
+    },
+)
+async def reset_session(
+    conversation_id: str,
+    store: Annotated[ConversationStore, Depends(get_conversation_store)],
+) -> SessionResetResponse:
+    """Clear history for a session without destroying the session ID."""
+    if not store.session_exists(conversation_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Session '{conversation_id}' not found or has expired.",
+        )
+
+    store.clear_history(conversation_id)
+    settings = get_settings()
+    logger.info(f"Session '{conversation_id}' reset by client.")
+
+    return SessionResetResponse(
+        conversation_id=conversation_id,
+        messages_remaining=settings.MAX_MESSAGES_PER_SESSION,
     )

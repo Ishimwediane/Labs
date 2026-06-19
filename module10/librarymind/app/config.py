@@ -49,6 +49,9 @@ class Settings(BaseSettings):
     RAG_TOP_K: int = 5
     RAG_RELEVANCE_THRESHOLD: float = 0.7
     CHAT_HISTORY_LIMIT: int = 10
+    # Hard cap on stored messages per session (user + assistant each count as 1).
+    # 20 messages = 10 full turns. New messages beyond this are rejected with 429.
+    MAX_MESSAGES_PER_SESSION: int = 20
 
     # Pydantic Configuration
     model_config = SettingsConfigDict(

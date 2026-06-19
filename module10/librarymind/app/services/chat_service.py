@@ -12,6 +12,10 @@ from app.services.rag_service import RAGService
 logger = logging.getLogger(__name__)
 
 
+class SessionCapExceededError(Exception):
+    """Raised when a session has reached its maximum message count."""
+
+
 class ChatService:
     """Orchestrates multi-turn AI librarian conversations with RAG grounding."""
 
@@ -31,7 +35,11 @@ class ChatService:
         self.rate_limiter = rate_limiter
         self.settings = settings
         self.history_limit: int = getattr(settings, "CHAT_HISTORY_LIMIT", 10)
-        logger.info(f"ChatService initialised. History limit: {self.history_limit}.")
+        self.max_messages: int = getattr(settings, "MAX_MESSAGES_PER_SESSION", 20)
+        logger.info(
+            f"ChatService initialised. History limit: {self.history_limit}. "
+            f"Session cap: {self.max_messages} messages."
+        )
 
     def chat(self, conversation_id: Optional[str], message: str) -> Dict[str, Any]:
         """Process one conversation turn and return the assistant's reply.
@@ -52,6 +60,19 @@ class ChatService:
         conversation_id, message = self._validate_inputs(conversation_id, message)
         logger.info(f"[{conversation_id}] New turn: '{message[:60]}...'")
 
+        # Enforce session message cap BEFORE any expensive AI calls.
+        current_count = self.conversation_store.get_message_count(conversation_id)
+        if current_count >= self.max_messages:
+            logger.warning(
+                f"[{conversation_id}] Session cap reached: "
+                f"{current_count}/{self.max_messages} messages."
+            )
+            raise SessionCapExceededError(
+                f"This session has reached the maximum of {self.max_messages} messages "
+                f"({self.max_messages // 2} turns). "
+                "Please start a new session or reset this one via "
+                f"POST /chat/sessions/{conversation_id}/reset."
+            )
         recent_history = self._truncate_history(
             self.conversation_store.get_history(conversation_id)
         )

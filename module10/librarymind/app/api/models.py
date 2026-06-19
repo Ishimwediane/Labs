@@ -180,6 +180,9 @@ class SessionSummary(BaseModel):
 
     conversation_id: str = Field(description="Unique session identifier.")
     message_count: int = Field(description="Total number of messages (user + assistant) stored.")
+    messages_remaining: int = Field(
+        description="How many more messages can be added before the session cap is hit."
+    )
     last_role: Optional[str] = Field(
         default=None,
         description="Role of the last message: 'user' or 'assistant'.",
@@ -211,7 +214,26 @@ class SessionHistoryResponse(BaseModel):
     conversation_id: str = Field(description="Unique session identifier.")
     messages: List[dict] = Field(description="Full ordered message history (oldest first).")
     message_count: int = Field(description="Total number of messages stored.")
+    messages_remaining: int = Field(
+        description="How many more messages can be added before the session cap is hit."
+    )
     storage_backend: str = Field(description="Active storage backend: 'redis' or 'memory'.")
+
+
+class SessionResetResponse(BaseModel):
+    """Response body for POST /chat/sessions/{conversation_id}/reset."""
+
+    conversation_id: str = Field(description="The session that was reset.")
+    message: str = Field(
+        description="Confirmation message.",
+        default="Session history cleared. The session ID is still valid — send messages to continue.",
+    )
+    messages_remaining: int = Field(
+        description="Messages available after reset (equals the full session cap)."
+    )
+
+
+
 
 
 
